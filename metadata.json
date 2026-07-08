@@ -1,0 +1,6 @@
+{
+  "name": "Memory",
+  "description": "A personal memory layer for the internet. Attach your thoughts to any webpage and recall them automatically when you return.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
