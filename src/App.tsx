@@ -5,7 +5,7 @@ import {
   History, Bookmark, MessageSquare, ArrowUpRight, Pin, Trash2, 
   Plus, X, Edit2, Star, Clock, Folder, Settings, User as UserIcon, 
   LogOut, Globe, MousePointerClick, AlertCircle, RefreshCw, Layers,
-  ChevronRight, Filter, ExternalLink, Moon, Sun, Info, Copy, Download
+  ChevronRight, ChevronDown, Filter, ExternalLink, Moon, Sun, Info, Copy, Download
 } from "lucide-react";
 
 import { Memory, Project, User, SearchResult } from "./types";
@@ -84,12 +84,14 @@ export default function App() {
   const [dashboardTab, setDashboardTab] = useState<"all" | "pinned" | "projects" | "search" | "settings" | "extension">("all");
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [dashSearchQuery, setDashSearchQuery] = useState("");
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [dashSearchResults, setDashSearchResults] = useState<SearchResult[]>([]);
   const [isDashSearching, setIsDashSearching] = useState(false);
   const [editingMemory, setEditingMemory] = useState<Memory | null>(null);
 
   // Chrome Extension custom URL and file viewer state
   const [activeExtFile, setActiveExtFile] = useState<"manifest" | "background" | "content_js" | "content_css" | "popup_html" | "popup_js">("manifest");
+  const [showTechnicalFiles, setShowTechnicalFiles] = useState(false);
   const [customBackendUrl, setCustomBackendUrl] = useState(() => {
     if (typeof window !== "undefined") {
       return window.location.origin;
@@ -1193,45 +1195,66 @@ document.addEventListener("DOMContentLoaded", () => {
       </AnimatePresence>
 
       {/* Primary Navigation tabs across App mode */}
-      <div className="bg-zinc-900 text-zinc-400 px-6 py-2.5 flex items-center justify-between text-xs font-mono font-medium border-b border-zinc-800">
-        <div className="flex items-center gap-2">
+      <div className="bg-zinc-950 text-zinc-400 px-6 py-3 flex items-center justify-between text-xs font-mono font-bold border-b border-zinc-900 sticky top-0 z-50 shadow-lg">
+        <div className="flex items-center gap-2.5">
           <Brain className="w-4 h-4 text-indigo-400 animate-pulse" />
-          <span className="text-white font-semibold">Memory Environment Controller</span>
+          <span className="text-white font-bold tracking-tight uppercase text-[10px]">Memory Desk Control Plane</span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center bg-zinc-900 p-1 rounded-xl border border-zinc-800/80 relative">
           <button 
             id="nav_landing_btn"
             onClick={() => setCurrentView("homepage")}
-            className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${currentView === 'homepage' ? 'bg-zinc-800 text-white font-bold' : 'hover:bg-zinc-800 hover:text-zinc-200'}`}
+            className={`px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 relative z-10 text-[11px] ${currentView === 'homepage' ? 'text-white' : 'hover:text-zinc-200'}`}
           >
-            <Globe className="w-3.5 h-3.5" />
+            {currentView === 'homepage' && (
+              <motion.div 
+                layoutId="primaryNavCapsule"
+                className="absolute inset-0 bg-zinc-800 rounded-lg -z-10"
+                transition={{ type: "spring", stiffness: 350, damping: 28 }}
+              />
+            )}
+            <Globe className="w-3.5 h-3.5 text-indigo-400" />
             Landing Page
           </button>
           <button 
             id="nav_browser_btn"
             onClick={() => setCurrentView("browser")}
-            className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${currentView === 'browser' ? 'bg-zinc-800 text-white font-bold animate-pulse' : 'hover:bg-zinc-800 hover:text-zinc-200'}`}
+            className={`px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 relative z-10 text-[11px] ${currentView === 'browser' ? 'text-white' : 'hover:text-zinc-200'}`}
           >
-            <Chrome className="w-3.5 h-3.5" />
-            Virtual Browser & Extension Demo
+            {currentView === 'browser' && (
+              <motion.div 
+                layoutId="primaryNavCapsule"
+                className="absolute inset-0 bg-zinc-800 rounded-lg -z-10"
+                transition={{ type: "spring", stiffness: 350, damping: 28 }}
+              />
+            )}
+            <Chrome className="w-3.5 h-3.5 text-indigo-400" />
+            Virtual Browser Simulator
           </button>
           <button 
             id="nav_dashboard_btn"
             onClick={() => setCurrentView("dashboard")}
-            className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${currentView === 'dashboard' ? 'bg-zinc-800 text-white font-bold' : 'hover:bg-zinc-800 hover:text-zinc-200'}`}
+            className={`px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 relative z-10 text-[11px] ${currentView === 'dashboard' ? 'text-white' : 'hover:text-zinc-200'}`}
           >
-            <Layers className="w-3.5 h-3.5" />
+            {currentView === 'dashboard' && (
+              <motion.div 
+                layoutId="primaryNavCapsule"
+                className="absolute inset-0 bg-zinc-800 rounded-lg -z-10"
+                transition={{ type: "spring", stiffness: 350, damping: 28 }}
+              />
+            )}
+            <Layers className="w-3.5 h-3.5 text-indigo-400" />
             Personal Dashboard
           </button>
         </div>
-        <div className="hidden sm:flex items-center gap-2.5">
+        <div className="hidden sm:flex items-center gap-3">
           {user ? (
-            <div className="flex items-center gap-2">
-              <span className="text-zinc-300 text-[11px]">{user.email}</span>
+            <div className="flex items-center gap-2.5">
+              <span className="text-zinc-400 text-[10px] bg-zinc-900 border border-zinc-800 px-2.5 py-1 rounded-lg">{user.email}</span>
               <button 
                 id="header_logout_btn"
                 onClick={handleLogout}
-                className="text-rose-400 hover:text-rose-300 text-[10px] uppercase font-semibold cursor-pointer tracking-wider"
+                className="text-rose-400 hover:text-rose-300 text-[10px] uppercase font-bold tracking-widest cursor-pointer bg-zinc-900 hover:bg-rose-950/20 px-2.5 py-1 rounded-lg border border-zinc-800 hover:border-rose-900/30 transition-all"
               >
                 Sign Out
               </button>
@@ -1240,7 +1263,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <button 
               id="header_login_btn"
               onClick={handleLogin}
-              className="bg-indigo-600 text-white px-2.5 py-1 rounded hover:bg-indigo-500 font-bold transition-colors"
+              className="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-colors shadow-lg shadow-indigo-500/20"
             >
               Google Sign-In
             </button>
@@ -1278,14 +1301,14 @@ document.addEventListener("DOMContentLoaded", () => {
             exit={{ opacity: 0 }}
             className="max-w-7xl mx-auto px-4 py-8 space-y-6"
           >
-            <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <h2 className="font-bold text-slate-900 text-base flex items-center gap-1.5">
-                  <Chrome className="w-4 h-4 text-indigo-600 animate-bounce" />
+            <div className="bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 p-6 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-sm">
+              <div className="space-y-1.5">
+                <h2 className="font-display font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                  <Chrome className="w-5 h-5 text-indigo-600 animate-pulse" />
                   Interactive Extension Playground
                 </h2>
-                <p className="text-xs text-slate-600 max-w-3xl">
-                  Memory works seamlessly within the browser. Visit the preloaded popular websites below or type any custom URL to experience how the floating memory card automatically recalls your previous context when you return.
+                <p className="text-xs text-slate-500 max-w-3xl leading-relaxed font-medium">
+                  Memory Desk integrates beautifully within Chrome. Revisit any preloaded popular sandbox domain below or navigate to a custom URL to see how your context layers slide in.
                 </p>
               </div>
               <button
@@ -1294,37 +1317,46 @@ document.addEventListener("DOMContentLoaded", () => {
                   localStorage.removeItem("mem_memories");
                   showNotification("Reset demo memories to clean state", "info");
                 }}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-medium transition-all"
+                className="bg-slate-900 hover:bg-slate-800 text-white text-xs px-4.5 py-2.5 rounded-xl flex items-center gap-2 font-bold transition-all duration-200 shadow-md self-start md:self-auto shrink-0"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
-                Reset Demo Data
+                Reset Sandbox
               </button>
             </div>
 
             {/* Quick-switch website simulator tabs */}
-            <div className="flex flex-wrap items-center gap-2 pb-1">
-              <span className="text-xs font-semibold text-slate-400 font-mono uppercase mr-2">Simulate visits:</span>
-              {presetTabs.map((pt) => {
-                const isCurrent = browserUrl === pt.url;
-                const hasMemorySaved = memories.some(m => m.url === pt.url);
-                return (
-                  <button
-                    key={pt.id}
-                    onClick={() => handleNavigate(pt.url, pt.title, pt.name, pt.icon)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 border transition-all ${
-                      isCurrent 
-                        ? "bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-100" 
-                        : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
-                    }`}
-                  >
-                    <span>{pt.icon}</span>
-                    <span>{pt.name}</span>
-                    {hasMemorySaved && (
-                      <span className={`w-2 h-2 rounded-full ${isCurrent ? 'bg-white' : 'bg-indigo-600 animate-ping'}`} />
-                    )}
-                  </button>
-                );
-              })}
+            <div className="flex flex-wrap items-center gap-2.5 pb-2">
+              <span className="text-[10px] font-bold text-slate-400 font-mono uppercase tracking-wider mr-2">Visited:</span>
+              <div className="flex flex-wrap gap-2">
+                {presetTabs.map((pt) => {
+                  const isCurrent = browserUrl === pt.url;
+                  const hasMemorySaved = memories.some(m => m.url === pt.url);
+                  return (
+                    <button
+                      key={pt.id}
+                      onClick={() => handleNavigate(pt.url, pt.title, pt.name, pt.icon)}
+                      className={`relative px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all duration-300 ${
+                        isCurrent 
+                          ? "text-white" 
+                          : "bg-white hover:bg-slate-100 border border-slate-200/60 text-slate-600"
+                      }`}
+                    >
+                      {isCurrent && (
+                        <motion.div
+                          layoutId="simulatorTabCapsule"
+                          className="absolute inset-0 bg-indigo-600 rounded-xl -z-10 shadow-lg shadow-indigo-600/20"
+                          transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                        />
+                      )}
+                      <span className="relative z-10">{pt.icon}</span>
+                      <span className="relative z-10">{pt.name}</span>
+                      {hasMemorySaved && (
+                        <span className={`relative z-10 w-2 h-2 rounded-full ${isCurrent ? 'bg-white' : 'bg-indigo-600 animate-pulse'}`} />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Simulated Chrome Browser */}
@@ -1540,6 +1572,32 @@ document.addEventListener("DOMContentLoaded", () => {
                               )}
                             </div>
                             <p className="font-medium font-sans">{block}</p>
+                            {isHighlighted && (
+                              <div className="mt-3 pt-2.5 border-t border-indigo-100 flex flex-wrap items-center gap-2 animate-fadeIn text-xs">
+                                <span className="text-[10px] text-indigo-700 font-extrabold flex items-center gap-1 shrink-0">
+                                  <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                                  Quick Note Preset:
+                                </span>
+                                {[
+                                  { label: "📌 Follow-up Task", note: "Add action to follow up on this info next week." },
+                                  { label: "💰 Specs & Pricing", note: "Save pricing specification / tech options details." },
+                                  { label: "⭐ Reference Point", note: "Reference key point of interest for our active workspace." }
+                                ].map((opt, oIdx) => (
+                                  <button
+                                    key={oIdx}
+                                    onClick={(e) => {
+                                      e.stopPropagation(); // Avoid untoggling the highlight
+                                      setNoteInput(opt.note);
+                                      setIsExtensionOpen(true);
+                                      showNotification("Note content pre-filled! Check the Extension Popup.", "success");
+                                    }}
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg transition-colors border border-indigo-700 shadow-sm"
+                                  >
+                                    {opt.label}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         );
                       }) || (
@@ -1711,42 +1769,50 @@ document.addEventListener("DOMContentLoaded", () => {
         {currentView === "dashboard" && (
           <motion.div
             key="dashboard"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.4 }}
             className="max-w-7xl mx-auto px-4 py-8"
           >
-            <div className="bg-white rounded-2xl border border-slate-250 shadow-xl overflow-hidden min-h-[600px] flex flex-col md:flex-row">
+            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-2xl overflow-hidden min-h-[620px] flex flex-col md:flex-row">
               
               {/* Sidebar Navigation */}
-              <aside className="w-full md:w-64 bg-slate-50 border-r border-slate-200 p-5 flex flex-col justify-between shrink-0 space-y-8">
-                <div className="space-y-6">
+              <aside className="w-full md:w-64 bg-slate-50 border-r border-slate-200 p-6 flex flex-col justify-between shrink-0 space-y-8">
+                <div className="space-y-7">
                   {/* Brand logo */}
-                  <div className="flex items-center gap-2 cursor-pointer" onClick={() => setCurrentView("homepage")}>
-                    <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shadow-md shadow-indigo-150">
-                      <Brain className="w-4.5 h-4.5 text-white" />
+                  <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => setCurrentView("homepage")}>
+                    <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-200">
+                      <Brain className="w-5 h-5 text-white" />
                     </div>
-                    <span className="font-bold text-base tracking-tight text-slate-800">Memory Desk</span>
+                    <span className="font-display font-bold text-base tracking-tight text-slate-900">Memory Desk</span>
                   </div>
 
                   {/* Core Filters */}
-                  <nav className="space-y-1.5 text-xs font-semibold text-slate-600">
+                  <nav className="space-y-1.5 text-xs font-bold text-slate-500 relative">
                     <button
                       onClick={() => {
                         setDashboardTab("all");
                         setSelectedProjectId(null);
                       }}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all ${
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
                         dashboardTab === "all" && !selectedProjectId 
-                          ? "bg-indigo-50 text-indigo-700 font-bold" 
-                          : "hover:bg-slate-100 text-slate-600"
+                          ? "text-indigo-700 font-extrabold" 
+                          : "hover:text-slate-900"
                       }`}
                     >
-                      <span className="flex items-center gap-2">
-                        <Layers className="w-4 h-4" />
+                      {dashboardTab === "all" && !selectedProjectId && (
+                        <motion.div 
+                          layoutId="activeSidebarTab"
+                          className="absolute inset-0 bg-indigo-50 border border-indigo-100/30 rounded-xl -z-10 shadow-sm"
+                          transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                        />
+                      )}
+                      <span className="flex items-center gap-2.5 relative z-10">
+                        <Layers className="w-4 h-4 text-indigo-500" />
                         All Memories
                       </span>
-                      <span className="bg-slate-200/60 px-1.5 py-0.5 rounded text-[10px]">{memories.length}</span>
+                      <span className="bg-slate-200/60 text-slate-600 px-2 py-0.5 rounded-lg text-[9px] relative z-10">{memories.length}</span>
                     </button>
 
                     <button
@@ -1754,17 +1820,24 @@ document.addEventListener("DOMContentLoaded", () => {
                         setDashboardTab("pinned");
                         setSelectedProjectId(null);
                       }}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all ${
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
                         dashboardTab === "pinned" 
-                          ? "bg-indigo-50 text-indigo-700 font-bold" 
-                          : "hover:bg-slate-100 text-slate-600"
+                          ? "text-indigo-700 font-extrabold" 
+                          : "hover:text-slate-900"
                       }`}
                     >
-                      <span className="flex items-center gap-2">
-                        <Pin className="w-4 h-4" />
+                      {dashboardTab === "pinned" && (
+                        <motion.div 
+                          layoutId="activeSidebarTab"
+                          className="absolute inset-0 bg-indigo-50 border border-indigo-100/30 rounded-xl -z-10 shadow-sm"
+                          transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                        />
+                      )}
+                      <span className="flex items-center gap-2.5 relative z-10">
+                        <Pin className="w-4 h-4 text-indigo-500" />
                         Pinned memories
                       </span>
-                      <span className="bg-slate-200/60 px-1.5 py-0.5 rounded text-[10px]">
+                      <span className="bg-slate-200/60 text-slate-600 px-2 py-0.5 rounded-lg text-[9px] relative z-10">
                         {memories.filter(m => m.pinned).length}
                       </span>
                     </button>
@@ -1774,17 +1847,24 @@ document.addEventListener("DOMContentLoaded", () => {
                         setDashboardTab("search");
                         setSelectedProjectId(null);
                       }}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all ${
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
                         dashboardTab === "search" 
-                          ? "bg-indigo-50 text-indigo-700 font-bold" 
-                          : "hover:bg-slate-100 text-slate-600"
+                          ? "text-indigo-700 font-extrabold" 
+                          : "hover:text-slate-900"
                       }`}
                     >
-                      <span className="flex items-center gap-2">
-                        <Search className="w-4 h-4" />
+                      {dashboardTab === "search" && (
+                        <motion.div 
+                          layoutId="activeSidebarTab"
+                          className="absolute inset-0 bg-indigo-50 border border-indigo-100/30 rounded-xl -z-10 shadow-sm"
+                          transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                        />
+                      )}
+                      <span className="flex items-center gap-2.5 relative z-10">
+                        <Search className="w-4 h-4 text-indigo-500" />
                         Semantic AI Search
                       </span>
-                      <span className="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[10px] uppercase font-mono tracking-wider">Gemini</span>
+                      <span className="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[8px] uppercase font-mono tracking-wider font-extrabold relative z-10">Gemini</span>
                     </button>
 
                     <button
@@ -1792,12 +1872,19 @@ document.addEventListener("DOMContentLoaded", () => {
                         setDashboardTab("extension");
                         setSelectedProjectId(null);
                       }}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all ${
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
                         dashboardTab === "extension" 
-                          ? "bg-indigo-50 text-indigo-700 font-bold" 
-                          : "hover:bg-slate-100 text-slate-600"
+                          ? "text-indigo-700 font-extrabold" 
+                          : "hover:text-slate-900"
                       }`}
                     >
+                      {dashboardTab === "extension" && (
+                        <motion.div 
+                          layoutId="activeSidebarTab"
+                          className="absolute inset-0 bg-indigo-50 border border-indigo-100/30 rounded-xl -z-10 shadow-sm"
+                          transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                        />
+                      )}
                       <span className="flex items-center gap-2">
                         <Chrome className="w-4 h-4" />
                         Chrome Extension
@@ -1822,17 +1909,24 @@ document.addEventListener("DOMContentLoaded", () => {
                               setSelectedProjectId(proj.id);
                               setDashboardTab("projects");
                             }}
-                            className={`w-full text-xs font-semibold flex items-center justify-between px-3 py-2 rounded-lg transition-all ${
+                            className={`w-full text-xs font-bold flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
                               isSelected 
-                                ? "bg-indigo-50 text-indigo-700 font-bold" 
-                                : "hover:bg-slate-100 text-slate-600"
+                                ? "text-indigo-700 font-extrabold" 
+                                : "hover:text-slate-950 text-slate-500"
                             }`}
                           >
-                            <span className="flex items-center gap-2 truncate">
-                              <Folder className="w-3.5 h-3.5 shrink-0" />
+                            {isSelected && (
+                              <motion.div 
+                                layoutId="activeSidebarTab"
+                                className="absolute inset-0 bg-indigo-50 border border-indigo-100/30 rounded-xl -z-10 shadow-sm"
+                                transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                              />
+                            )}
+                            <span className="flex items-center gap-2.5 truncate relative z-10">
+                              <Folder className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
                               <span className="truncate">{proj.name}</span>
                             </span>
-                            <span className="bg-slate-200/60 px-1.5 py-0.5 rounded text-[10px] shrink-0">{count}</span>
+                            <span className="bg-slate-200/60 text-slate-600 px-2 py-0.5 rounded-lg text-[9px] shrink-0 relative z-10">{count}</span>
                           </button>
                         );
                       })}
@@ -2092,62 +2186,92 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
 
                         {/* RIGHT COLUMN: File Previewer Tab structure (7 cols) */}
-                        <div className="lg:col-span-7 space-y-3 flex flex-col">
-                          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                            <h4 className="font-extrabold text-slate-850 text-sm tracking-tight">
-                              📁 File Generator Sandbox
-                            </h4>
-                            <div className="flex gap-2">
+                        <div className="lg:col-span-7 flex flex-col space-y-4">
+                          <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 flex flex-col space-y-3.5 shadow-sm">
+                            <div className="flex items-center justify-between">
+                              <h5 className="font-extrabold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                                <Settings className="w-4 h-4 text-indigo-500 animate-spin-slow" />
+                                Extension Source Sandbox
+                              </h5>
                               <button
-                                onClick={() => handleCopyFile(activeExtFile)}
-                                className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] px-2.5 py-1 rounded flex items-center gap-1 transition-colors"
+                                onClick={() => setShowTechnicalFiles(!showTechnicalFiles)}
+                                className="bg-white hover:bg-slate-50 border border-slate-200/80 px-3.5 py-1.5 rounded-xl text-[10px] font-bold text-indigo-600 transition-all flex items-center gap-1 shadow-sm"
                               >
-                                <Copy className="w-3 h-3" />
-                                Copy Code
-                              </button>
-                              <button
-                                onClick={() => handleDownloadFile(activeExtFile)}
-                                className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[10px] px-2.5 py-1 rounded flex items-center gap-1 transition-colors"
-                              >
-                                <Download className="w-3 h-3" />
-                                Download File
+                                {showTechnicalFiles ? "Hide Code View" : "Expand Code View"}
+                                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showTechnicalFiles ? "rotate-180" : ""}`} />
                               </button>
                             </div>
+                            <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">
+                              Inspect, review, or copy the pre-configured browser extension scripts that establish communication hooks back to your server.
+                            </p>
                           </div>
 
-                          {/* File Selection Tabs */}
-                          <div className="flex flex-wrap gap-1.5 bg-slate-50 p-1.5 rounded-lg border border-slate-200">
-                            {[
-                              { id: "manifest", name: "manifest.json" },
-                              { id: "background", name: "background.js" },
-                              { id: "content_js", name: "content.js" },
-                              { id: "content_css", name: "content.css" },
-                              { id: "popup_html", name: "popup.html" },
-                              { id: "popup_js", name: "popup.js" }
-                            ].map((f) => (
-                              <button
-                                key={f.id}
-                                onClick={() => setActiveExtFile(f.id as any)}
-                                className={`text-[11px] px-2.5 py-1 font-bold rounded-md transition-all ${
-                                  activeExtFile === f.id
-                                    ? "bg-indigo-600 text-white shadow-sm shadow-indigo-100"
-                                    : "text-slate-500 hover:bg-white hover:text-slate-800"
-                                }`}
+                          <AnimatePresence>
+                            {showTechnicalFiles && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="space-y-3 flex flex-col overflow-hidden"
                               >
-                                {f.name}
-                              </button>
-                            ))}
-                          </div>
+                                <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                                  <h4 className="font-extrabold text-slate-850 text-sm tracking-tight">
+                                    📁 File Generator Sandbox
+                                  </h4>
+                                  <div className="flex gap-2">
+                                    <button
+                                      onClick={() => handleCopyFile(activeExtFile)}
+                                      className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] px-2.5 py-1 rounded flex items-center gap-1 transition-colors"
+                                    >
+                                      <Copy className="w-3 h-3" />
+                                      Copy Code
+                                    </button>
+                                    <button
+                                      onClick={() => handleDownloadFile(activeExtFile)}
+                                      className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[10px] px-2.5 py-1 rounded flex items-center gap-1 transition-colors"
+                                    >
+                                      <Download className="w-3 h-3" />
+                                      Download File
+                                    </button>
+                                  </div>
+                                </div>
 
-                          {/* Monospace Code Code block panel */}
-                          <div className="relative border border-slate-200/80 rounded-xl overflow-hidden bg-slate-900 shadow-inner flex-1">
-                            <div className="absolute right-3.5 top-3.5 z-10 text-[9px] uppercase tracking-wider font-extrabold text-indigo-400 font-mono bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700">
-                              {getFilename(activeExtFile)}
-                            </div>
-                            <pre className="p-5 font-mono text-[10px] text-slate-100 overflow-x-auto overflow-y-auto max-h-[360px] leading-relaxed whitespace-pre font-medium">
-                              {getExtensionFile(activeExtFile)}
-                            </pre>
-                          </div>
+                                {/* File Selection Tabs */}
+                                <div className="flex flex-wrap gap-1.5 bg-slate-50 p-1.5 rounded-lg border border-slate-200">
+                                  {[
+                                    { id: "manifest", name: "manifest.json" },
+                                    { id: "background", name: "background.js" },
+                                    { id: "content_js", name: "content.js" },
+                                    { id: "content_css", name: "content.css" },
+                                    { id: "popup_html", name: "popup.html" },
+                                    { id: "popup_js", name: "popup.js" }
+                                  ].map((f) => (
+                                    <button
+                                      key={f.id}
+                                      onClick={() => setActiveExtFile(f.id as any)}
+                                      className={`text-[11px] px-2.5 py-1 font-bold rounded-md transition-all ${
+                                        activeExtFile === f.id
+                                          ? "bg-indigo-600 text-white shadow-sm shadow-indigo-100"
+                                          : "text-slate-500 hover:bg-white hover:text-slate-800"
+                                      }`}
+                                    >
+                                      {f.name}
+                                    </button>
+                                  ))}
+                                </div>
+
+                                {/* Monospace Code Code block panel */}
+                                <div className="relative border border-slate-200/80 rounded-xl overflow-hidden bg-slate-900 shadow-inner flex-1 min-h-[300px] flex flex-col">
+                                  <div className="absolute right-3.5 top-3.5 z-10 text-[9px] uppercase tracking-wider font-extrabold text-indigo-400 font-mono bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700">
+                                    {getFilename(activeExtFile)}
+                                  </div>
+                                  <pre className="p-5 font-mono text-[10px] text-slate-100 overflow-x-auto overflow-y-auto max-h-[360px] leading-relaxed whitespace-pre font-medium">
+                                    {getExtensionFile(activeExtFile)}
+                                  </pre>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
                         </div>
                       </div>
                     </div>
@@ -2155,7 +2279,90 @@ document.addEventListener("DOMContentLoaded", () => {
 
                   {/* MEMORY CARDS LIST DISPLAY (Filter depending on selected Tab) */}
                   {dashboardTab !== "search" && dashboardTab !== "settings" && dashboardTab !== "extension" && (
-                    <div className="space-y-4">
+                    <div className="space-y-5">
+                      {/* Integrated Instant Search & Tag Pills */}
+                      <div className="bg-slate-50 border border-slate-200/85 p-4.5 rounded-2xl space-y-4 shadow-sm">
+                        <div className="flex flex-col sm:flex-row gap-3">
+                          {/* Live search input */}
+                          <div className="relative flex-1 bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 flex items-center shadow-inner">
+                            <Search className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
+                            <input
+                              type="text"
+                              placeholder="Fuzzy-filter page title, note content, domain, or tag..."
+                              value={dashSearchQuery}
+                              onChange={(e) => setDashSearchQuery(e.target.value)}
+                              className="w-full bg-transparent text-xs focus:outline-none font-medium text-slate-800"
+                            />
+                            {dashSearchQuery && (
+                              <button
+                                onClick={() => setDashSearchQuery("")}
+                                className="text-slate-400 hover:text-slate-600 transition-colors"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
+                          
+                          {/* AI Search Mode Trigger Button */}
+                          <button
+                            onClick={() => {
+                              if (dashSearchQuery.trim()) {
+                                setDashboardTab("search");
+                                handleDashboardSearch(new Event('submit') as any);
+                              } else {
+                                showNotification("Type something in the search box to trigger Semantic AI matching!", "info");
+                              }
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4.5 py-3 rounded-xl flex items-center justify-center gap-1.5 transition-colors shrink-0 shadow-sm shadow-indigo-150"
+                            title="Perform smart vector search on your note contexts"
+                          >
+                            <Brain className="w-4 h-4" />
+                            AI Concept Search
+                          </button>
+                        </div>
+
+                        {/* Interactive Horizontal Tag Filter Pills */}
+                        {(() => {
+                          const allTags = Array.from(new Set(memories.flatMap(m => m.tags))).filter(Boolean);
+                          if (allTags.length === 0) return null;
+                          return (
+                            <div className="flex flex-col gap-2 pt-1 border-t border-slate-100/60">
+                              <div className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">
+                                Filter by tag:
+                              </div>
+                              <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
+                                <button
+                                  onClick={() => setSelectedTag(null)}
+                                  className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all border ${
+                                    selectedTag === null
+                                      ? "bg-slate-900 text-white border-slate-900"
+                                      : "bg-white hover:bg-slate-100 text-slate-600 border-slate-200"
+                                  }`}
+                                >
+                                  All tags
+                                </button>
+                                {allTags.map((tag) => {
+                                  const isSelected = selectedTag === tag;
+                                  return (
+                                    <button
+                                      key={tag}
+                                      onClick={() => setSelectedTag(isSelected ? null : tag)}
+                                      className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all border flex items-center gap-1 ${
+                                        isSelected
+                                          ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
+                                          : "bg-white hover:bg-slate-100 text-slate-600 border-slate-200"
+                                      }`}
+                                    >
+                                      #{tag}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </div>
+
                       {/* Filter the list */}
                       {(() => {
                         let filtered = memories;
@@ -2163,6 +2370,23 @@ document.addEventListener("DOMContentLoaded", () => {
                           filtered = memories.filter(m => m.pinned);
                         } else if (dashboardTab === "projects" && selectedProjectId) {
                           filtered = memories.filter(m => m.projectId === selectedProjectId);
+                        }
+
+                        // Filter by selected tag
+                        if (selectedTag) {
+                          filtered = filtered.filter(m => m.tags.includes(selectedTag));
+                        }
+
+                        // Filter by live fuzzy query
+                        if (dashSearchQuery.trim()) {
+                          const query = dashSearchQuery.toLowerCase();
+                          filtered = filtered.filter(m => {
+                            return m.originalNote.toLowerCase().includes(query) ||
+                                   m.aiSummary.toLowerCase().includes(query) ||
+                                   m.pageTitle.toLowerCase().includes(query) ||
+                                   m.websiteName.toLowerCase().includes(query) ||
+                                   m.tags.some(t => t.toLowerCase().includes(query));
+                          });
                         }
 
                         if (filtered.length === 0) {
@@ -2180,86 +2404,91 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
 
                         return (
-                          <div className="grid gap-4.5">
+                          <div className="grid gap-6">
                             {filtered.map((mem) => (
-                              <div 
+                              <motion.div 
+                                layout
+                                initial={{ opacity: 0, y: 12 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -12 }}
+                                transition={{ type: "spring", stiffness: 350, damping: 30 }}
                                 key={mem.id}
-                                className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4 relative group"
+                                className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-indigo-150 transition-all duration-300 flex flex-col justify-between gap-5 relative group"
                               >
-                                <div className="space-y-3.5">
+                                <div className="space-y-4">
                                   {/* Favicon & domain info row */}
                                   <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-lg select-none">{mem.websiteIcon}</span>
+                                    <div className="flex items-center gap-3">
+                                      <span className="text-2xl select-none w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shadow-inner">{mem.websiteIcon}</span>
                                       <div>
                                         <div className="flex items-center gap-1.5">
-                                          <span className="font-extrabold text-xs text-slate-800">{mem.websiteName}</span>
+                                          <span className="font-display font-extrabold text-sm text-slate-800">{mem.websiteName}</span>
                                           <span className="text-[10px] text-slate-400 font-mono">({mem.domain})</span>
                                         </div>
                                       </div>
                                     </div>
                                     
                                     {/* Action items */}
-                                    <div className="flex items-center gap-1.5 opacity-80 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="flex items-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                       <button
                                         onClick={() => handleTogglePin(mem.id)}
-                                        className={`p-1.5 rounded-lg border transition-colors ${
+                                        className={`p-2 rounded-xl border transition-all duration-200 ${
                                           mem.pinned 
-                                            ? "bg-indigo-50 border-indigo-100 text-indigo-600" 
-                                            : "bg-white border-slate-200 text-slate-400 hover:text-slate-600"
+                                            ? "bg-indigo-50 border-indigo-150 text-indigo-600 shadow-sm" 
+                                            : "bg-white border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-100"
                                         }`}
                                         title={mem.pinned ? "Unpin" : "Pin memory"}
                                       >
-                                        <Pin className="w-3.5 h-3.5" />
+                                        <Pin className="w-4 h-4" />
                                       </button>
                                       <button
                                         onClick={() => setEditingMemory(mem)}
-                                        className="p-1.5 rounded-lg border bg-white border-slate-200 text-slate-400 hover:text-slate-600 transition-colors"
+                                        className="p-2 rounded-xl border bg-white border-slate-200 text-slate-400 hover:text-slate-700 hover:border-slate-300 transition-all duration-200"
                                         title="Edit note"
                                       >
-                                        <Edit2 className="w-3.5 h-3.5" />
+                                        <Edit2 className="w-4 h-4" />
                                       </button>
                                       <button
                                         onClick={() => handleDeleteMemory(mem.id)}
-                                        className="p-1.5 rounded-lg border bg-white border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-100 transition-colors"
+                                        className="p-2 rounded-xl border bg-white border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-100 transition-all duration-200"
                                         title="Delete memory"
                                       >
-                                        <Trash2 className="w-3.5 h-3.5" />
+                                        <Trash2 className="w-4 h-4" />
                                       </button>
                                     </div>
                                   </div>
 
                                   {/* Content Title */}
-                                  <div className="space-y-1">
+                                  <div className="space-y-2">
                                     <a 
                                       href={mem.url} 
                                       target="_blank" 
                                       rel="noreferrer"
-                                      className="text-xs font-semibold text-slate-400 hover:text-indigo-600 transition-colors inline-flex items-center gap-1 hover:underline"
+                                      className="text-xs font-bold text-slate-400 hover:text-indigo-600 transition-colors inline-flex items-center gap-1 hover:underline"
                                     >
                                       {mem.pageTitle}
-                                      <ExternalLink className="w-3 h-3" />
+                                      <ExternalLink className="w-3.5 h-3.5" />
                                     </a>
                                     
                                     {/* Original note with nice quoting */}
-                                    <p className="text-sm text-slate-700 font-medium leading-relaxed italic border-l-2 border-indigo-400 pl-4 bg-slate-50/50 py-2 pr-2 rounded-r-lg">
+                                    <p className="text-sm text-slate-700 font-medium leading-relaxed italic border-l-2 border-indigo-500 pl-4 bg-slate-50/50 py-3 pr-3 rounded-r-xl">
                                       &ldquo;{mem.originalNote.replace(/\[Selected Highlight: ".*"\]\n\n/, "")}&rdquo;
                                     </p>
                                     
                                     {/* Extracted Highlight if present */}
                                     {mem.originalNote.includes('[Selected Highlight: "') && (
-                                      <p className="text-[11px] text-slate-500 pl-4 leading-relaxed">
-                                        <span className="font-bold text-slate-400 uppercase tracking-wider text-[9px] block">Highlighted text:</span>
+                                      <p className="text-[11px] text-slate-500 pl-4 leading-relaxed bg-amber-50/40 py-2.5 rounded-r-xl border-l-2 border-amber-400">
+                                        <span className="font-extrabold text-amber-600 uppercase tracking-wider text-[9px] block mb-1">Highlighted Selection:</span>
                                         {mem.originalNote.match(/\[Selected Highlight: "(.*)"\]/) ? mem.originalNote.match(/\[Selected Highlight: "(.*)"\]/)![1] : ""}
                                       </p>
                                     )}
                                   </div>
 
                                   {/* AI Summary Badge */}
-                                  <div className="bg-indigo-50/40 rounded-lg p-2.5 border border-indigo-100/50 flex gap-2">
-                                    <Sparkles className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
+                                  <div className="bg-indigo-50/30 rounded-2xl p-3.5 border border-indigo-100/50 flex gap-3">
+                                    <Sparkles className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
                                     <div>
-                                      <span className="text-[9px] font-mono font-bold text-indigo-600 uppercase tracking-wider block">Gemini Summary</span>
+                                      <span className="text-[9px] font-mono font-extrabold text-indigo-600 uppercase tracking-wider block mb-0.5">Gemini Synthesis Summary</span>
                                       <p className="text-[11px] text-indigo-950 font-medium leading-relaxed">
                                         {mem.aiSummary}
                                       </p>
@@ -2268,24 +2497,24 @@ document.addEventListener("DOMContentLoaded", () => {
                                 </div>
 
                                 {/* Badges bottom row */}
-                                <div className="flex flex-wrap items-center justify-between pt-4.5 border-t border-slate-50 text-[10px] text-slate-400 font-semibold gap-2">
-                                  <div className="flex flex-wrap items-center gap-1.5">
-                                    <span className={`px-2 py-0.5 rounded-full uppercase tracking-wider font-bold ${
+                                <div className="flex flex-wrap items-center justify-between pt-4 border-t border-slate-100 text-[10px] text-slate-400 font-bold gap-2">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <span className={`px-2.5 py-1 rounded-lg uppercase tracking-wider font-extrabold ${
                                       mem.priority === 'high' 
-                                        ? 'bg-rose-50 text-rose-600' 
+                                        ? 'bg-rose-50 text-rose-600 border border-rose-100' 
                                         : mem.priority === 'medium'
-                                        ? 'bg-amber-50 text-amber-600'
-                                        : 'bg-slate-50 text-slate-500'
+                                        ? 'bg-amber-50 text-amber-600 border border-amber-100'
+                                        : 'bg-slate-50 text-slate-500 border border-slate-150'
                                     }`}>
                                       {mem.priority} priority
                                     </span>
                                     {mem.tags.map(t => (
-                                      <span key={t} className="bg-slate-50 border border-slate-150 px-2 py-0.5 rounded text-slate-500 font-medium">#{t}</span>
+                                      <span key={t} className="bg-slate-50 border border-slate-150 px-2.5 py-1 rounded-lg text-slate-500 font-semibold">#{t}</span>
                                     ))}
                                   </div>
-                                  <span>Added {new Date(mem.createdAt).toLocaleDateString()}</span>
+                                  <span className="font-mono text-slate-400">Added {new Date(mem.createdAt).toLocaleDateString()}</span>
                                 </div>
-                              </div>
+                              </motion.div>
                             ))}
                           </div>
                         );

@@ -1,6 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, Brain, Chrome, Shield, ArrowRight, Play, Check, Sparkles, HelpCircle, History, Bookmark, MessageSquare, ArrowUpRight } from "lucide-react";
+import { 
+  Brain, 
+  Chrome, 
+  ArrowRight, 
+  Sparkles, 
+  Plus,
+  Globe,
+  NotebookPen,
+  ArrowUpRight,
+  Database,
+  Fingerprint,
+  Cpu,
+  Sparkle,
+  Zap,
+  MousePointer,
+  HelpCircle,
+  RefreshCw
+} from "lucide-react";
 import { Memory } from "../types";
 
 interface HomepageProps {
@@ -10,525 +27,720 @@ interface HomepageProps {
 }
 
 export default function Homepage({ onStartApp, onLogin, initialMemories }: HomepageProps) {
-  const [activeMockIndex, setActiveMockIndex] = useState(0);
-  const [demoSearchQuery, setDemoSearchQuery] = useState("");
-  const [demoSearchResults, setDemoSearchResults] = useState<any[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
+  const [activeStep, setActiveStep] = useState<number>(0);
+  const [interactiveUrl, setInteractiveUrl] = useState("linkedin.com/jobs");
+  const [showNotification, setShowNotification] = useState(false);
+  const [sandboxUrl, setSandboxUrl] = useState("");
+  const [sandboxNote, setSandboxNote] = useState("");
+  const [sandboxMemories, setSandboxMemories] = useState<Array<{url: string, note: string, site: string, icon: string}>>([
+    { url: "github.com/react", note: "Look into compiler auto-memoization options tomorrow", site: "GitHub", icon: "🐙" },
+    { url: "amazon.com/item", note: "Price target limit ₹1,80,000. Wait for Prime Day sale", site: "Amazon Shopping", icon: "📦" }
+  ]);
 
-  // Simulated browser mockup items for the hero section
-  const mockScreens = [
+  const explainSteps = [
     {
-      url: "linkedin.com/in/john-doe",
-      site: "LinkedIn",
-      icon: "💼",
-      color: "bg-blue-600",
-      content: "John Doe • Tech Recruiter at Microsoft",
-      memory: {
-        note: "Met him at React India. Works at Microsoft. Follow up in August.",
-        date: "July 1, 2026",
-        priority: "high"
-      }
+      title: "1. Land on any URL",
+      desc: "Simulate surfing an article, job listing, or shopping page",
+      icon: <Globe className="w-4 h-4 text-bento-orange" />,
+      url: "linkedin.com/jobs",
+      siteName: "LinkedIn Jobs",
+      siteIcon: "💼",
+      siteContent: "Frontend Architect • Microsoft Office Group • Redmond",
+      badgeColor: "bg-amber-500/10 text-amber-500 border-amber-500/20"
     },
     {
-      url: "amazon.in/macbook-pro",
-      site: "Amazon",
-      icon: "📦",
-      color: "bg-amber-500",
-      content: "Apple MacBook Pro (M3, 14-inch) - Amazon Price Tracker",
-      memory: {
-        note: "Buy after salary. Target price ₹95,000 for sale trigger.",
-        date: "July 2, 2026",
-        priority: "medium"
-      }
+      title: "2. Pin Your Thoughts",
+      desc: "Select text or click the floating extension to write a quick note",
+      icon: <NotebookPen className="w-4 h-4 text-bento-teal" />,
+      url: "linkedin.com/jobs",
+      siteName: "LinkedIn Jobs",
+      siteIcon: "💼",
+      siteContent: "Frontend Architect • Microsoft Office Group • Redmond",
+      note: "Met the principal recruiter John at the Seattle developer meetup. Follow up next Tuesday regarding the resume shortlisting.",
+      highlight: "Frontend Architect",
+      badgeColor: "bg-bento-teal/10 text-bento-teal border-bento-teal/20"
     },
     {
-      url: "github.com/facebook/react",
-      site: "GitHub",
-      icon: "🐙",
-      color: "bg-zinc-800",
-      content: "facebook/react: A JavaScript library for building user interfaces",
-      memory: {
-        note: "Use this library in the analytics dashboard module.",
-        date: "July 3, 2026",
-        priority: "low"
-      }
-    },
-    {
-      url: "youtube.com/watch?v=react-compiler",
-      site: "YouTube",
-      icon: "📺",
-      color: "bg-red-600",
-      content: "React Compiler: Deep Dive & Architecture Explained",
-      memory: {
-        note: "Resume from 18:42 — this section explains auto-memoization.",
-        date: "July 4, 2026",
-        priority: "low"
-      }
+      title: "3. Infinite Auto-Recall",
+      desc: "When you revisit later, your context layer slides back in instantly",
+      icon: <Brain className="w-4 h-4 text-purple-400" />,
+      url: "linkedin.com/jobs",
+      siteName: "LinkedIn Jobs",
+      siteIcon: "💼",
+      siteContent: "Frontend Architect • Microsoft Office Group • Redmond",
+      note: "Met the principal recruiter John at the Seattle developer meetup. Follow up next Tuesday regarding the resume shortlisting.",
+      highlight: "Frontend Architect",
+      recalled: true,
+      badgeColor: "bg-purple-400/10 text-purple-400 border-purple-400/20"
     }
   ];
 
-  // Auto-rotating mock browser in Hero
+  // Auto-play steps loop to ensure immediate 5-second comprehension
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveMockIndex((prev) => (prev + 1) % mockScreens.length);
+      setActiveStep((prev) => (prev + 1) % explainSteps.length);
     }, 4500);
     return () => clearInterval(interval);
-  }, [mockScreens.length]);
+  }, []);
 
-  // Demo semantic search feature on homepage
-  const handleDemoSearch = async (e: React.FormEvent) => {
+  const handleInteractiveClick = (url: string) => {
+    setInteractiveUrl(url);
+    setShowNotification(true);
+    const timer = setTimeout(() => setShowNotification(false), 2000);
+    return () => clearTimeout(timer);
+  };
+
+  const handleAddSandbox = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!demoSearchQuery.trim()) return;
+    if (!sandboxUrl || !sandboxNote) return;
+    
+    const domain = sandboxUrl.replace(/^(https?:\/\/)?(www\.)?/, "").split("/")[0];
+    const newMemo = {
+      url: sandboxUrl.toLowerCase(),
+      note: sandboxNote,
+      site: domain.charAt(0).toUpperCase() + domain.slice(1).split(".")[0],
+      icon: "📝"
+    };
 
-    setIsSearching(true);
-    try {
-      const response = await fetch("/api/gemini/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: demoSearchQuery, memories: initialMemories }),
-      });
-      const data = await response.json();
-      setDemoSearchResults(data.results || []);
-    } catch (err) {
-      console.error(err);
-      // Local fallback in case server fails
-      const results = initialMemories.filter(m => 
-        m.originalNote.toLowerCase().includes(demoSearchQuery.toLowerCase()) ||
-        m.websiteName.toLowerCase().includes(demoSearchQuery.toLowerCase())
-      );
-      setDemoSearchResults(results);
-    } finally {
-      setIsSearching(false);
+    setSandboxMemories([newMemo, ...sandboxMemories]);
+    setSandboxUrl("");
+    setSandboxNote("");
+    
+    // Quick auto-navigate demo to show instant recall
+    setInteractiveUrl(newMemo.url);
+    setShowNotification(true);
+    setTimeout(() => setShowNotification(false), 2500);
+  };
+
+  // Get active simulated content based on user's manual interactive selection
+  const getSimulatedPage = () => {
+    if (interactiveUrl.includes("linkedin")) {
+      return {
+        icon: "💼",
+        name: "LinkedIn Jobs",
+        url: "linkedin.com/jobs",
+        title: "Frontend Architect • Microsoft Office Group • Redmond",
+        note: "Met the principal recruiter John at the Seattle developer meetup. Follow up next Tuesday regarding the resume shortlisting.",
+        highlight: "Frontend Architect",
+        priority: "high"
+      };
+    } else if (interactiveUrl.includes("amazon")) {
+      return {
+        icon: "📦",
+        name: "Amazon Shopping",
+        url: "amazon.com/item",
+        title: "Apple MacBook Pro M3 Max (16-inch, 48GB RAM)",
+        note: "Price target limit ₹1,80,000. Wait for Prime Day sale. Read verified battery life benchmarks first.",
+        highlight: "48GB RAM",
+        priority: "medium"
+      };
+    } else if (interactiveUrl.includes("github")) {
+      return {
+        icon: "🐙",
+        name: "GitHub Repository",
+        url: "github.com/react",
+        title: "facebook/react: A JavaScript library for building user interfaces",
+        note: "Look into compiler auto-memoization options tomorrow inside our production branch.",
+        highlight: "compiler auto-memoization",
+        priority: "low"
+      };
+    } else {
+      // Custom sandbox memory
+      const match = sandboxMemories.find(m => interactiveUrl.toLowerCase().includes(m.url.toLowerCase()) || m.url.toLowerCase().includes(interactiveUrl.toLowerCase()));
+      if (match) {
+        return {
+          icon: match.icon,
+          name: match.site,
+          url: match.url,
+          title: `Custom Simulated URL Webpage (${match.site})`,
+          note: match.note,
+          highlight: null,
+          priority: "high"
+        };
+      }
+      return {
+        icon: "🌐",
+        name: "Web Preview",
+        url: interactiveUrl,
+        title: "Simulated Custom Destination Page",
+        note: "No memory note pinned to this URL yet. Type one in the sandbox tool below to save it!",
+        highlight: null,
+        priority: "low"
+      };
     }
   };
 
+  const simPage = getSimulatedPage();
+
   return (
-    <div className="bg-slate-50 text-slate-900 min-h-screen font-sans selection:bg-indigo-100 overflow-x-hidden">
+    <div className="bg-[#07070a] text-white min-h-screen font-sans selection:bg-bento-orange/30 overflow-x-hidden relative pb-28">
+      {/* Background grids & ambient neon meshes inspired by premium developer portfolios */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_85%,transparent_100%)]"></div>
       
-      {/* Top Header Navigation */}
-      <header className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between border-b border-slate-100 bg-white/70 backdrop-blur-md sticky top-0 z-50">
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => onStartApp("home")}>
-          <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-200">
-            <Brain className="w-5 h-5 text-white" />
+      {/* High-end ambient color-burst spots */}
+      <div className="absolute top-[-10%] left-[10%] w-[600px] h-[600px] rounded-full bg-bento-orange/5 blur-[150px] pointer-events-none"></div>
+      <div className="absolute top-[15%] right-[-5%] w-[500px] h-[500px] rounded-full bg-purple-500/5 blur-[130px] pointer-events-none"></div>
+      <div className="absolute bottom-[20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-bento-teal/5 blur-[160px] pointer-events-none"></div>
+
+      {/* Modern Blurry Header Navigation */}
+      <header className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between sticky top-0 z-50 bg-[#07070a]/75 backdrop-blur-md border-b border-white/[0.04]">
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => onStartApp("home")}>
+          <div className="w-10 h-10 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center shadow-md transition-transform hover:scale-105 active:scale-95 duration-300">
+            <Brain className="w-5.5 h-5.5 text-bento-orange animate-pulse" />
           </div>
-          <span className="font-sans font-semibold tracking-tight text-xl text-slate-900">Memory</span>
+          <div>
+            <span className="font-display font-black tracking-tight text-lg text-white block">Memory Desk</span>
+            <span className="text-[9px] font-mono font-extrabold tracking-widest text-bento-orange uppercase">KumarHarsh Signature Mode</span>
+          </div>
         </div>
         
-        <nav className="hidden md:flex items-center gap-8">
-          <a href="#why" className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors">Why Memory</a>
-          <a href="#works-everywhere" className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors">Works Everywhere</a>
-          <a href="#how-it-works" className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors">How It Works</a>
-          <a href="#search-demo" className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors">Semantic Search</a>
+        <nav className="hidden md:flex items-center gap-8 text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400">
+          <a href="#explain-section" className="hover:text-white transition-colors">How it works</a>
+          <a href="#interactive-playground" className="hover:text-white transition-colors">Recall Sandbox</a>
+          <a href="#active-vault" className="hover:text-white transition-colors">Your Vault</a>
         </nav>
 
         <div className="flex items-center gap-3">
           <button 
-            id="login_header_btn"
+            id="header_login_landing_btn"
             onClick={onLogin}
-            className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+            className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-white/[0.04] transition-all"
           >
             Sign In
           </button>
           <button 
-            id="start_demo_header_btn"
+            id="launch_simulator_landing_btn"
             onClick={() => onStartApp("browser")}
-            className="bg-indigo-600 text-white px-5 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 shadow-lg shadow-indigo-150 transition-all flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
+            className="bg-white hover:bg-slate-100 text-[#07070a] px-5 py-3 rounded-2xl text-xs font-black tracking-tight shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2 group"
           >
-            Launch Virtual Browser
-            <ArrowRight className="w-4 h-4" />
+            Launch Browser
+            <ArrowRight className="w-4 h-4 text-[#07070a] group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-6 pt-16 pb-24 md:pt-24 flex flex-col lg:flex-row items-center gap-16">
+      {/* MAIN HERO */}
+      <main className="max-w-6xl mx-auto px-6 pt-12 space-y-16 relative z-10">
         
-        {/* Left Hero Content */}
-        <div className="flex-1 space-y-8 text-center lg:text-left">
-          <div className="inline-flex items-center gap-2 px-3.py-1 py-1 px-3 bg-indigo-50 border border-indigo-100 rounded-full text-indigo-700 text-xs font-semibold uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-600 animate-pulse" />
-            Chrome Extension Built for the Curious
+        {/* Under-5-seconds immediate headline value */}
+        <div className="text-center max-w-3xl mx-auto space-y-6 pt-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/[0.04] border border-white/[0.08] rounded-full text-slate-300 text-[10px] font-mono font-bold uppercase tracking-wider shadow-sm">
+            <Sparkle className="w-3.5 h-3.5 text-bento-orange fill-bento-orange animate-spin-slow" />
+            Zero-friction contextual bookmarking
           </div>
           
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-slate-900 leading-tight">
-            Remember what <span className="text-indigo-600">mattered</span>.
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-black tracking-tight leading-[1.03] text-white">
+            Remember everything<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-bento-orange via-rose-500 to-indigo-400">
+              as you browse.
+            </span>
           </h1>
-          
-          <p className="text-lg md:text-xl text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
-            Attach your thoughts, decisions, context and memories to any webpage. The next time you visit, Memory quietly brings them back.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
-            <button 
-              id="hero_install_btn"
-              onClick={() => onStartApp("browser")}
-              className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-8 py-3.5 rounded-xl shadow-xl shadow-indigo-100 hover:shadow-indigo-200 transition-all flex items-center justify-center gap-2 text-base hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <Chrome className="w-5 h-5" />
-              Try Extension Demo
-            </button>
-            <button 
-              id="hero_dashboard_btn"
-              onClick={() => onStartApp("dashboard")}
-              className="w-full sm:w-auto bg-white border border-slate-200 text-slate-700 hover:text-slate-900 font-medium px-8 py-3.5 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center justify-center gap-2 text-base"
-            >
-              <Brain className="w-5 h-5 text-indigo-600" />
-              Open Dashboard
-            </button>
-          </div>
 
-          <div className="flex items-center justify-center lg:justify-start gap-6 pt-4 text-xs text-slate-400 font-mono">
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-500" /> No complex database needed</span>
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-500" /> Fully Semantic Matching</span>
+          <p className="text-sm sm:text-base font-semibold text-slate-400 leading-relaxed max-w-2xl mx-auto">
+            Attach notes and key highlight targets directly onto any URL. Whenever you visit that webpage again, Memory Desk automatically brings back your context in real-time.
+          </p>
+
+          {/* Quick Launch Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-3">
+            <button 
+              onClick={() => onStartApp("browser")}
+              className="bg-bento-orange hover:bg-bento-orange/90 text-white font-extrabold text-xs px-8 py-4.5 rounded-2xl transition-all duration-300 shadow-xl shadow-bento-orange/15 hover:scale-105 active:scale-95 flex items-center gap-2.5 border border-orange-400/10"
+            >
+              <Chrome className="w-4 h-4" />
+              Try Sandbox Simulator
+            </button>
+            <button 
+              onClick={() => onStartApp("dashboard")}
+              className="bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-white font-bold text-xs px-6 py-4.5 rounded-2xl transition-all duration-300"
+            >
+              Open Dashboard Vault
+            </button>
           </div>
         </div>
 
-        {/* Right Hero Content: Live Browser Mockup Loop */}
-        <div className="flex-1 w-full max-w-xl">
-          <div className="bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden relative aspect-video flex flex-col">
+        {/* 5-SECOND CONCEPT FLOW EXPLAINER STAGE */}
+        <section id="explain-section" className="space-y-6 pt-4">
+          <div className="text-center space-y-2">
+            <h2 className="text-xl font-display font-black tracking-tight text-slate-200">The 5-Second Concept Walkthrough</h2>
+            <p className="text-xs text-slate-400 font-semibold">Watch how simple URL context recall works natively inside your flow</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 bg-white/[0.01] border border-white/[0.05] rounded-[36px] p-6 md:p-8 relative">
             
-            {/* Mock browser header */}
-            <div className="bg-slate-50 border-b border-slate-100 px-4 py-3 flex items-center gap-3">
-              <div className="flex gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-rose-400 inline-block"></span>
-                <span className="w-3 h-3 rounded-full bg-amber-400 inline-block"></span>
-                <span className="w-3 h-3 rounded-full bg-emerald-400 inline-block"></span>
-              </div>
-              <div className="flex-1 bg-white border border-slate-100 px-3 py-1 rounded-lg text-xs text-slate-400 font-mono truncate flex items-center gap-2">
-                <span className="text-emerald-500">https://</span>
-                {mockScreens[activeMockIndex].url}
-              </div>
+            {/* Steps panel left side (Interactive Tabs) */}
+            <div className="lg:col-span-5 flex flex-col justify-center gap-3.5">
+              {explainSteps.map((step, idx) => {
+                const isSelected = activeStep === idx;
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveStep(idx)}
+                    className={`w-full text-left p-4.5 rounded-2xl border transition-all duration-300 relative overflow-hidden group ${
+                      isSelected 
+                        ? "bg-[#101015] border-white/[0.12] shadow-xl scale-[1.01]" 
+                        : "bg-transparent border-transparent hover:bg-white/[0.01] hover:border-white/[0.03]"
+                    }`}
+                  >
+                    {/* Active side indicator */}
+                    {isSelected && (
+                      <motion.div 
+                        layoutId="active-indicator"
+                        className="absolute left-0 top-0 bottom-0 w-1 bg-bento-orange"
+                      />
+                    )}
+
+                    <div className="flex items-start gap-4">
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center border transition-colors ${
+                        isSelected ? "bg-white/[0.06] border-white/[0.12]" : "bg-white/[0.02] border-white/[0.05]"
+                      }`}>
+                        {step.icon}
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className={`text-sm font-display font-black transition-colors ${
+                          isSelected ? "text-white" : "text-slate-400 group-hover:text-slate-200"
+                        }`}>
+                          {step.title}
+                        </h3>
+                        <p className="text-[11px] text-slate-400 font-semibold">{step.desc}</p>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
 
-            {/* Mock website content area */}
-            <div className="flex-1 p-6 bg-slate-50/50 flex flex-col justify-between relative overflow-hidden">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-full ${mockScreens[activeMockIndex].color} flex items-center justify-center text-white font-bold text-sm`}>
-                    {mockScreens[activeMockIndex].icon}
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-sm text-slate-800">{mockScreens[activeMockIndex].site}</h3>
-                    <p className="text-xs text-slate-400">Current tab content loaded</p>
-                  </div>
+            {/* Simulated Live Browser Mockup Viewport */}
+            <div className="lg:col-span-7 bg-[#0b0b0e] rounded-2xl border border-white/[0.08] p-5 flex flex-col justify-between min-h-[390px] relative overflow-hidden shadow-inner">
+              
+              {/* Simulated browser navigation address bar */}
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.05] mb-4">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500/85"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500/85"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/85"></span>
                 </div>
-                
-                {/* Simulated webpage content placeholder */}
-                <div className="space-y-2 pt-2">
-                  <div className="text-sm font-medium text-slate-700">{mockScreens[activeMockIndex].content}</div>
-                  <div className="w-full h-1.5 bg-slate-200/60 rounded"></div>
-                  <div className="w-5/6 h-1.5 bg-slate-200/60 rounded"></div>
-                  <div className="w-3/4 h-1.5 bg-slate-200/60 rounded"></div>
+
+                {/* Simulated Domain Bar */}
+                <div className="bg-white/[0.04] px-4 py-1.5 rounded-xl text-[10px] font-mono text-slate-400 flex items-center gap-1.5 w-full max-w-[280px] justify-center border border-white/[0.04]">
+                  <span className="text-emerald-500">https://</span>
+                  <motion.span 
+                    key={activeStep}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-white font-bold"
+                  >
+                    {explainSteps[activeStep].url}
+                  </motion.span>
+                </div>
+
+                <div className="w-6"></div>
+              </div>
+
+              {/* Simulated Page Body */}
+              <div className="flex-1 flex flex-col justify-center py-4 px-2">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeStep}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.25 }}
+                    className="space-y-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl bg-white/[0.04] w-12 h-12 rounded-xl flex items-center justify-center border border-white/[0.08] shadow-inner">
+                        {explainSteps[activeStep].siteIcon}
+                      </span>
+                      <div>
+                        <h4 className="text-sm font-display font-black text-white">{explainSteps[activeStep].siteName}</h4>
+                        <p className="text-[11px] text-slate-400 font-semibold">{explainSteps[activeStep].siteContent}</p>
+                      </div>
+                    </div>
+
+                    {/* highlight layout overlay */}
+                    {explainSteps[activeStep].highlight ? (
+                      <p className="text-xs text-slate-300 leading-relaxed font-semibold">
+                        Selected text highlight target:{" "}
+                        <span className="bg-amber-400/20 text-amber-300 px-1.5 py-0.5 rounded border border-amber-400/30 font-bold">
+                          &ldquo;{explainSteps[activeStep].highlight}&rdquo;
+                        </span>{" "}
+                        saved into our matching database.
+                      </p>
+                    ) : (
+                      <div className="space-y-2">
+                        <div className="h-2 bg-white/[0.03] rounded-lg w-3/4"></div>
+                        <div className="h-2 bg-white/[0.03] rounded-lg w-1/2"></div>
+                      </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Float pop-in context memo layer representing step 2 & 3 */}
+              <div className="min-h-[145px] flex items-end">
+                <AnimatePresence>
+                  {explainSteps[activeStep].note && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 30, scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 420, damping: 28 }}
+                      className="w-full bg-white text-[#07070a] rounded-2xl p-4.5 shadow-2xl relative border border-slate-200"
+                    >
+                      <div className="absolute -top-3 left-4 bg-bento-orange text-white text-[8px] font-mono font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-md flex items-center gap-1.5 animate-bounce">
+                        <Sparkles className="w-3 h-3 text-white fill-white" />
+                        {explainSteps[activeStep].recalled ? "Context Layer Restored" : "Sticky Memory Pinned"}
+                      </div>
+
+                      <div className="space-y-2 pt-1">
+                        <p className="text-xs font-bold leading-relaxed text-slate-800 italic border-l-2 border-bento-orange pl-3.5 bg-slate-50 py-2 rounded-r-lg">
+                          &ldquo;{explainSteps[activeStep].note}&rdquo;
+                        </p>
+                        
+                        <div className="flex justify-between items-center text-[9px] font-mono text-slate-400 font-bold pt-1">
+                          <span className="text-indigo-600 font-black">HIGH PRIORITY ACTION</span>
+                          <span>Auto-Triggered</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+        {/* 1-CLICK INTERACTIVE RECALL PLAYGROUND */}
+        <section id="interactive-playground" className="space-y-6 pt-4">
+          <div className="text-center max-w-xl mx-auto space-y-2">
+            <h2 className="text-2xl font-display font-black tracking-tight text-white">Live Recall Playground</h2>
+            <p className="text-xs text-slate-400 font-semibold">
+              Click a mock tab below to immediately see how Memory Desk restores the note matched with that URL.
+            </p>
+          </div>
+
+          <div className="bg-[#0b0b0e] border border-white/[0.06] rounded-[36px] p-6 md:p-8 relative">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              
+              {/* Left controller: tab buttons & customizable input */}
+              <div className="lg:col-span-5 space-y-6">
+                <div className="space-y-3">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/[0.04] rounded-full text-bento-orange text-[9px] font-mono font-bold uppercase tracking-widest border border-white/[0.05]">
+                    Interactive Controller
+                  </div>
+                  <h3 className="text-xl font-display font-black text-white">Simulate browsing preset tabs</h3>
+                  <p className="text-xs text-slate-400 font-semibold">
+                    We've pre-saved comments for these websites. Click them to trigger real-time, matching overlay previews.
+                  </p>
+                </div>
+
+                {/* Preset Tab Buttons */}
+                <div className="flex flex-col gap-2">
+                  {[
+                    { site: "LinkedIn Jobs", url: "linkedin.com/jobs", icon: "💼" },
+                    { site: "Amazon Shopping", url: "amazon.com/item", icon: "📦" },
+                    { site: "GitHub Repo", url: "github.com/react", icon: "🐙" }
+                  ].map((s) => {
+                    const isSelected = interactiveUrl === s.url;
+                    return (
+                      <button
+                        key={s.url}
+                        onClick={() => handleInteractiveClick(s.url)}
+                        className={`w-full px-4.5 py-3.5 rounded-xl text-left flex items-center justify-between transition-all duration-300 relative ${
+                          isSelected 
+                            ? "bg-white text-black font-extrabold shadow-lg scale-[1.015]" 
+                            : "bg-white/[0.02] text-slate-300 hover:bg-white/[0.04] border border-white/[0.04]"
+                        }`}
+                      >
+                        <span className="flex items-center gap-3">
+                          <span className="text-xl">{s.icon}</span>
+                          <span className="text-xs font-bold uppercase tracking-tight">{s.site}</span>
+                        </span>
+                        <span className={`text-[9px] font-mono px-2 py-0.5 rounded ${
+                          isSelected ? "bg-bento-orange text-white" : "text-slate-500 bg-white/[0.05]"
+                        }`}>
+                          {s.url}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Custom Sandbox simulation */}
+                <div className="bg-[#121217] border border-white/[0.05] p-5 rounded-2xl space-y-4">
+                  <h4 className="text-xs font-mono font-bold text-slate-300 uppercase tracking-widest flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-bento-orange fill-bento-orange" />
+                    Quick Sandbox Creator
+                  </h4>
+                  <p className="text-[11px] text-slate-400 font-semibold">
+                    Pin a custom memory layer below to instantly test your custom routing!
+                  </p>
+                  
+                  <form onSubmit={handleAddSandbox} className="space-y-2.5">
+                    <input 
+                      type="text" 
+                      placeholder="Enter mock URL (e.g. medium.com)"
+                      value={sandboxUrl}
+                      onChange={(e) => setSandboxUrl(e.target.value)}
+                      className="w-full bg-[#07070a] border border-white/[0.08] focus:border-bento-orange focus:outline-none rounded-xl px-3.5 py-2.5 text-xs font-semibold text-white transition-colors"
+                      required
+                    />
+                    <input 
+                      type="text" 
+                      placeholder="Write your sticky memory..."
+                      value={sandboxNote}
+                      onChange={(e) => setSandboxNote(e.target.value)}
+                      className="w-full bg-[#07070a] border border-white/[0.08] focus:border-bento-orange focus:outline-none rounded-xl px-3.5 py-2.5 text-xs font-semibold text-white transition-colors"
+                      required
+                    />
+                    <button 
+                      type="submit"
+                      className="w-full bg-bento-orange hover:bg-bento-orange/90 text-white font-extrabold text-xs py-2.5 rounded-xl transition-all flex items-center justify-center gap-2"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Pin Custom Target
+                    </button>
+                  </form>
                 </div>
               </div>
 
-              {/* Floating Memory Extension Card sliding in overlay */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeMockIndex}
-                  initial={{ opacity: 0, x: 80, scale: 0.95 }}
-                  animate={{ opacity: 1, x: 0, scale: 1 }}
-                  exit={{ opacity: 0, x: -80, scale: 0.95 }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                  className="absolute right-4 top-4 w-72 bg-white rounded-xl shadow-2xl border border-indigo-50 p-4 space-y-3"
-                >
-                  <div className="flex items-center justify-between border-b border-slate-50 pb-2">
-                    <span className="flex items-center gap-1.5 text-xs font-semibold text-indigo-600">
-                      <Brain className="w-3.5 h-3.5" />
-                      Memory Extension
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-mono">
-                      {mockScreens[activeMockIndex].memory.date}
-                    </span>
+              {/* Right Viewport: The Interactive Browser */}
+              <div className="lg:col-span-7 bg-[#07070a] rounded-3xl p-4 md:p-6 shadow-2xl border border-white/[0.08] flex flex-col justify-between min-h-[420px] relative">
+                
+                {/* Simulated Chrome top bar */}
+                <div className="flex items-center justify-between pb-4 border-b border-white/[0.05] mb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-rose-500/80"></span>
+                    <span className="w-3 h-3 rounded-full bg-amber-500/80"></span>
+                    <span className="w-3 h-3 rounded-full bg-emerald-500/80"></span>
                   </div>
                   
-                  <div className="space-y-2">
-                    <div className="text-xs text-slate-400 uppercase tracking-wider font-mono font-semibold">Your Notes</div>
-                    <p className="text-xs text-slate-700 font-medium leading-relaxed italic bg-slate-50 p-2.5 rounded-lg border-l-2 border-indigo-500">
-                      &ldquo;{mockScreens[activeMockIndex].memory.note}&rdquo;
-                    </p>
+                  {/* Address bar */}
+                  <div className="bg-white/[0.03] px-4 py-1.5 rounded-xl text-[10px] font-mono text-slate-400 flex items-center gap-1.5 w-full max-w-[340px] justify-center shadow-inner border border-white/[0.04]">
+                    <span className="text-emerald-500">https://</span>
+                    <span className="text-white font-bold">{simPage.url}</span>
                   </div>
 
-                  <div className="flex items-center justify-between text-[10px]">
-                    <span className={`px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider ${
-                      mockScreens[activeMockIndex].memory.priority === 'high' 
-                        ? 'bg-rose-50 text-rose-600' 
-                        : 'bg-amber-50 text-amber-600'
-                    }`}>
-                      {mockScreens[activeMockIndex].memory.priority} priority
-                    </span>
-                    <span className="text-slate-400 hover:text-indigo-600 cursor-pointer font-medium transition-colors flex items-center gap-1">
-                      Recall active <ArrowUpRight className="w-3 h-3" />
-                    </span>
+                  <div className="w-6"></div>
+                </div>
+
+                {/* Simulated webpage content layout */}
+                <div className="flex-1 flex flex-col justify-center py-6 px-4 relative">
+                  
+                  {/* Overlay pop-up flash notifier */}
+                  <AnimatePresence>
+                    {showNotification && (
+                      <motion.div 
+                        initial={{ opacity: 0, scale: 0.9, y: -20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: -20 }}
+                        className="absolute top-2 left-1/2 -translate-x-1/2 bg-bento-orange text-white text-[10px] font-mono font-bold px-4.5 py-2 rounded-full shadow-2xl z-30 flex items-center gap-2"
+                      >
+                        <RefreshCw className="w-3 h-3 animate-spin" />
+                        Navigating and injecting context...
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3.5">
+                      <span className="text-4xl bg-white/[0.04] w-14 h-14 rounded-2xl flex items-center justify-center border border-white/[0.08] shadow-inner">{simPage.icon}</span>
+                      <div>
+                        <h4 className="text-lg font-display font-black text-white">{simPage.name}</h4>
+                        <p className="text-xs text-slate-400 font-semibold">{simPage.title}</p>
+                      </div>
+                    </div>
+
+                    {/* text highlight mock */}
+                    {simPage.highlight && (
+                      <p className="text-xs text-slate-300 leading-relaxed font-semibold">
+                        We loaded back and automatically highlighted the text:{" "}
+                        <span className="bg-amber-400/20 text-amber-300 px-1.5 py-0.5 rounded border border-amber-400/30 font-black">
+                          &ldquo;{simPage.highlight}&rdquo;
+                        </span>
+                      </p>
+                    )}
+
+                    {/* mockup blocks */}
+                    <div className="grid grid-cols-2 gap-2 pt-2">
+                      <div className="h-2.5 bg-white/[0.02] rounded-lg w-3/4"></div>
+                      <div className="h-2.5 bg-white/[0.02] rounded-lg w-1/2"></div>
+                      <div className="h-2.5 bg-white/[0.02] rounded-lg w-full col-span-2"></div>
+                    </div>
                   </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
-        </div>
-      </section>
+                </div>
 
-      {/* Why Memory Section */}
-      <section id="why" className="bg-white border-y border-slate-100 py-24 scroll-mt-12">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto space-y-4 mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">The difference defines the product.</h2>
-            <p className="text-slate-500">Why Memory succeeds where bookmarks, search history, and browsers fail.</p>
-          </div>
+                {/* Simulated Recall overlay card popping in at bottom right */}
+                <div className="absolute right-4 bottom-4 left-4 md:left-auto md:right-6 md:bottom-6 md:w-[320px] z-20">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={simPage.url}
+                      initial={{ opacity: 0, x: 50, scale: 0.95 }}
+                      animate={{ opacity: 1, x: 0, scale: 1 }}
+                      exit={{ opacity: 0, x: 50, scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 420, damping: 28 }}
+                      className="bg-white text-black rounded-2xl p-5 shadow-2xl border-2 border-bento-orange relative"
+                    >
+                      {/* Badge header */}
+                      <div className="absolute -top-3 left-4 bg-bento-orange text-white text-[9px] font-mono font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1">
+                        <Brain className="w-3 h-3 text-white fill-white" />
+                        Memory Desk Active
+                      </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-slate-50 rounded-2xl p-8 border border-slate-100/50 space-y-4 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center">
-                <History className="w-6 h-6 text-slate-500" />
+                      <div className="pt-2 space-y-3.5">
+                        <div className="flex justify-between items-center text-[9px] font-mono text-slate-400 font-bold">
+                          <span>COGNITIVE ASSOCIATION</span>
+                          <span>Just Now</span>
+                        </div>
+                        
+                        <p className="text-xs font-bold leading-relaxed text-slate-800 italic border-l-2 border-bento-orange pl-3.5 bg-slate-50 py-2.5 rounded-r-lg">
+                          &ldquo;{simPage.note}&rdquo;
+                        </p>
+
+                        <div className="flex justify-between items-center pt-0.5">
+                          <span className={`inline-block px-2.5 py-0.5 rounded-full text-[9px] font-mono font-extrabold uppercase ${
+                            simPage.priority === 'high' 
+                              ? 'bg-rose-100 text-rose-700' 
+                              : simPage.priority === 'medium'
+                              ? 'bg-amber-100 text-amber-700'
+                              : 'bg-slate-100 text-slate-600'
+                          }`}>
+                            {simPage.priority} Priority
+                          </span>
+                          <span className="text-[9px] font-mono font-bold text-bento-orange">Auto-Saved</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+
               </div>
-              <h3 className="font-bold text-xl text-slate-800">Chrome History</h3>
-              <div className="font-mono text-xs uppercase tracking-wider text-slate-400">Remembers</div>
-              <p className="text-5xl font-extrabold text-slate-400 tracking-tight">Where</p>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                A chronological checklist of exact web addresses. Chrome knows you loaded a page, but has no comprehension of why or what you were thinking.
-              </p>
-            </div>
 
-            <div className="bg-slate-50 rounded-2xl p-8 border border-slate-100/50 space-y-4 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center">
-                <Bookmark className="w-6 h-6 text-slate-500" />
-              </div>
-              <h3 className="font-bold text-xl text-slate-800">Bookmarks</h3>
-              <div className="font-mono text-xs uppercase tracking-wider text-slate-400">Remember</div>
-              <p className="text-5xl font-extrabold text-slate-400 tracking-tight">Pages</p>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                A static list of links buried deep in browser folders. Bookmarks save the destination, but the core context gets lost over time.
-              </p>
-            </div>
-
-            <div className="bg-indigo-50/50 rounded-2xl p-8 border border-indigo-100 space-y-4 shadow-xl shadow-indigo-100/30 hover:scale-[1.01] transition-all relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-200/20 rounded-full blur-2xl"></div>
-              <div className="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center">
-                <Brain className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="font-bold text-xl text-indigo-900">Memory</h3>
-              <div className="font-mono text-xs uppercase tracking-wider text-indigo-500 font-semibold">Remembers</div>
-              <p className="text-5xl font-extrabold text-indigo-600 tracking-tight">Why</p>
-              <p className="text-sm text-indigo-700/80 leading-relaxed">
-                Your personal, invisible context layer. Automatically surfaces the exact thoughts, action items, or decisions you annotated whenever you return.
-              </p>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Works Everywhere Section */}
-      <section id="works-everywhere" className="py-24 bg-slate-50 scroll-mt-12">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto space-y-4 mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">Works on Every Webpage</h2>
-            <p className="text-slate-500 leading-relaxed">No complicated integrations or configurations. Write a thought anywhere, and Memory connects the dots.</p>
+        {/* VAULT GALLERY */}
+        <section id="active-vault" className="space-y-6 pt-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.04] pb-4">
+            <div>
+              <h3 className="text-2xl font-display font-black text-slate-200 tracking-tight">Your Active Reminders Vault</h3>
+              <p className="text-xs text-slate-500 font-semibold">Ready to be automatically retrieved as you browse the web</p>
+            </div>
+            
+            <button 
+              onClick={() => onStartApp("dashboard")}
+              className="text-xs font-mono font-bold uppercase tracking-wider text-bento-orange hover:text-white transition-colors flex items-center gap-1 group"
+            >
+              <span>Manage in Dashboard</span>
+              <ArrowUpRight className="w-4 h-4 text-bento-orange group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </button>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {initialMemories.map((mem) => (
-              <div 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {initialMemories.slice(0, 3).map((mem) => (
+              <motion.div 
+                whileHover={{ y: -5, scale: 1.01 }}
                 key={mem.id}
-                className="bg-white rounded-xl border border-slate-100 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+                className="bg-white/[0.01] rounded-3xl border border-white/[0.05] p-6 shadow-sm hover:shadow-xl hover:border-white/[0.12] transition-all duration-300 flex flex-col justify-between relative overflow-hidden"
               >
+                {/* Minimal ambient visual background blur accent */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.01] rounded-full blur-3xl pointer-events-none"></div>
+
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-2">
-                      <span className="text-lg">{mem.websiteIcon}</span>
-                      <span className="font-semibold text-sm text-slate-800">{mem.websiteName}</span>
+                    <span className="flex items-center gap-2.5">
+                      <span className="text-lg bg-white/[0.04] w-9 h-9 rounded-xl flex items-center justify-center border border-white/[0.08] shadow-inner">{mem.websiteIcon}</span>
+                      <span className="font-display font-black text-xs text-slate-200">{mem.websiteName}</span>
                     </span>
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider ${
+                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase tracking-wider border ${
                       mem.priority === 'high' 
-                        ? 'bg-rose-50 text-rose-600' 
+                        ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' 
                         : mem.priority === 'medium'
-                        ? 'bg-amber-50 text-amber-600'
-                        : 'bg-slate-50 text-slate-500'
+                        ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                        : 'bg-slate-500/10 text-slate-400 border-slate-500/20'
                     }`}>
                       {mem.priority}
                     </span>
                   </div>
                   
                   <div className="space-y-1.5">
-                    <p className="text-xs font-semibold text-slate-500 truncate">{mem.pageTitle}</p>
-                    <p className="text-sm text-slate-700 font-medium leading-relaxed italic border-l-2 border-indigo-400 pl-3">
-                      &ldquo;{mem.originalNote}&rdquo;
+                    <p className="text-[10px] font-bold text-slate-500 truncate">{mem.pageTitle}</p>
+                    <p className="text-xs text-slate-300 font-medium leading-relaxed italic border-l-2 border-bento-orange pl-3 bg-white/[0.01] py-2.5 rounded-r-lg">
+                      &ldquo;{mem.originalNote.replace(/\[Selected Highlight: ".*"\]\n\n/, "")}&rdquo;
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-slate-50 mt-4 text-[11px] text-slate-400">
-                  <div className="flex gap-1.5">
+                <div className="flex items-center justify-between pt-4 border-t border-white/[0.04] mt-4 text-[10px] font-medium text-slate-500">
+                  <div className="flex flex-wrap gap-1">
                     {mem.tags.map(t => (
-                      <span key={t} className="bg-slate-50 px-2 py-0.5 rounded text-slate-500">#{t}</span>
+                      <span key={t} className="bg-white/[0.03] border border-white/[0.05] px-2 py-0.5 rounded text-slate-400 text-[9px] font-semibold">#{t}</span>
                     ))}
                   </div>
-                  <span>{new Date(mem.createdAt).toLocaleDateString()}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Interactive Semantic Search Live Demo */}
-      <section id="search-demo" className="bg-white border-t border-slate-100 py-24 scroll-mt-12">
-        <div className="max-w-4xl mx-auto px-6 text-center space-y-12">
-          <div className="space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">Search Your Memory Semantically</h2>
-            <p className="text-slate-500 max-w-xl mx-auto">
-              Find notes by conceptual meaning. Search for &ldquo;laptop research&rdquo; and Memory will find your &ldquo;MacBook Pro&rdquo; pages, even if the keyword doesn't match exactly.
-            </p>
-          </div>
-
-          <form onSubmit={handleDemoSearch} className="flex gap-3 max-w-2xl mx-auto">
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input 
-                type="text" 
-                placeholder="Search conceptual meaning (e.g. laptop, Azure hire, compiling)..." 
-                value={demoSearchQuery}
-                onChange={(e) => setDemoSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-sm font-medium"
-              />
-            </div>
-            <button 
-              type="submit"
-              disabled={isSearching}
-              className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-medium px-6 py-3.5 rounded-xl transition-colors flex items-center gap-2 text-sm shadow-md shadow-indigo-100"
-            >
-              {isSearching ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> : <Brain className="w-4 h-4" />}
-              Search AI
-            </button>
-          </form>
-
-          {/* Preset queries */}
-          <div className="flex flex-wrap items-center justify-center gap-2 max-w-xl mx-auto text-xs text-slate-500 font-medium">
-            <span>Try searching:</span>
-            {["Laptop reviews", "Microsoft contact", "API caching", "Video player timestamp"].map((q) => (
-              <button
-                key={q}
-                type="button"
-                onClick={() => {
-                  setDemoSearchQuery(q);
-                  // Trigger search immediately
-                  setTimeout(() => {
-                    const fakeEvent = { preventDefault: () => {} } as any;
-                    setDemoSearchQuery(q);
-                  }, 10);
-                }}
-                className="bg-slate-50 border border-slate-200/60 hover:bg-slate-100 px-2.5 py-1 rounded-md transition-colors"
-              >
-                {q}
-              </button>
-            ))}
-          </div>
-
-          {/* Real-time search output rendering */}
-          <AnimatePresence mode="wait">
-            {demoSearchResults.length > 0 && (
-              <motion.div 
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                className="text-left space-y-4 max-w-2xl mx-auto bg-slate-50/50 rounded-2xl p-6 border border-slate-100"
-              >
-                <div className="text-xs font-semibold text-indigo-600 uppercase tracking-wider font-mono">Semantic Results ({demoSearchResults.length})</div>
-                
-                <div className="space-y-3.5 max-h-[350px] overflow-y-auto pr-1">
-                  {demoSearchResults.map((res) => (
-                    <div key={res.id} className="bg-white rounded-xl p-4 border border-slate-150 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm">{res.websiteIcon}</span>
-                          <span className="font-bold text-xs text-slate-800">{res.websiteName}</span>
-                          {res.relevanceScore && (
-                            <span className="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-semibold">
-                              {Math.round(res.relevanceScore * 100)}% Match
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-xs font-semibold text-slate-400">{res.pageTitle}</p>
-                        <p className="text-xs text-slate-700 italic pl-3 border-l border-slate-200">
-                          &ldquo;{res.originalNote}&rdquo;
-                        </p>
-                      </div>
-                      
-                      {res.matchExplanation && (
-                        <div className="bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 text-[10px] font-mono text-indigo-700 sm:self-start whitespace-nowrap">
-                          {res.matchExplanation}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                  <span className="font-mono text-[9px]">{new Date(mem.createdAt).toLocaleDateString()}</span>
                 </div>
               </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </section>
-
-      {/* How it Works Section */}
-      <section id="how-it-works" className="py-24 bg-slate-50 scroll-mt-12 border-t border-slate-100">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto space-y-4 mb-20">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">Only Three Steps</h2>
-            <p className="text-slate-500 leading-relaxed">Memory stays invisible until you actually need it. No workflows to modify.</p>
+            ))}
           </div>
+        </section>
 
-          <div className="grid md:grid-cols-3 gap-12 relative">
-            <div className="space-y-4 text-center md:text-left relative z-10">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg mx-auto md:mx-0 shadow-lg shadow-indigo-50">1</div>
-              <h3 className="font-bold text-lg text-slate-800">Visit Webpage</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Open any standard webpage in your browser. Read articles, watch tutorial guides, shop, or browse profiles.
+        {/* METRICS & PROMISES */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+          <div className="bg-gradient-to-br from-bento-orange/10 to-transparent border border-bento-orange/20 rounded-3xl p-8 flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-10 h-10 rounded-xl bg-bento-orange/10 flex items-center justify-center">
+                <Fingerprint className="w-5 h-5 text-bento-orange" />
+              </div>
+              <h3 className="font-display font-black text-lg text-white">100% Secure Client Isolation</h3>
+              <p className="text-xs text-slate-400 leading-relaxed font-semibold">
+                Your notes and annotations are captured in sandbox memory. We respect your search patterns and provide immediate local database backup.
               </p>
             </div>
+            <div className="pt-6">
+              <button 
+                onClick={() => onStartApp("browser")}
+                className="text-xs font-mono font-bold uppercase tracking-wider text-bento-orange hover:text-white transition-colors flex items-center gap-1.5"
+              >
+                Launch Browser simulator <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
 
-            <div className="space-y-4 text-center md:text-left relative z-10">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg mx-auto md:mx-0 shadow-lg shadow-indigo-50">2</div>
-              <h3 className="font-bold text-lg text-slate-800">Write Remember Note</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Use the shortcut <kbd className="bg-slate-100 px-1.5 py-0.5 border border-slate-200 rounded text-xs text-slate-600 font-mono">Ctrl+Shift+M</kbd> to write down a quick thought, decision, or reminder.
+          <div className="bg-white/[0.02] border border-white/[0.05] rounded-3xl p-8 flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-10 h-10 rounded-xl bg-white/[0.04] flex items-center justify-center">
+                <Database className="w-5 h-5 text-slate-400" />
+              </div>
+              <h3 className="font-display font-black text-lg text-white">Full Cloud Synchronization</h3>
+              <p className="text-xs text-slate-400 leading-relaxed font-semibold">
+                Store structured records safely to never lose contextual research. Access highlights across standard virtual extension planes anytime.
               </p>
             </div>
-
-            <div className="space-y-4 text-center md:text-left relative z-10">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg mx-auto md:mx-0 shadow-lg shadow-indigo-100">3</div>
-              <h3 className="font-bold text-lg text-indigo-950">Automatic Recall</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Whenever you revisit that webpage or any semantically similar webpage, your thoughts slide in quietly in the corner.
-              </p>
+            <div className="pt-6">
+              <button 
+                onClick={() => onStartApp("dashboard")}
+                className="text-xs font-mono font-bold uppercase tracking-wider text-slate-300 hover:text-white transition-colors flex items-center gap-1.5"
+              >
+                Go to Workspace <ArrowRight className="w-4 h-4" />
+              </button>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Privacy Section */}
-      <section className="bg-white py-24 border-y border-slate-100">
-        <div className="max-w-4xl mx-auto px-6 text-center space-y-8">
-          <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-150 flex items-center justify-center mx-auto text-slate-700 shadow-md">
-            <Shield className="w-8 h-8 text-indigo-600" />
-          </div>
-          <div className="space-y-4">
-            <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Your Data, Private by Default</h2>
-            <p className="text-slate-500 max-w-xl mx-auto leading-relaxed">
-              Every memory is encrypted and fully private to you. AI is used solely to assist with automated categorizations, smart project groupings, tags, and semantic search. We never sell your memory profile.
-            </p>
-          </div>
-        </div>
-      </section>
+      </main>
 
-      {/* Footer / Call To Action */}
-      <footer className="bg-slate-50 py-16 text-center border-t border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 space-y-8">
-          <div className="flex items-center justify-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
-              <Brain className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-bold text-lg tracking-tight text-slate-900">Memory</span>
+      {/* Footer */}
+      <footer className="max-w-6xl mx-auto px-6 mt-24 pt-10 border-t border-white/[0.04] text-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center">
+            <Brain className="w-5.5 h-5.5 text-bento-orange" />
           </div>
-
-          <p className="text-sm text-slate-400">© 2026 Memory. All rights reserved. Built for competition demonstration.</p>
+          <p className="text-xs font-mono font-bold text-slate-500 uppercase tracking-widest leading-relaxed">
+            Memory Desk © 2026. Designed with extreme spring mechanics & sleek developer styling.
+          </p>
         </div>
       </footer>
 
