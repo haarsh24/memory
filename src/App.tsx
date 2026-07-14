@@ -11,11 +11,12 @@ import {
 import { Memory, Project, User, SearchResult } from "./types";
 import { initialMemories, initialProjects } from "./initialData";
 import Homepage from "./components/Homepage";
+import ExtensionInstaller from "./components/ExtensionInstaller";
 import JSZip from "jszip";
 
 export default function App() {
   // Navigation & General App State
-  const [currentView, setCurrentView] = useState<"homepage" | "browser" | "dashboard">("homepage");
+  const [currentView, setCurrentView] = useState<"homepage" | "browser" | "dashboard" | "install-extension">("homepage");
   const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem("mem_user");
     return saved ? JSON.parse(saved) : {
@@ -1169,7 +1170,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   return (
-    <div className="bg-[#fcfbfc] text-slate-900 min-h-screen relative font-sans">
+    <div className="bg-[#07070a] text-zinc-100 min-h-screen relative font-sans flex flex-col justify-between">
       
       {/* Dynamic Status Notification */}
       <AnimatePresence>
@@ -1232,6 +1233,21 @@ document.addEventListener("DOMContentLoaded", () => {
             Virtual Browser Simulator
           </button>
           <button 
+            id="nav_install_btn"
+            onClick={() => setCurrentView("install-extension")}
+            className={`px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 relative z-10 text-[11px] ${currentView === 'install-extension' ? 'text-white' : 'hover:text-zinc-200'}`}
+          >
+            {currentView === 'install-extension' && (
+              <motion.div 
+                layoutId="primaryNavCapsule"
+                className="absolute inset-0 bg-zinc-800 rounded-lg -z-10"
+                transition={{ type: "spring", stiffness: 350, damping: 28 }}
+              />
+            )}
+            <Download className="w-3.5 h-3.5 text-indigo-400" />
+            Extension Installer
+          </button>
+          <button 
             id="nav_dashboard_btn"
             onClick={() => setCurrentView("dashboard")}
             className={`px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 relative z-10 text-[11px] ${currentView === 'dashboard' ? 'text-white' : 'hover:text-zinc-200'}`}
@@ -1284,10 +1300,33 @@ document.addEventListener("DOMContentLoaded", () => {
               onStartApp={(tab) => {
                 if (tab === "browser") setCurrentView("browser");
                 else if (tab === "dashboard") setCurrentView("dashboard");
+                else if (tab === "install-extension") setCurrentView("install-extension");
                 else setCurrentView("homepage");
               }}
               onLogin={handleLogin}
               initialMemories={memories}
+            />
+          </motion.div>
+        )}
+
+        {/* MODE: EXTENSION INSTALLATION & SETUP GUIDE */}
+        {currentView === "install-extension" && (
+          <motion.div
+            key="install-extension"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <ExtensionInstaller 
+              customBackendUrl={customBackendUrl}
+              setCustomBackendUrl={setCustomBackendUrl}
+              onDownloadZIP={handleDownloadAllExtensionFiles}
+              getExtensionFile={getExtensionFile}
+              getFilename={getFilename}
+              onCopyFile={handleCopyFile}
+              onDownloadFile={handleDownloadFile}
+              memories={memories}
+              showNotification={showNotification}
             />
           </motion.div>
         )}
@@ -1301,13 +1340,13 @@ document.addEventListener("DOMContentLoaded", () => {
             exit={{ opacity: 0 }}
             className="max-w-7xl mx-auto px-4 py-8 space-y-6"
           >
-            <div className="bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 p-6 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-sm">
+            <div className="bg-gradient-to-br from-zinc-900 via-zinc-950 to-indigo-950/20 border border-zinc-800/80 p-6 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-sm">
               <div className="space-y-1.5">
-                <h2 className="font-display font-extrabold text-slate-900 text-lg flex items-center gap-2">
-                  <Chrome className="w-5 h-5 text-indigo-600 animate-pulse" />
+                <h2 className="font-display font-extrabold text-zinc-100 text-lg flex items-center gap-2">
+                  <Chrome className="w-5 h-5 text-indigo-400 animate-pulse" />
                   Interactive Extension Playground
                 </h2>
-                <p className="text-xs text-slate-500 max-w-3xl leading-relaxed font-medium">
+                <p className="text-xs text-zinc-400 max-w-3xl leading-relaxed font-medium">
                   Memory Desk integrates beautifully within Chrome. Revisit any preloaded popular sandbox domain below or navigate to a custom URL to see how your context layers slide in.
                 </p>
               </div>
@@ -1317,7 +1356,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   localStorage.removeItem("mem_memories");
                   showNotification("Reset demo memories to clean state", "info");
                 }}
-                className="bg-slate-900 hover:bg-slate-800 text-white text-xs px-4.5 py-2.5 rounded-xl flex items-center gap-2 font-bold transition-all duration-200 shadow-md self-start md:self-auto shrink-0"
+                className="bg-zinc-850 hover:bg-zinc-800 text-zinc-200 text-xs px-4.5 py-2.5 rounded-xl flex items-center gap-2 font-bold transition-all duration-200 shadow-md border border-zinc-850 self-start md:self-auto shrink-0 cursor-pointer"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 Reset Sandbox
@@ -1326,7 +1365,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             {/* Quick-switch website simulator tabs */}
             <div className="flex flex-wrap items-center gap-2.5 pb-2">
-              <span className="text-[10px] font-bold text-slate-400 font-mono uppercase tracking-wider mr-2">Visited:</span>
+              <span className="text-[10px] font-bold text-zinc-500 font-mono uppercase tracking-wider mr-2">Visited:</span>
               <div className="flex flex-wrap gap-2">
                 {presetTabs.map((pt) => {
                   const isCurrent = browserUrl === pt.url;
@@ -1335,10 +1374,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     <button
                       key={pt.id}
                       onClick={() => handleNavigate(pt.url, pt.title, pt.name, pt.icon)}
-                      className={`relative px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all duration-300 ${
+                      className={`relative px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all duration-300 cursor-pointer ${
                         isCurrent 
                           ? "text-white" 
-                          : "bg-white hover:bg-slate-100 border border-slate-200/60 text-slate-600"
+                          : "bg-zinc-900 hover:bg-zinc-850 border border-zinc-800/85 text-zinc-400"
                       }`}
                     >
                       {isCurrent && (
@@ -1351,7 +1390,7 @@ document.addEventListener("DOMContentLoaded", () => {
                       <span className="relative z-10">{pt.icon}</span>
                       <span className="relative z-10">{pt.name}</span>
                       {hasMemorySaved && (
-                        <span className={`relative z-10 w-2 h-2 rounded-full ${isCurrent ? 'bg-white' : 'bg-indigo-600 animate-pulse'}`} />
+                        <span className={`relative z-10 w-2 h-2 rounded-full ${isCurrent ? 'bg-white' : 'bg-indigo-400 animate-pulse'}`} />
                       )}
                     </button>
                   );
@@ -1360,27 +1399,27 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
 
             {/* Simulated Chrome Browser */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden min-h-[580px] flex flex-col relative">
+            <div className="bg-zinc-950 rounded-2xl border border-zinc-800/80 shadow-2xl shadow-black/50 overflow-hidden min-h-[580px] flex flex-col relative">
               
               {/* Browser bar */}
-              <div className="bg-slate-100/80 px-4 py-3 flex items-center justify-between gap-4 border-b border-slate-200">
+              <div className="bg-zinc-900 px-4 py-3 flex items-center justify-between gap-4 border-b border-zinc-800">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-3.5 h-3.5 rounded-full bg-rose-400 inline-block"></span>
-                  <span className="w-3.5 h-3.5 rounded-full bg-amber-400 inline-block"></span>
-                  <span className="w-3.5 h-3.5 rounded-full bg-emerald-400 inline-block"></span>
+                  <span className="w-3.5 h-3.5 rounded-full bg-rose-500 inline-block"></span>
+                  <span className="w-3.5 h-3.5 rounded-full bg-amber-500 inline-block"></span>
+                  <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block"></span>
                 </div>
 
                 {/* URL Navigation input */}
-                <form onSubmit={handleCustomUrlSubmit} className="flex-1 max-w-2xl flex items-center bg-white border border-slate-200 rounded-lg px-3 py-1 text-xs">
-                  <span className="text-slate-400 select-none mr-1.5">https://</span>
+                <form onSubmit={handleCustomUrlSubmit} className="flex-1 max-w-2xl flex items-center bg-zinc-950 border border-zinc-850 rounded-lg px-3 py-1 text-xs">
+                  <span className="text-zinc-500 select-none mr-1.5">https://</span>
                   <input 
                     type="text" 
                     placeholder="Type custom webpage address (e.g. google.com/about)..." 
                     value={customUrlInput}
                     onChange={(e) => setCustomUrlInput(e.target.value)}
-                    className="flex-1 focus:outline-none text-slate-800 font-mono py-0.5"
+                    className="flex-1 focus:outline-none text-zinc-100 font-mono py-0.5 bg-transparent"
                   />
-                  <button type="submit" className="text-indigo-600 hover:text-indigo-700 font-bold px-1">Go</button>
+                  <button type="submit" className="text-indigo-400 hover:text-indigo-300 font-bold px-1 cursor-pointer">Go</button>
                 </form>
 
                 {/* Simulated Chrome Extensions Panel */}
@@ -1389,17 +1428,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     <button
                       id="extension_btn_trigger"
                       onClick={() => setIsExtensionOpen(!isExtensionOpen)}
-                      className={`p-2 rounded-xl transition-all relative ${
+                      className={`p-2 rounded-xl transition-all relative cursor-pointer ${
                         isExtensionOpen 
-                          ? "bg-indigo-600 text-white shadow-lg shadow-indigo-150" 
-                          : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
+                          ? "bg-indigo-600 text-white shadow-lg" 
+                          : "bg-zinc-900 border border-zinc-800 text-zinc-350 hover:bg-zinc-850"
                       }`}
                       title="Open Memory Extension"
                     >
                       <Brain className="w-4 h-4" />
                       {/* Red bubble indicating saved state */}
                       {memories.some(m => m.url === browserUrl) && (
-                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-indigo-500 rounded-full border-2 border-white" />
+                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-indigo-500 rounded-full border-2 border-zinc-900" />
                       )}
                     </button>
 
@@ -1410,35 +1449,35 @@ document.addEventListener("DOMContentLoaded", () => {
                           initial={{ opacity: 0, y: 12, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          className="absolute right-0 top-12 w-80 bg-white rounded-xl shadow-2xl border border-slate-150 p-4.5 z-40 space-y-4 text-left"
+                          className="absolute right-0 top-12 w-80 bg-zinc-900 rounded-xl shadow-2xl border border-zinc-800 p-4.5 z-40 space-y-4 text-left text-zinc-100"
                         >
-                          <div className="flex items-center justify-between border-b border-slate-50 pb-2.5">
-                            <span className="flex items-center gap-1.5 text-sm font-semibold text-indigo-600">
+                          <div className="flex items-center justify-between border-b border-zinc-850 pb-2.5">
+                            <span className="flex items-center gap-1.5 text-sm font-semibold text-indigo-400">
                               <Brain className="w-4 h-4 animate-pulse" />
                               Remember This Page
                             </span>
-                            <button onClick={() => setIsExtensionOpen(false)} className="text-slate-400 hover:text-slate-600">
+                            <button onClick={() => setIsExtensionOpen(false)} className="text-zinc-500 hover:text-zinc-300 cursor-pointer">
                               <X className="w-4 h-4" />
                             </button>
                           </div>
 
                           <div className="space-y-1">
-                            <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Target Webpage</div>
+                            <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-500">Target Webpage</div>
                             <div className="flex items-center gap-1.5">
                               <span className="text-sm">{browserIcon}</span>
-                              <div className="truncate text-xs font-semibold text-slate-800 leading-tight">
+                              <div className="truncate text-xs font-semibold text-zinc-200 leading-tight">
                                 {browserTitle}
                               </div>
                             </div>
                           </div>
 
                           {highlightedText && (
-                            <div className="space-y-1 bg-slate-50 border-l-2 border-indigo-600 p-2.5 rounded text-xs">
-                              <div className="text-[9px] uppercase font-bold tracking-wider text-indigo-600">Captured Highlight</div>
-                              <p className="text-slate-600 italic line-clamp-3">"{highlightedText}"</p>
+                            <div className="space-y-1 bg-zinc-950 border-l-2 border-indigo-500 p-2.5 rounded text-xs">
+                              <div className="text-[9px] uppercase font-bold tracking-wider text-indigo-400">Captured Highlight</div>
+                              <p className="text-zinc-300 italic line-clamp-3">"{highlightedText}"</p>
                               <button 
                                 onClick={() => setHighlightedText("")}
-                                className="text-[9px] text-rose-500 hover:underline block font-semibold mt-1"
+                                className="text-[9px] text-rose-400 hover:underline block font-semibold mt-1 cursor-pointer"
                               >
                                 Remove Highlight
                               </button>
@@ -1447,23 +1486,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
                           <form onSubmit={handleSaveMemory} className="space-y-3.5">
                             <div className="space-y-1">
-                              <label className="text-[10px] uppercase font-bold tracking-wider text-slate-400">What do you want to remember?</label>
+                              <label className="text-[10px] uppercase font-bold tracking-wider text-zinc-500">What do you want to remember?</label>
                               <textarea
                                 required
                                 value={noteInput}
                                 onChange={(e) => setNoteInput(e.target.value)}
                                 placeholder="E.g., Renew passport in October, target price is ₹95k, Azure recruiter followup..."
-                                className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all h-20 resize-none font-medium text-slate-800"
+                                className="w-full text-xs p-2.5 bg-zinc-950 border border-zinc-850 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-zinc-900 transition-all h-20 resize-none font-medium text-zinc-150"
                               />
                             </div>
 
                             {/* Show AI features that happen instantly */}
-                            <div className="bg-indigo-50/50 p-2.5 rounded-lg border border-indigo-100/60 text-[10px] text-indigo-700 font-medium space-y-1">
+                            <div className="bg-indigo-950/20 p-2.5 rounded-lg border border-indigo-900/40 text-[10px] text-indigo-300 font-medium space-y-1">
                               <div className="flex items-center gap-1 font-bold">
-                                <Sparkles className="w-3 h-3 text-indigo-600" />
+                                <Sparkles className="w-3 h-3 text-indigo-400" />
                                 Gemini AI Auto-processing
                               </div>
-                              <p className="text-slate-500 leading-relaxed">
+                              <p className="text-zinc-400 leading-relaxed">
                                 AI automatically creates a concise summary, assigns priorities, extracts tags, and links related projects instantly on save.
                               </p>
                             </div>
@@ -1472,14 +1511,14 @@ document.addEventListener("DOMContentLoaded", () => {
                               <button
                                 type="button"
                                 onClick={() => setIsExtensionOpen(false)}
-                                className="text-xs text-slate-500 hover:text-slate-800 px-3 py-1.5 transition-colors font-semibold"
+                                className="text-xs text-zinc-400 hover:text-zinc-200 px-3 py-1.5 transition-colors font-semibold cursor-pointer"
                               >
                                 Cancel
                               </button>
                               <button
                                 type="submit"
                                 disabled={isProcessingAI}
-                                className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-semibold text-xs px-4 py-2 rounded-lg flex items-center gap-1.5 shadow-md shadow-indigo-100 transition-colors"
+                                className="bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-850 text-white font-semibold text-xs px-4 py-2 rounded-lg flex items-center gap-1.5 shadow-md shadow-indigo-950/50 transition-colors cursor-pointer"
                               >
                                 {isProcessingAI ? (
                                   <>
@@ -1497,13 +1536,13 @@ document.addEventListener("DOMContentLoaded", () => {
                           </form>
 
                           {isProcessingAI && (
-                            <div className="absolute inset-0 bg-white/90 rounded-xl flex flex-col items-center justify-center p-4 text-center z-50">
+                            <div className="absolute inset-0 bg-zinc-950/95 rounded-xl flex flex-col items-center justify-center p-4 text-center z-50">
                               <div className="relative w-12 h-12 flex items-center justify-center mb-3">
-                                <Brain className="w-8 h-8 text-indigo-600 animate-pulse absolute" />
-                                <div className="w-12 h-12 rounded-full border-2 border-indigo-600/20 border-t-indigo-600 animate-spin"></div>
+                                <Brain className="w-8 h-8 text-indigo-400 animate-pulse absolute" />
+                                <div className="w-12 h-12 rounded-full border-2 border-indigo-600/20 border-t-indigo-500 animate-spin"></div>
                               </div>
-                              <h4 className="font-bold text-slate-900 text-sm">Processing with Gemini</h4>
-                              <p className="text-[11px] text-slate-500 mt-1.5 max-w-[220px] font-medium leading-relaxed">
+                              <h4 className="font-bold text-zinc-100 text-sm">Processing with Gemini</h4>
+                              <p className="text-[11px] text-zinc-400 mt-1.5 max-w-[220px] font-medium leading-relaxed">
                                 {processingStatus}
                               </p>
                             </div>
@@ -1516,27 +1555,27 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
 
               {/* Simulation Content Body */}
-              <div className="flex-1 p-8 bg-slate-50 flex flex-col md:flex-row gap-8 relative overflow-hidden">
+              <div className="flex-1 p-8 bg-zinc-900/10 flex flex-col md:flex-row gap-8 relative overflow-hidden">
                 
                 {/* Main simulated page content */}
                 <div className="flex-1 space-y-6">
                   
                   {/* Webpage Header mockup */}
-                  <div className="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-150 shadow-sm">
-                    <div className="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center text-2xl shadow-inner select-none">
+                  <div className="flex items-center gap-4 bg-zinc-900 p-4 rounded-xl border border-zinc-850 shadow-sm">
+                    <div className="w-11 h-11 rounded-xl bg-zinc-950 flex items-center justify-center text-2xl shadow-inner select-none border border-zinc-850">
                       {browserIcon}
                     </div>
                     <div>
-                      <span className="text-[10px] font-mono font-bold text-indigo-600 uppercase tracking-wider">{browserSiteName}</span>
-                      <h1 className="font-bold text-lg text-slate-900 leading-tight tracking-tight">{browserTitle}</h1>
-                      <p className="text-[11px] text-slate-400 font-mono truncate">{browserUrl}</p>
+                      <span className="text-[10px] font-mono font-bold text-indigo-400 uppercase tracking-wider">{browserSiteName}</span>
+                      <h1 className="font-bold text-lg text-zinc-100 leading-tight tracking-tight">{browserTitle}</h1>
+                      <p className="text-[11px] text-zinc-500 font-mono truncate">{browserUrl}</p>
                     </div>
                   </div>
 
                   {/* Webpage Body Blocks */}
                   <div className="space-y-4">
-                    <div className="bg-indigo-50/40 border border-indigo-100/50 p-3 rounded-xl flex items-center gap-2.5 text-xs text-indigo-800">
-                      <MousePointerClick className="w-4 h-4 text-indigo-600 shrink-0" />
+                    <div className="bg-indigo-950/20 border border-indigo-900/40 p-3 rounded-xl flex items-center gap-2.5 text-xs text-indigo-300">
+                      <MousePointerClick className="w-4 h-4 text-indigo-400 shrink-0" />
                       <span>
                         <strong>Highlight to Remember:</strong> Click any text block below to simulate highlighting text before opening the memory extension.
                       </span>
@@ -1559,23 +1598,23 @@ document.addEventListener("DOMContentLoaded", () => {
                             }}
                             className={`p-4 rounded-xl cursor-pointer border transition-all text-sm leading-relaxed ${
                               isHighlighted 
-                                ? "bg-indigo-50 border-indigo-300 shadow-md shadow-indigo-50 text-indigo-950 scale-[1.01]" 
-                                : "bg-white hover:bg-slate-50/80 border-slate-150 text-slate-700 hover:scale-[1.005]"
+                                ? "bg-indigo-950/30 border-indigo-900 shadow-md shadow-indigo-950/20 text-zinc-100 scale-[1.01]" 
+                                : "bg-zinc-900 hover:bg-zinc-850 border-zinc-850 text-zinc-350 hover:scale-[1.005]"
                             }`}
                           >
                             <div className="flex items-center justify-between mb-1.5 select-none">
-                              <span className="text-[10px] text-slate-400 font-mono font-bold">Paragraph {idx + 1}</span>
+                              <span className="text-[10px] text-zinc-500 font-mono font-bold">Paragraph {idx + 1}</span>
                               {isHighlighted && (
-                                <span className="bg-indigo-100 text-indigo-700 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <span className="bg-indigo-900/50 text-indigo-300 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 border border-indigo-500/20">
                                   <Sparkles className="w-2.5 h-2.5" /> Selected Highlight
                                 </span>
                               )}
                             </div>
                             <p className="font-medium font-sans">{block}</p>
                             {isHighlighted && (
-                              <div className="mt-3 pt-2.5 border-t border-indigo-100 flex flex-wrap items-center gap-2 animate-fadeIn text-xs">
-                                <span className="text-[10px] text-indigo-700 font-extrabold flex items-center gap-1 shrink-0">
-                                  <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                              <div className="mt-3 pt-2.5 border-t border-indigo-900 flex flex-wrap items-center gap-2 animate-fadeIn text-xs">
+                                <span className="text-[10px] text-indigo-300 font-extrabold flex items-center gap-1 shrink-0">
+                                  <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
                                   Quick Note Preset:
                                 </span>
                                 {[
@@ -1591,7 +1630,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                       setIsExtensionOpen(true);
                                       showNotification("Note content pre-filled! Check the Extension Popup.", "success");
                                     }}
-                                    className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg transition-colors border border-indigo-700 shadow-sm"
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg transition-colors border border-indigo-700 shadow-sm cursor-pointer"
                                   >
                                     {opt.label}
                                   </button>
@@ -1602,14 +1641,14 @@ document.addEventListener("DOMContentLoaded", () => {
                         );
                       }) || (
                         // If custom URL is entered
-                        <div className="bg-white border border-slate-150 p-6 rounded-xl space-y-4">
-                          <p className="text-sm text-slate-700 font-medium">
+                        <div className="bg-zinc-900 border border-zinc-850 p-6 rounded-xl space-y-4">
+                          <p className="text-sm text-zinc-300 font-medium">
                             This is a simulated custom viewport representation of <strong>{browserUrl}</strong>.
                           </p>
                           <div className="space-y-2.5">
-                            <div className="w-full h-2 bg-slate-100 rounded"></div>
-                            <div className="w-11/12 h-2 bg-slate-100 rounded"></div>
-                            <div className="w-4/5 h-2 bg-slate-100 rounded"></div>
+                            <div className="w-full h-2 bg-zinc-950 rounded"></div>
+                            <div className="w-11/12 h-2 bg-zinc-950 rounded"></div>
+                            <div className="w-4/5 h-2 bg-zinc-950 rounded"></div>
                           </div>
                           <button
                             onClick={() => {
@@ -1617,7 +1656,7 @@ document.addEventListener("DOMContentLoaded", () => {
                               setHighlightedText(block);
                               showNotification("Custom text block highlighted!");
                             }}
-                            className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs px-3.5 py-2 rounded-xl transition-all"
+                            className="bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs px-3.5 py-2 rounded-xl transition-all cursor-pointer"
                           >
                             Simulate Text Selection here
                           </button>
@@ -1638,12 +1677,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         initial={{ opacity: 0, x: 50, scale: 0.95 }}
                         animate={{ opacity: 1, x: 0, scale: 1 }}
                         exit={{ opacity: 0, x: 30 }}
-                        className="bg-white rounded-xl shadow-2xl border border-indigo-100 p-5 space-y-4 relative overflow-hidden"
+                        className="bg-zinc-900 rounded-xl shadow-2xl border border-zinc-800 p-5 space-y-4 relative overflow-hidden text-zinc-100"
                       >
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-full blur-2xl"></div>
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-950/10 rounded-full blur-2xl"></div>
                         
-                        <div className="flex items-center justify-between border-b border-slate-50 pb-2 relative z-10">
-                          <span className="flex items-center gap-1.5 text-xs font-bold text-indigo-600 font-sans uppercase">
+                        <div className="flex items-center justify-between border-b border-zinc-850 pb-2 relative z-10">
+                          <span className="flex items-center gap-1.5 text-xs font-bold text-indigo-400 font-sans uppercase">
                             <Sparkles className="w-3.5 h-3.5" />
                             Welcome Back
                           </span>
@@ -1652,30 +1691,30 @@ document.addEventListener("DOMContentLoaded", () => {
                               setDismissedMatches(prev => ({ ...prev, [matchedMemory.id]: true }));
                               setMatchedMemory(null);
                             }}
-                            className="text-slate-400 hover:text-slate-600 transition-colors"
+                            className="text-zinc-500 hover:text-zinc-350 transition-colors cursor-pointer"
                           >
                             <X className="w-4 h-4" />
                           </button>
                         </div>
 
                         <div className="space-y-2 relative z-10">
-                          <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider font-semibold">Your previous thought:</div>
-                          <p className="text-xs text-slate-700 font-semibold leading-relaxed bg-indigo-50/40 p-3 rounded-lg border-l-2 border-indigo-500 italic">
+                          <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold">Your previous thought:</div>
+                          <p className="text-xs text-zinc-200 font-semibold leading-relaxed bg-indigo-950/20 p-3 rounded-lg border-l-2 border-indigo-500 italic">
                             &ldquo;{matchedMemory.originalNote.replace(/\[Selected Highlight: ".*"\]\n\n/, "")}&rdquo;
                           </p>
                           
                           {matchedMemory.originalNote.includes('[Selected Highlight: "') && (
-                            <div className="text-[10px] text-slate-500 pl-3 border-l border-slate-200 line-clamp-2">
+                            <div className="text-[10px] text-zinc-400 pl-3 border-l border-zinc-800 line-clamp-2">
                               Highlighted: {matchedMemory.originalNote.match(/\[Selected Highlight: "(.*)"\]/) ? matchedMemory.originalNote.match(/\[Selected Highlight: "(.*)"\]/)![1] : ""}
                             </div>
                           )}
                         </div>
 
-                        <div className="pt-2 border-t border-slate-50 flex items-center justify-between relative z-10">
-                          <span className="text-[9px] font-mono text-slate-400">
+                        <div className="pt-2 border-t border-zinc-850 flex items-center justify-between relative z-10">
+                          <span className="text-[9px] font-mono text-zinc-500">
                             Saved {new Date(matchedMemory.createdAt).toLocaleDateString()}
                           </span>
-                          <span className="text-[10px] text-indigo-600 font-bold hover:underline cursor-pointer flex items-center gap-0.5" onClick={() => setCurrentView("dashboard")}>
+                          <span className="text-[10px] text-indigo-400 font-bold hover:underline cursor-pointer flex items-center gap-0.5" onClick={() => setCurrentView("dashboard")}>
                             Edit in Dashboard <ArrowUpRight className="w-3 h-3" />
                           </span>
                         </div>
@@ -1683,10 +1722,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     ) : (
                       // Shimmer skeleton when loading matching results
                       isMatchingPage && (
-                        <div className="bg-white rounded-xl border border-slate-150 p-5 space-y-3.5 animate-pulse">
-                          <div className="h-3.5 bg-slate-100 rounded w-1/3"></div>
-                          <div className="h-14 bg-slate-100 rounded"></div>
-                          <div className="h-3.5 bg-slate-100 rounded w-1/2"></div>
+                        <div className="bg-zinc-900 rounded-xl border border-zinc-850 p-5 space-y-3.5 animate-pulse">
+                          <div className="h-3.5 bg-zinc-950 rounded w-1/3"></div>
+                          <div className="h-14 bg-zinc-950 rounded"></div>
+                          <div className="h-3.5 bg-zinc-950 rounded w-1/2"></div>
                         </div>
                       )
                     )}
@@ -2639,6 +2678,24 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Global Footer */}
+      <footer className="w-full max-w-7xl mx-auto px-6 py-8 mt-auto border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500 font-medium">
+        <div>
+          &copy; {new Date().getFullYear()} Memory Desk. All rights reserved.
+        </div>
+        <div className="flex items-center gap-1 text-zinc-400 font-semibold">
+          made with ❤️ by{" "}
+          <a
+            href="https://kumarharsh.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-400 hover:text-indigo-300 transition-colors hover:underline"
+          >
+            harsh
+          </a>
+        </div>
+      </footer>
 
     </div>
   );

@@ -16,7 +16,8 @@ import {
   Zap,
   MousePointer,
   HelpCircle,
-  RefreshCw
+  RefreshCw,
+  Download
 } from "lucide-react";
 import { Memory } from "../types";
 
@@ -244,14 +245,21 @@ export default function Homepage({ onStartApp, onLogin, initialMemories }: Homep
           <div className="flex flex-wrap items-center justify-center gap-4 pt-3">
             <button 
               onClick={() => onStartApp("browser")}
-              className="bg-bento-orange hover:bg-bento-orange/90 text-white font-extrabold text-xs px-8 py-4.5 rounded-2xl transition-all duration-300 shadow-xl shadow-bento-orange/15 hover:scale-105 active:scale-95 flex items-center gap-2.5 border border-orange-400/10"
+              className="bg-bento-orange hover:bg-bento-orange/90 text-white font-extrabold text-xs px-7 py-4.5 rounded-2xl transition-all duration-300 shadow-xl shadow-bento-orange/15 hover:scale-105 active:scale-95 flex items-center gap-2 border border-orange-400/10 cursor-pointer"
             >
               <Chrome className="w-4 h-4" />
               Try Sandbox Simulator
             </button>
             <button 
+              onClick={() => onStartApp("install-extension")}
+              className="bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs px-7 py-4.5 rounded-2xl transition-all duration-300 shadow-xl shadow-indigo-500/15 hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer border border-indigo-500/10"
+            >
+              <Download className="w-4 h-4" />
+              Install Chrome Extension
+            </button>
+            <button 
               onClick={() => onStartApp("dashboard")}
-              className="bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-white font-bold text-xs px-6 py-4.5 rounded-2xl transition-all duration-300"
+              className="bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-white font-bold text-xs px-6 py-4.5 rounded-2xl transition-all duration-300 cursor-pointer"
             >
               Open Dashboard Vault
             </button>
