@@ -1196,92 +1196,97 @@ document.addEventListener("DOMContentLoaded", () => {
       </AnimatePresence>
 
       {/* Primary Navigation tabs across App mode */}
-      <div className="bg-zinc-950 text-zinc-400 px-6 py-3 flex items-center justify-between text-xs font-mono font-bold border-b border-zinc-900 sticky top-0 z-50 shadow-lg">
-        <div className="flex items-center gap-2.5">
-          <Brain className="w-4 h-4 text-indigo-400 animate-pulse" />
-          <span className="text-white font-bold tracking-tight uppercase text-[10px]">Memory Desk Control Plane</span>
+      <div className="bg-[#07070a]/80 backdrop-blur-md text-zinc-400 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between border-b border-zinc-900/60 sticky top-0 z-50 gap-2 sm:gap-4">
+        <div className="flex items-center gap-2 cursor-pointer shrink-0" onClick={() => setCurrentView("homepage")}>
+          <div className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shadow-md">
+            <Brain className="w-4.5 h-4.5 text-indigo-400" />
+          </div>
+          <div className="hidden min-[400px]:block">
+            <span className="font-extrabold tracking-tight text-xs sm:text-sm text-zinc-100 block">Memory</span>
+            <span className="text-[7px] sm:text-[8px] font-mono font-bold tracking-widest text-indigo-400 uppercase block">SECOND BRAIN</span>
+          </div>
         </div>
-        <div className="flex items-center bg-zinc-900 p-1 rounded-xl border border-zinc-800/80 relative">
+
+        <div className="flex items-center bg-zinc-900/60 p-0.5 sm:p-1 rounded-xl border border-zinc-900 relative overflow-x-auto scrollbar-none max-w-[55%] sm:max-w-none">
           <button 
             id="nav_landing_btn"
             onClick={() => setCurrentView("homepage")}
-            className={`px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 relative z-10 text-[11px] ${currentView === 'homepage' ? 'text-white' : 'hover:text-zinc-200'}`}
+            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${currentView === 'homepage' ? 'text-zinc-100' : 'text-zinc-400 hover:text-zinc-200'}`}
           >
             {currentView === 'homepage' && (
               <motion.div 
                 layoutId="primaryNavCapsule"
-                className="absolute inset-0 bg-zinc-800 rounded-lg -z-10"
+                className="absolute inset-0 bg-zinc-800/80 rounded-lg -z-10 border border-zinc-700/20"
                 transition={{ type: "spring", stiffness: 350, damping: 28 }}
               />
             )}
-            <Globe className="w-3.5 h-3.5 text-indigo-400" />
-            Landing Page
+            Home
           </button>
           <button 
             id="nav_browser_btn"
             onClick={() => setCurrentView("browser")}
-            className={`px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 relative z-10 text-[11px] ${currentView === 'browser' ? 'text-white' : 'hover:text-zinc-200'}`}
+            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${currentView === 'browser' ? 'text-zinc-100' : 'text-zinc-400 hover:text-zinc-200'}`}
           >
             {currentView === 'browser' && (
               <motion.div 
                 layoutId="primaryNavCapsule"
-                className="absolute inset-0 bg-zinc-800 rounded-lg -z-10"
+                className="absolute inset-0 bg-zinc-800/80 rounded-lg -z-10 border border-zinc-700/20"
                 transition={{ type: "spring", stiffness: 350, damping: 28 }}
               />
             )}
-            <Chrome className="w-3.5 h-3.5 text-indigo-400" />
-            Virtual Browser Simulator
+            Sandbox
           </button>
           <button 
             id="nav_install_btn"
             onClick={() => setCurrentView("install-extension")}
-            className={`px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 relative z-10 text-[11px] ${currentView === 'install-extension' ? 'text-white' : 'hover:text-zinc-200'}`}
+            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${currentView === 'install-extension' ? 'text-zinc-100' : 'text-zinc-400 hover:text-zinc-200'}`}
           >
             {currentView === 'install-extension' && (
               <motion.div 
                 layoutId="primaryNavCapsule"
-                className="absolute inset-0 bg-zinc-800 rounded-lg -z-10"
+                className="absolute inset-0 bg-zinc-800/80 rounded-lg -z-10 border border-zinc-700/20"
                 transition={{ type: "spring", stiffness: 350, damping: 28 }}
               />
             )}
-            <Download className="w-3.5 h-3.5 text-indigo-400" />
-            Extension Installer
+            Extension
           </button>
           <button 
             id="nav_dashboard_btn"
             onClick={() => setCurrentView("dashboard")}
-            className={`px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 relative z-10 text-[11px] ${currentView === 'dashboard' ? 'text-white' : 'hover:text-zinc-200'}`}
+            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${currentView === 'dashboard' ? 'text-zinc-100' : 'text-zinc-400 hover:text-zinc-200'}`}
           >
             {currentView === 'dashboard' && (
               <motion.div 
                 layoutId="primaryNavCapsule"
-                className="absolute inset-0 bg-zinc-800 rounded-lg -z-10"
+                className="absolute inset-0 bg-zinc-800/80 rounded-lg -z-10 border border-zinc-700/20"
                 transition={{ type: "spring", stiffness: 350, damping: 28 }}
               />
             )}
-            <Layers className="w-3.5 h-3.5 text-indigo-400" />
-            Personal Dashboard
+            Vault
           </button>
         </div>
-        <div className="hidden sm:flex items-center gap-3">
+
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           {user ? (
-            <div className="flex items-center gap-2.5">
-              <span className="text-zinc-400 text-[10px] bg-zinc-900 border border-zinc-800 px-2.5 py-1 rounded-lg">{user.email}</span>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="hidden md:inline text-zinc-500 text-[10px] bg-zinc-950 px-2.5 py-1 rounded-lg border border-zinc-900 font-mono max-w-[120px] truncate">{user.email}</span>
               <button 
                 id="header_logout_btn"
                 onClick={handleLogout}
-                className="text-rose-400 hover:text-rose-300 text-[10px] uppercase font-bold tracking-widest cursor-pointer bg-zinc-900 hover:bg-rose-950/20 px-2.5 py-1 rounded-lg border border-zinc-800 hover:border-rose-900/30 transition-all"
+                className="text-zinc-400 hover:text-rose-450 text-[10px] font-bold transition-all px-2.5 py-1.5 bg-zinc-950/25 hover:bg-rose-950/10 rounded-lg border border-zinc-900 hover:border-rose-900/10 cursor-pointer flex items-center gap-1"
+                title="Sign Out"
               >
-                Sign Out
+                <span className="hidden min-[480px]:inline">Sign Out</span>
+                <LogOut className="w-3.5 h-3.5 min-[480px]:w-3 min-[480px]:h-3" />
               </button>
             </div>
           ) : (
             <button 
               id="header_login_btn"
               onClick={handleLogin}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-colors shadow-lg shadow-indigo-500/20"
+              className="bg-zinc-100 hover:bg-white text-zinc-950 px-2.5 sm:px-3.5 py-1.5 rounded-lg sm:rounded-xl font-bold text-[10px] sm:text-xs transition-colors shadow-sm cursor-pointer"
             >
-              Google Sign-In
+              Sign In
             </button>
           )}
         </div>
@@ -1304,7 +1309,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 else setCurrentView("homepage");
               }}
               onLogin={handleLogin}
+              onLogout={handleLogout}
               initialMemories={memories}
+              user={user}
             />
           </motion.div>
         )}
@@ -1338,29 +1345,34 @@ document.addEventListener("DOMContentLoaded", () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="max-w-7xl mx-auto px-4 py-8 space-y-6"
+            className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-6 sm:space-y-8"
           >
-            <div className="bg-gradient-to-br from-zinc-900 via-zinc-950 to-indigo-950/20 border border-zinc-800/80 p-6 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-sm">
-              <div className="space-y-1.5">
-                <h2 className="font-display font-extrabold text-zinc-100 text-lg flex items-center gap-2">
-                  <Chrome className="w-5 h-5 text-indigo-400 animate-pulse" />
-                  Interactive Extension Playground
-                </h2>
-                <p className="text-xs text-zinc-400 max-w-3xl leading-relaxed font-medium">
-                  Memory Desk integrates beautifully within Chrome. Revisit any preloaded popular sandbox domain below or navigate to a custom URL to see how your context layers slide in.
-                </p>
+            <div className="space-y-4 max-w-3xl">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-950/40 border border-indigo-500/20 rounded-full text-indigo-300 text-[10px] font-mono font-bold uppercase tracking-wider">
+                <Chrome className="w-3.5 h-3.5" />
+                Live Playground
               </div>
-              <button
-                onClick={() => {
-                  setMemories(initialMemories);
-                  localStorage.removeItem("mem_memories");
-                  showNotification("Reset demo memories to clean state", "info");
-                }}
-                className="bg-zinc-850 hover:bg-zinc-800 text-zinc-200 text-xs px-4.5 py-2.5 rounded-xl flex items-center gap-2 font-bold transition-all duration-200 shadow-md border border-zinc-850 self-start md:self-auto shrink-0 cursor-pointer"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                Reset Sandbox
-              </button>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <h2 className="text-3xl font-extrabold tracking-tight text-zinc-100">
+                    Virtual Sandbox
+                  </h2>
+                  <p className="text-xs text-zinc-400 leading-relaxed font-medium">
+                    Test the Memory companion inside a mock browser. Highlight content, save notes, switch pages, and watch the contextual layer automatically retrieve on return.
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    setMemories(initialMemories);
+                    localStorage.removeItem("mem_memories");
+                    showNotification("Reset demo memories to clean state", "info");
+                  }}
+                  className="bg-zinc-900 hover:bg-zinc-850 text-zinc-300 border border-zinc-800 text-xs px-4 py-2 rounded-xl flex items-center gap-2 font-bold transition-all shrink-0 cursor-pointer self-start sm:self-auto"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  Reset Sandbox
+                </button>
+              </div>
             </div>
 
             {/* Quick-switch website simulator tabs */}
@@ -1449,7 +1461,7 @@ document.addEventListener("DOMContentLoaded", () => {
                           initial={{ opacity: 0, y: 12, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          className="absolute right-0 top-12 w-80 bg-zinc-900 rounded-xl shadow-2xl border border-zinc-800 p-4.5 z-40 space-y-4 text-left text-zinc-100"
+                          className="absolute -right-2 sm:right-0 top-12 w-[calc(100vw-48px)] sm:w-80 max-w-[340px] bg-zinc-900 rounded-xl shadow-2xl border border-zinc-800 p-4.5 z-40 space-y-4 text-left text-zinc-100 max-h-[480px] overflow-y-auto"
                         >
                           <div className="flex items-center justify-between border-b border-zinc-850 pb-2.5">
                             <span className="flex items-center gap-1.5 text-sm font-semibold text-indigo-400">
@@ -1783,17 +1795,17 @@ document.addEventListener("DOMContentLoaded", () => {
                   </AnimatePresence>
 
                   {/* Instructions Block */}
-                  <div className="bg-white rounded-xl border border-slate-150 p-5 space-y-3 shadow-sm text-xs text-slate-600 leading-relaxed">
-                    <h3 className="font-bold text-slate-900 flex items-center gap-1.5">
-                      <Info className="w-4 h-4 text-indigo-600" />
-                      How to test the Extension
+                  <div className="bg-zinc-950/40 rounded-xl border border-zinc-900 p-5 space-y-3 shadow-sm text-xs text-zinc-400 leading-relaxed">
+                    <h3 className="font-bold text-zinc-200 flex items-center gap-1.5">
+                      <Info className="w-4 h-4 text-indigo-400" />
+                      Testing Checklist
                     </h3>
                     <ol className="list-decimal pl-4 space-y-1.5 font-medium">
                       <li>Click on one of the simulated pages (e.g., <strong>LinkedIn</strong> or <strong>Amazon</strong>).</li>
                       <li>Highlight text inside a paragraph if desired.</li>
-                      <li>Click the purple brain extension icon <Brain className="w-3 h-3 text-indigo-600 inline mx-0.5" /> in the address bar.</li>
-                      <li>Write down a thought and click <strong>Save Memory</strong>. Watch the AI auto-synthesize tags and categories.</li>
-                      <li>Switch tabs, then revisit the same tab and see your memory slide in instantly!</li>
+                      <li>Click the purple brain extension icon <Brain className="w-3 h-3 text-indigo-400 inline mx-0.5" /> in the address bar.</li>
+                      <li>Write down a thought and click <strong>Save Memory</strong>. Let the AI synthesize tags and priorities.</li>
+                      <li>Switch tabs, then revisit the same page to see your memory slide back in.</li>
                     </ol>
                   </div>
 
@@ -1812,23 +1824,26 @@ document.addEventListener("DOMContentLoaded", () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.4 }}
-            className="max-w-7xl mx-auto px-4 py-8"
+            className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-12"
           >
-            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-2xl overflow-hidden min-h-[620px] flex flex-col md:flex-row">
+            <div className="bg-zinc-950/40 border border-zinc-900 shadow-2xl rounded-2xl overflow-hidden min-h-[620px] flex flex-col md:flex-row">
               
               {/* Sidebar Navigation */}
-              <aside className="w-full md:w-64 bg-slate-50 border-r border-slate-200 p-6 flex flex-col justify-between shrink-0 space-y-8">
+              <aside className="hidden md:flex w-full md:w-64 bg-zinc-950/80 border-r border-zinc-900 p-6 flex-col justify-between shrink-0 space-y-8">
                 <div className="space-y-7">
                   {/* Brand logo */}
                   <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => setCurrentView("homepage")}>
-                    <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-200">
-                      <Brain className="w-5 h-5 text-white" />
+                    <div className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shadow-md">
+                      <Brain className="w-4.5 h-4.5 text-indigo-400" />
                     </div>
-                    <span className="font-display font-bold text-base tracking-tight text-slate-900">Memory Desk</span>
+                    <div>
+                      <span className="font-extrabold tracking-tight text-sm text-zinc-100 block">Memory</span>
+                      <span className="text-[8px] font-mono font-bold tracking-widest text-indigo-400 uppercase block">SECOND BRAIN</span>
+                    </div>
                   </div>
 
                   {/* Core Filters */}
-                  <nav className="space-y-1.5 text-xs font-bold text-slate-500 relative">
+                  <nav className="space-y-1.5 text-xs font-bold text-zinc-400 relative">
                     <button
                       onClick={() => {
                         setDashboardTab("all");
@@ -1836,22 +1851,22 @@ document.addEventListener("DOMContentLoaded", () => {
                       }}
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
                         dashboardTab === "all" && !selectedProjectId 
-                          ? "text-indigo-700 font-extrabold" 
-                          : "hover:text-slate-900"
+                          ? "text-zinc-100 font-extrabold" 
+                          : "hover:text-zinc-200"
                       }`}
                     >
                       {dashboardTab === "all" && !selectedProjectId && (
                         <motion.div 
                           layoutId="activeSidebarTab"
-                          className="absolute inset-0 bg-indigo-50 border border-indigo-100/30 rounded-xl -z-10 shadow-sm"
+                          className="absolute inset-0 bg-zinc-900 border border-zinc-850 rounded-xl -z-10 shadow-sm"
                           transition={{ type: "spring", stiffness: 350, damping: 28 }}
                         />
                       )}
                       <span className="flex items-center gap-2.5 relative z-10">
-                        <Layers className="w-4 h-4 text-indigo-500" />
+                        <Layers className="w-4 h-4 text-indigo-400" />
                         All Memories
                       </span>
-                      <span className="bg-slate-200/60 text-slate-600 px-2 py-0.5 rounded-lg text-[9px] relative z-10">{memories.length}</span>
+                      <span className="bg-zinc-900 text-zinc-400 border border-zinc-850 px-2 py-0.5 rounded-lg text-[9px] relative z-10">{memories.length}</span>
                     </button>
 
                     <button
@@ -1861,22 +1876,22 @@ document.addEventListener("DOMContentLoaded", () => {
                       }}
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
                         dashboardTab === "pinned" 
-                          ? "text-indigo-700 font-extrabold" 
-                          : "hover:text-slate-900"
+                          ? "text-zinc-100 font-extrabold" 
+                          : "hover:text-zinc-200"
                       }`}
                     >
                       {dashboardTab === "pinned" && (
                         <motion.div 
                           layoutId="activeSidebarTab"
-                          className="absolute inset-0 bg-indigo-50 border border-indigo-100/30 rounded-xl -z-10 shadow-sm"
+                          className="absolute inset-0 bg-zinc-900 border border-zinc-850 rounded-xl -z-10 shadow-sm"
                           transition={{ type: "spring", stiffness: 350, damping: 28 }}
                         />
                       )}
                       <span className="flex items-center gap-2.5 relative z-10">
-                        <Pin className="w-4 h-4 text-indigo-500" />
+                        <Pin className="w-4 h-4 text-indigo-400" />
                         Pinned memories
                       </span>
-                      <span className="bg-slate-200/60 text-slate-600 px-2 py-0.5 rounded-lg text-[9px] relative z-10">
+                      <span className="bg-zinc-900 text-zinc-400 border border-zinc-850 px-2 py-0.5 rounded-lg text-[9px] relative z-10">
                         {memories.filter(m => m.pinned).length}
                       </span>
                     </button>
@@ -1888,22 +1903,22 @@ document.addEventListener("DOMContentLoaded", () => {
                       }}
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
                         dashboardTab === "search" 
-                          ? "text-indigo-700 font-extrabold" 
-                          : "hover:text-slate-900"
+                          ? "text-zinc-100 font-extrabold" 
+                          : "hover:text-zinc-200"
                       }`}
                     >
                       {dashboardTab === "search" && (
                         <motion.div 
                           layoutId="activeSidebarTab"
-                          className="absolute inset-0 bg-indigo-50 border border-indigo-100/30 rounded-xl -z-10 shadow-sm"
+                          className="absolute inset-0 bg-zinc-900 border border-zinc-850 rounded-xl -z-10 shadow-sm"
                           transition={{ type: "spring", stiffness: 350, damping: 28 }}
                         />
                       )}
                       <span className="flex items-center gap-2.5 relative z-10">
-                        <Search className="w-4 h-4 text-indigo-500" />
-                        Semantic AI Search
+                        <Search className="w-4 h-4 text-indigo-400" />
+                        AI Concept Search
                       </span>
-                      <span className="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[8px] uppercase font-mono tracking-wider font-extrabold relative z-10">Gemini</span>
+                      <span className="bg-indigo-950 text-indigo-300 border border-indigo-500/10 px-1.5 py-0.5 rounded text-[8px] uppercase font-mono tracking-wider font-extrabold relative z-10">Gemini</span>
                     </button>
 
                     <button
@@ -1913,28 +1928,28 @@ document.addEventListener("DOMContentLoaded", () => {
                       }}
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
                         dashboardTab === "extension" 
-                          ? "text-indigo-700 font-extrabold" 
-                          : "hover:text-slate-900"
+                          ? "text-zinc-100 font-extrabold" 
+                          : "hover:text-zinc-200"
                       }`}
                     >
                       {dashboardTab === "extension" && (
                         <motion.div 
                           layoutId="activeSidebarTab"
-                          className="absolute inset-0 bg-indigo-50 border border-indigo-100/30 rounded-xl -z-10 shadow-sm"
+                          className="absolute inset-0 bg-zinc-900 border border-zinc-850 rounded-xl -z-10 shadow-sm"
                           transition={{ type: "spring", stiffness: 350, damping: 28 }}
                         />
                       )}
                       <span className="flex items-center gap-2">
-                        <Chrome className="w-4 h-4" />
-                        Chrome Extension
+                        <Chrome className="w-4 h-4 text-indigo-400" />
+                        Companion Setup
                       </span>
-                      <span className="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded text-[10px] uppercase font-mono tracking-wider font-extrabold">INSTALL</span>
+                      <span className="bg-indigo-950 text-indigo-300 border border-indigo-500/25 px-1.5 py-0.5 rounded text-[9px] uppercase font-mono tracking-wider font-bold">SETUP</span>
                     </button>
                   </nav>
 
                   {/* Projects List */}
                   <div className="space-y-2">
-                    <div className="text-[10px] uppercase tracking-wider font-bold text-slate-400 font-mono px-3">
+                    <div className="text-[10px] uppercase tracking-wider font-bold text-zinc-500 font-mono px-3">
                       Projects & Spaces
                     </div>
                     <div className="space-y-1">
@@ -1950,22 +1965,22 @@ document.addEventListener("DOMContentLoaded", () => {
                             }}
                             className={`w-full text-xs font-bold flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
                               isSelected 
-                                ? "text-indigo-700 font-extrabold" 
-                                : "hover:text-slate-950 text-slate-500"
+                                ? "text-zinc-100 font-extrabold" 
+                                : "hover:text-zinc-200 text-zinc-400"
                             }`}
                           >
                             {isSelected && (
                               <motion.div 
                                 layoutId="activeSidebarTab"
-                                className="absolute inset-0 bg-indigo-50 border border-indigo-100/30 rounded-xl -z-10 shadow-sm"
+                                className="absolute inset-0 bg-zinc-900 border border-zinc-850 rounded-xl -z-10 shadow-sm"
                                 transition={{ type: "spring", stiffness: 350, damping: 28 }}
                               />
                             )}
                             <span className="flex items-center gap-2.5 truncate relative z-10">
-                              <Folder className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                              <Folder className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                               <span className="truncate">{proj.name}</span>
                             </span>
-                            <span className="bg-slate-200/60 text-slate-600 px-2 py-0.5 rounded-lg text-[9px] shrink-0 relative z-10">{count}</span>
+                            <span className="bg-zinc-900 text-zinc-400 border border-zinc-850 px-2 py-0.5 rounded-lg text-[9px] shrink-0 relative z-10">{count}</span>
                           </button>
                         );
                       })}
@@ -1974,21 +1989,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
 
                 {/* Minimalist Profile Details */}
-                <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
+                <div className="pt-4 border-t border-zinc-900 flex items-center justify-between">
                   <div className="flex items-center gap-2.5 overflow-hidden">
                     <img 
                       src={user?.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80"} 
                       alt="avatar" 
-                      className="w-8 h-8 rounded-full border border-slate-200 shadow-sm"
+                      className="w-8 h-8 rounded-full border border-zinc-800 shadow-sm shrink-0"
                     />
                     <div className="truncate">
-                      <div className="text-xs font-bold text-slate-800 truncate">{user?.name || "Demo User"}</div>
-                      <div className="text-[10px] text-slate-400 truncate">{user?.email || "demo@example.com"}</div>
+                      <div className="text-xs font-bold text-zinc-200 truncate">{user?.name || "Demo User"}</div>
+                      <div className="text-[10px] text-zinc-500 truncate">{user?.email || "demo@example.com"}</div>
                     </div>
                   </div>
                   <button 
                     onClick={handleLogout}
-                    className="p-1.5 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-lg transition-colors"
+                    className="p-1.5 hover:bg-zinc-900 text-zinc-500 hover:text-zinc-200 rounded-lg transition-colors cursor-pointer"
                     title="Sign Out"
                   >
                     <LogOut className="w-4 h-4" />
@@ -1996,14 +2011,107 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
               </aside>
 
+              {/* Mobile Filter Row (only visible on mobile screens) */}
+              <div className="md:hidden flex flex-col gap-3.5 bg-zinc-950/60 border-b border-zinc-900 p-4 shrink-0">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+                      <Brain className="w-3.5 h-3.5 text-indigo-400" />
+                    </div>
+                    <span className="text-xs font-extrabold text-zinc-200">Vault Menu</span>
+                  </div>
+                  <span className="text-[10px] bg-zinc-900 border border-zinc-850 text-zinc-400 px-2.5 py-0.5 rounded-lg font-mono font-bold">
+                    {memories.length} Memories
+                  </span>
+                </div>
+                
+                <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1 -mx-4 px-4">
+                  <button
+                    onClick={() => {
+                      setDashboardTab("all");
+                      setSelectedProjectId(null);
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-colors cursor-pointer ${
+                      dashboardTab === "all" && !selectedProjectId
+                        ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
+                        : "bg-zinc-900 border border-zinc-850 text-zinc-400 hover:text-zinc-200"
+                    }`}
+                  >
+                    All ({memories.length})
+                  </button>
+                  <button
+                    onClick={() => {
+                      setDashboardTab("pinned");
+                      setSelectedProjectId(null);
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-colors cursor-pointer ${
+                      dashboardTab === "pinned"
+                        ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
+                        : "bg-zinc-900 border border-zinc-850 text-zinc-400 hover:text-zinc-200"
+                    }`}
+                  >
+                    Pinned ({memories.filter(m => m.pinned).length})
+                  </button>
+                  <button
+                    onClick={() => {
+                      setDashboardTab("search");
+                      setSelectedProjectId(null);
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-colors cursor-pointer ${
+                      dashboardTab === "search"
+                        ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
+                        : "bg-zinc-900 border border-zinc-850 text-zinc-400 hover:text-zinc-200"
+                    }`}
+                  >
+                    AI Search
+                  </button>
+                  <button
+                    onClick={() => {
+                      setDashboardTab("extension");
+                      setSelectedProjectId(null);
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-colors cursor-pointer ${
+                      dashboardTab === "extension"
+                        ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
+                        : "bg-zinc-900 border border-zinc-850 text-zinc-400 hover:text-zinc-200"
+                    }`}
+                  >
+                    Setup
+                  </button>
+                  
+                  <div className="w-[1px] bg-zinc-900 shrink-0 mx-1 self-stretch" />
+                  
+                  {projects.map((proj) => {
+                    const count = memories.filter(m => m.projectId === proj.id).length;
+                    const isSelected = selectedProjectId === proj.id;
+                    return (
+                      <button
+                        key={proj.id}
+                        onClick={() => {
+                          setSelectedProjectId(proj.id);
+                          setDashboardTab("projects");
+                        }}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-colors cursor-pointer ${
+                          isSelected
+                            ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
+                            : "bg-zinc-900 border border-zinc-850 text-zinc-400 hover:text-zinc-200"
+                        }`}
+                      >
+                        {proj.name} ({count})
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Main Content Pane */}
-              <main className="flex-1 p-8 bg-white flex flex-col justify-between overflow-y-auto max-h-[700px]">
+              <main className="flex-1 p-4 sm:p-8 bg-transparent flex flex-col justify-between overflow-y-auto md:max-h-[700px]">
                 
                 <div className="space-y-6">
                   {/* Dashboard Header Title */}
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                      <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">
+                      <h3 className="text-xl font-extrabold text-zinc-100 tracking-tight">
                         {selectedProjectId 
                           ? projects.find(p => p.id === selectedProjectId)?.name 
                           : dashboardTab === "all" 
@@ -2016,7 +2124,7 @@ document.addEventListener("DOMContentLoaded", () => {
                           ? "Chrome Extension Integration"
                           : "Settings"}
                       </h3>
-                      <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                      <p className="text-xs text-zinc-400 leading-relaxed font-medium">
                         {selectedProjectId 
                           ? projects.find(p => p.id === selectedProjectId)?.description 
                           : dashboardTab === "extension"
@@ -2027,32 +2135,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     <button
                       onClick={() => setCurrentView("browser")}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-md shadow-indigo-100 transition-all"
+                      className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-600/10 transition-all cursor-pointer w-full sm:w-auto shrink-0"
                     >
                       <Plus className="w-3.5 h-3.5" />
-                      Add Memory (Go to Browser)
+                      Add Memory
                     </button>
                   </div>
 
                   {/* MAIN VIEW: SEMANTIC SEARCH */}
                   {dashboardTab === "search" && (
                     <div className="space-y-6">
-                      <form onSubmit={handleDashboardSearch} className="flex gap-3 bg-slate-50 border border-slate-250 p-2 rounded-xl">
+                      <form onSubmit={handleDashboardSearch} className="flex flex-col sm:flex-row gap-3 bg-zinc-950 border border-zinc-900 p-2 rounded-xl">
                         <div className="relative flex-1">
-                          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
+                          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-zinc-500" />
                           <input
                             type="text"
                             required
                             placeholder="Type a query conceptually (e.g. microsoft contact, pricing details, Shadow DOM query fixes)..."
                             value={dashSearchQuery}
                             onChange={(e) => setDashSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 bg-transparent focus:outline-none text-sm font-medium text-slate-800"
+                            className="w-full pl-10 pr-4 py-2.5 bg-transparent focus:outline-none text-xs sm:text-sm font-medium text-zinc-100 placeholder-zinc-500"
                           />
                         </div>
                         <button
                           type="submit"
                           disabled={isDashSearching}
-                          className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-xs font-bold px-5 py-2.5 rounded-lg transition-colors flex items-center gap-1.5"
+                          className="bg-indigo-600 hover:bg-indigo-500 disabled:bg-zinc-800 disabled:text-zinc-500 text-white text-xs font-bold px-5 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer w-full sm:w-auto shrink-0"
                         >
                           {isDashSearching ? (
                             <>
@@ -2072,29 +2180,29 @@ document.addEventListener("DOMContentLoaded", () => {
                       <div className="space-y-4">
                         {isDashSearching ? (
                           <div className="space-y-3">
-                            <div className="h-12 bg-slate-50 border border-slate-100 rounded-xl animate-pulse"></div>
-                            <div className="h-12 bg-slate-50 border border-slate-100 rounded-xl animate-pulse"></div>
+                            <div className="h-12 bg-zinc-900/40 border border-zinc-850 rounded-xl animate-pulse"></div>
+                            <div className="h-12 bg-zinc-900/40 border border-zinc-850 rounded-xl animate-pulse"></div>
                           </div>
                         ) : dashSearchResults.length > 0 ? (
                           <div className="space-y-3.5">
-                            <div className="text-xs font-semibold text-slate-400 font-mono uppercase tracking-wider">AI Sorted relevance matches:</div>
+                            <div className="text-xs font-semibold text-zinc-500 font-mono uppercase tracking-wider">AI Sorted relevance matches:</div>
                             {dashSearchResults.map((res) => (
-                              <div key={res.id} className="bg-slate-50 border border-slate-200/70 rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                              <div key={res.id} className="bg-zinc-950/60 border border-zinc-900 rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div className="space-y-1.5">
                                   <div className="flex items-center gap-2">
                                     <span className="text-sm">{res.websiteIcon}</span>
-                                    <span className="text-xs font-bold text-slate-800">{res.websiteName}</span>
-                                    <span className="text-[10px] bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-full">
+                                    <span className="text-xs font-bold text-zinc-200">{res.websiteName}</span>
+                                    <span className="text-[10px] bg-indigo-950/30 text-indigo-300 border border-indigo-500/10 font-bold px-2 py-0.5 rounded-full">
                                       {res.relevanceScore ? Math.round(res.relevanceScore * 100) : 0}% Match
                                     </span>
                                   </div>
-                                  <p className="text-xs font-bold text-slate-400 truncate max-w-lg">{res.pageTitle}</p>
-                                  <p className="text-xs text-slate-700 font-medium italic pl-3 border-l-2 border-indigo-400">
+                                  <p className="text-xs font-bold text-zinc-500 truncate max-w-lg">{res.pageTitle}</p>
+                                  <p className="text-xs text-zinc-350 font-medium italic pl-3 border-l-2 border-indigo-500/40">
                                     &ldquo;{res.originalNote}&rdquo;
                                   </p>
                                 </div>
                                 {res.matchExplanation && (
-                                  <div className="bg-white border border-slate-150 rounded-lg px-3 py-1.5 text-[10px] font-mono text-indigo-700 font-semibold max-w-[180px] text-center">
+                                  <div className="bg-zinc-900 border border-zinc-850 rounded-lg px-3 py-1.5 text-[10px] font-mono text-indigo-400 font-semibold max-w-[180px] text-center">
                                     {res.matchExplanation}
                                   </div>
                                 )}
@@ -2103,15 +2211,15 @@ document.addEventListener("DOMContentLoaded", () => {
                           </div>
                         ) : dashSearchQuery ? (
                           <div className="text-center py-12 space-y-2">
-                            <AlertCircle className="w-8 h-8 text-slate-300 mx-auto" />
-                            <h4 className="font-bold text-slate-700 text-sm">No match explanation found</h4>
-                            <p className="text-xs text-slate-400 max-w-sm mx-auto">Try typing conceptually, such as "laptop specs", "recruiters", "YouTube notes", or similar keywords.</p>
+                            <AlertCircle className="w-8 h-8 text-zinc-700 mx-auto" />
+                            <h4 className="font-bold text-zinc-400 text-sm">No match explanation found</h4>
+                            <p className="text-xs text-zinc-500 max-w-sm mx-auto">Try typing conceptually, such as "laptop specs", "recruiters", "YouTube notes", or similar keywords.</p>
                           </div>
                         ) : (
-                          <div className="bg-indigo-50/40 border border-indigo-100 p-6 rounded-xl space-y-2 text-center">
-                            <Brain className="w-8 h-8 text-indigo-600 mx-auto animate-pulse" />
-                            <h4 className="font-bold text-indigo-900 text-xs">Vector Match Playground</h4>
-                            <p className="text-xs text-slate-600 max-w-md mx-auto">
+                          <div className="bg-zinc-950/40 border border-zinc-900 p-6 rounded-xl space-y-2 text-center">
+                            <Brain className="w-8 h-8 text-indigo-400 mx-auto animate-pulse" />
+                            <h4 className="font-bold text-indigo-300 text-xs">Vector Match Playground</h4>
+                            <p className="text-xs text-zinc-400 max-w-md mx-auto">
                               Our search query utilizes server-side embeddings projection logic. This means it queries concepts like "laptop" and successfully links to "MacBook Pro" without exact keyword constraints.
                             </p>
                           </div>
@@ -2122,36 +2230,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
                   {dashboardTab === "extension" && (
                     <div className="space-y-6">
-                      <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl flex items-start gap-3">
-                        <Shield className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                      <div className="bg-amber-950/10 border border-amber-500/10 p-4 rounded-xl flex items-start gap-3">
+                        <Shield className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
                         <div className="space-y-1">
-                          <h4 className="font-bold text-amber-900 text-xs uppercase tracking-wider">How Local vs Deployed Domain works</h4>
-                          <p className="text-xs text-amber-800 leading-relaxed font-medium">
+                          <h4 className="font-bold text-amber-400 text-xs uppercase tracking-wider">How Local vs Deployed Domain works</h4>
+                          <p className="text-xs text-amber-300/80 leading-relaxed font-medium">
                             Your Chrome Extension needs to communicate with your deployed backend server. By default, we pre-configure the files with the URL we detected: <strong className="font-bold underline">{customBackendUrl}</strong>. If you deploy this applet to Google Cloud Run, Vercel, or your custom server, simply update the URL input below and click <strong>Download All Files</strong> to instantly generate configured extension workers!
                           </p>
                         </div>
                       </div>
 
                       {/* Backend URL configuration input */}
-                      <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
-                        <label className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider block">
+                      <div className="bg-zinc-950/40 border border-zinc-900 p-4 rounded-xl space-y-3">
+                        <label className="text-[10px] uppercase font-bold text-zinc-500 font-mono tracking-wider block">
                           Configure Extension Backend Target Server
                         </label>
-                        <div className="flex gap-3">
+                        <div className="flex flex-col sm:flex-row gap-3">
                           <div className="relative flex-1">
-                            <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                            <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
                             <input
                               type="text"
                               required
                               placeholder="https://your-deployed-server-url.run.app"
                               value={customBackendUrl}
                               onChange={(e) => setCustomBackendUrl(e.target.value)}
-                              className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 focus:outline-none rounded-lg text-xs font-bold text-slate-800 focus:ring-1 focus:ring-indigo-500"
+                              className="w-full pl-10 pr-4 py-2 bg-zinc-900/60 border border-zinc-850 focus:outline-none rounded-lg text-xs font-bold text-zinc-200 focus:border-indigo-500 transition-colors"
                             />
                           </div>
                           <button
                             onClick={handleDownloadAllExtensionFiles}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-md shadow-indigo-100"
+                            className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-md cursor-pointer w-full sm:w-auto shrink-0"
                           >
                             <Download className="w-3.5 h-3.5" />
                             Download Extension Package (ZIP)
@@ -2163,49 +2271,49 @@ document.addEventListener("DOMContentLoaded", () => {
                       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                         {/* LEFT COLUMN: 3 Step Guide (5 cols) */}
                         <div className="lg:col-span-5 space-y-4">
-                          <h4 className="font-extrabold text-slate-850 text-sm tracking-tight border-b border-slate-100 pb-2">
+                          <h4 className="font-extrabold text-zinc-200 text-sm tracking-tight border-b border-zinc-900 pb-2">
                             🚀 Chrome Installation Guide
                           </h4>
 
                           <div className="space-y-4 font-sans text-xs">
                             <div className="flex gap-3">
-                              <span className="bg-indigo-600 text-white font-mono font-bold w-5.5 h-5.5 rounded-full flex items-center justify-center shrink-0 text-[11px]">1</span>
+                              <span className="bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono font-bold w-5.5 h-5.5 rounded-full flex items-center justify-center shrink-0 text-[11px]">1</span>
                               <div className="space-y-0.5">
-                                <h5 className="font-bold text-slate-800">Download ZIP Package</h5>
-                                <p className="text-slate-500 leading-relaxed font-medium">
-                                  Click the <strong className="font-bold text-indigo-600">Download Extension Package (ZIP)</strong> button above to download all pre-configured assets bundled as a single package.
+                                <h5 className="font-bold text-zinc-200">Download ZIP Package</h5>
+                                <p className="text-zinc-400 leading-relaxed font-medium">
+                                  Click the <strong className="font-bold text-indigo-400">Download Extension Package (ZIP)</strong> button above to download all pre-configured assets bundled as a single package.
                                 </p>
                               </div>
                             </div>
 
                             <div className="flex gap-3">
-                              <span className="bg-indigo-600 text-white font-mono font-bold w-5.5 h-5.5 rounded-full flex items-center justify-center shrink-0 text-[11px]">2</span>
+                              <span className="bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono font-bold w-5.5 h-5.5 rounded-full flex items-center justify-center shrink-0 text-[11px]">2</span>
                               <div className="space-y-0.5">
-                                <h5 className="font-bold text-slate-800">Extract the ZIP Folder</h5>
-                                <p className="text-slate-500 leading-relaxed font-medium">
-                                  Extract/unzip the downloaded <code className="font-mono bg-slate-100 px-1 py-0.5 rounded text-indigo-700 text-[10px] font-semibold">MemoryDeskExtension.zip</code> file into a standard folder anywhere on your computer.
+                                <h5 className="font-bold text-zinc-200">Extract the ZIP Folder</h5>
+                                <p className="text-zinc-400 leading-relaxed font-medium">
+                                  Extract/unzip the downloaded <code className="font-mono bg-zinc-900 px-1 py-0.5 rounded text-indigo-400 text-[10px] font-semibold">MemoryDeskExtension.zip</code> file into a standard folder anywhere on your computer.
                                 </p>
                               </div>
                             </div>
 
                             <div className="flex gap-3">
-                              <span className="bg-indigo-600 text-white font-mono font-bold w-5.5 h-5.5 rounded-full flex items-center justify-center shrink-0 text-[11px]">3</span>
+                              <span className="bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono font-bold w-5.5 h-5.5 rounded-full flex items-center justify-center shrink-0 text-[11px]">3</span>
                               <div className="space-y-0.5">
-                                <h5 className="font-bold text-slate-800">Load Unpacked in Chrome</h5>
-                                <p className="text-slate-500 leading-relaxed font-medium">
-                                  Open Chrome and go to <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-700 font-bold text-[10px]">chrome://extensions/</span>. Enable the **Developer mode** toggle in the top-right, click **Load unpacked** in the top-left, and select your extracted folder! Done! 🚀
+                                <h5 className="font-bold text-zinc-200">Load Unpacked in Chrome</h5>
+                                <p className="text-zinc-400 leading-relaxed font-medium">
+                                  Open Chrome and go to <span className="font-mono bg-zinc-900 px-1.5 py-0.5 rounded text-zinc-350 font-bold text-[10px]">chrome://extensions/</span>. Enable the **Developer mode** toggle in the top-right, click **Load unpacked** in the top-left, and select your extracted folder! Done! 🚀
                                 </p>
                               </div>
                             </div>
                           </div>
 
                           {/* Dynamic Seed synchronization panel */}
-                          <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3.5 mt-4">
+                          <div className="bg-zinc-950/40 border border-zinc-900 p-4 rounded-xl space-y-3.5 mt-4">
                             <div className="flex items-center gap-1.5">
-                              <Sparkles className="w-4 h-4 text-indigo-600" />
-                              <h5 className="font-bold text-slate-800 text-xs">Instantly Sync App Data</h5>
+                              <Sparkles className="w-4 h-4 text-indigo-400" />
+                              <h5 className="font-bold text-zinc-200 text-xs">Instantly Sync App Data</h5>
                             </div>
-                            <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                            <p className="text-[11px] text-zinc-400 leading-relaxed font-medium">
                               Seed your fresh browser extension immediately with your current app memories so you do not start empty!
                             </p>
                             <div className="space-y-2">
@@ -2215,9 +2323,9 @@ document.addEventListener("DOMContentLoaded", () => {
                                   navigator.clipboard.writeText(text);
                                   showNotification("Extension seeds copied! Paste them in Chrome Extension LocalStorage Console or Import menu.", "success");
                                 }}
-                                className="w-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-[11px] font-bold py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 shadow-sm"
+                                className="w-full bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-zinc-300 text-[11px] font-bold py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
                               >
-                                <Copy className="w-3 h-3 text-slate-500" />
+                                <Copy className="w-3 h-3 text-zinc-400" />
                                 Copy Memories JSON Seed Block
                               </button>
                             </div>
@@ -2226,21 +2334,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         {/* RIGHT COLUMN: File Previewer Tab structure (7 cols) */}
                         <div className="lg:col-span-7 flex flex-col space-y-4">
-                          <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 flex flex-col space-y-3.5 shadow-sm">
+                          <div className="bg-zinc-950/40 border border-zinc-900 rounded-2xl p-5 flex flex-col space-y-3.5 shadow-sm">
                             <div className="flex items-center justify-between">
-                              <h5 className="font-extrabold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                                <Settings className="w-4 h-4 text-indigo-500 animate-spin-slow" />
+                              <h5 className="font-extrabold text-zinc-200 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                                <Settings className="w-4 h-4 text-indigo-400" />
                                 Extension Source Sandbox
                               </h5>
                               <button
                                 onClick={() => setShowTechnicalFiles(!showTechnicalFiles)}
-                                className="bg-white hover:bg-slate-50 border border-slate-200/80 px-3.5 py-1.5 rounded-xl text-[10px] font-bold text-indigo-600 transition-all flex items-center gap-1 shadow-sm"
+                                className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 px-3.5 py-1.5 rounded-xl text-[10px] font-bold text-indigo-400 transition-all flex items-center gap-1 shadow-sm cursor-pointer"
                               >
                                 {showTechnicalFiles ? "Hide Code View" : "Expand Code View"}
                                 <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showTechnicalFiles ? "rotate-180" : ""}`} />
                               </button>
                             </div>
-                            <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">
+                            <p className="text-[11px] text-zinc-400 leading-relaxed font-semibold">
                               Inspect, review, or copy the pre-configured browser extension scripts that establish communication hooks back to your server.
                             </p>
                           </div>
@@ -2253,21 +2361,21 @@ document.addEventListener("DOMContentLoaded", () => {
                                 exit={{ opacity: 0, height: 0 }}
                                 className="space-y-3 flex flex-col overflow-hidden"
                               >
-                                <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                                  <h4 className="font-extrabold text-slate-850 text-sm tracking-tight">
+                                <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
+                                  <h4 className="font-extrabold text-zinc-200 text-sm tracking-tight">
                                     📁 File Generator Sandbox
                                   </h4>
                                   <div className="flex gap-2">
                                     <button
                                       onClick={() => handleCopyFile(activeExtFile)}
-                                      className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] px-2.5 py-1 rounded flex items-center gap-1 transition-colors"
+                                      className="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 font-bold text-[10px] px-2.5 py-1.5 rounded flex items-center gap-1 transition-colors cursor-pointer"
                                     >
                                       <Copy className="w-3 h-3" />
                                       Copy Code
                                     </button>
                                     <button
                                       onClick={() => handleDownloadFile(activeExtFile)}
-                                      className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[10px] px-2.5 py-1 rounded flex items-center gap-1 transition-colors"
+                                      className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[10px] px-2.5 py-1.5 rounded flex items-center gap-1 transition-colors cursor-pointer"
                                     >
                                       <Download className="w-3 h-3" />
                                       Download File
@@ -2276,7 +2384,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 </div>
 
                                 {/* File Selection Tabs */}
-                                <div className="flex flex-wrap gap-1.5 bg-slate-50 p-1.5 rounded-lg border border-slate-200">
+                                <div className="flex flex-wrap gap-1.5 bg-zinc-950 p-1.5 rounded-lg border border-zinc-900">
                                   {[
                                     { id: "manifest", name: "manifest.json" },
                                     { id: "background", name: "background.js" },
@@ -2288,10 +2396,10 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <button
                                       key={f.id}
                                       onClick={() => setActiveExtFile(f.id as any)}
-                                      className={`text-[11px] px-2.5 py-1 font-bold rounded-md transition-all ${
+                                      className={`text-[11px] px-2.5 py-1 font-bold rounded-md transition-all cursor-pointer ${
                                         activeExtFile === f.id
-                                          ? "bg-indigo-600 text-white shadow-sm shadow-indigo-100"
-                                          : "text-slate-500 hover:bg-white hover:text-slate-800"
+                                          ? "bg-indigo-600 text-white"
+                                          : "text-zinc-500 hover:text-zinc-300"
                                       }`}
                                     >
                                       {f.name}
@@ -2300,11 +2408,11 @@ document.addEventListener("DOMContentLoaded", () => {
                                 </div>
 
                                 {/* Monospace Code Code block panel */}
-                                <div className="relative border border-slate-200/80 rounded-xl overflow-hidden bg-slate-900 shadow-inner flex-1 min-h-[300px] flex flex-col">
-                                  <div className="absolute right-3.5 top-3.5 z-10 text-[9px] uppercase tracking-wider font-extrabold text-indigo-400 font-mono bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700">
+                                <div className="relative border border-zinc-900 rounded-xl overflow-hidden bg-zinc-950 shadow-inner flex-1 min-h-[300px] flex flex-col">
+                                  <div className="absolute right-3.5 top-3.5 z-10 text-[9px] uppercase tracking-wider font-extrabold text-indigo-400 font-mono bg-zinc-900 px-2 py-0.5 rounded border border-zinc-850">
                                     {getFilename(activeExtFile)}
                                   </div>
-                                  <pre className="p-5 font-mono text-[10px] text-slate-100 overflow-x-auto overflow-y-auto max-h-[360px] leading-relaxed whitespace-pre font-medium">
+                                  <pre className="p-5 font-mono text-[10px] text-zinc-400 overflow-x-auto overflow-y-auto max-h-[360px] leading-relaxed whitespace-pre font-medium">
                                     {getExtensionFile(activeExtFile)}
                                   </pre>
                                 </div>
@@ -2320,22 +2428,22 @@ document.addEventListener("DOMContentLoaded", () => {
                   {dashboardTab !== "search" && dashboardTab !== "settings" && dashboardTab !== "extension" && (
                     <div className="space-y-5">
                       {/* Integrated Instant Search & Tag Pills */}
-                      <div className="bg-slate-50 border border-slate-200/85 p-4.5 rounded-2xl space-y-4 shadow-sm">
+                      <div className="bg-zinc-950/40 border border-zinc-900 p-4.5 rounded-2xl space-y-4 shadow-sm">
                         <div className="flex flex-col sm:flex-row gap-3">
                           {/* Live search input */}
-                          <div className="relative flex-1 bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 flex items-center shadow-inner">
-                            <Search className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
+                          <div className="relative flex-1 bg-zinc-900/60 border border-zinc-850 rounded-xl px-3.5 py-2.5 flex items-center shadow-inner">
+                            <Search className="w-4 h-4 text-zinc-500 mr-2 shrink-0" />
                             <input
                               type="text"
                               placeholder="Fuzzy-filter page title, note content, domain, or tag..."
                               value={dashSearchQuery}
                               onChange={(e) => setDashSearchQuery(e.target.value)}
-                              className="w-full bg-transparent text-xs focus:outline-none font-medium text-slate-800"
+                              className="w-full bg-transparent text-xs focus:outline-none font-medium text-zinc-200 placeholder-zinc-500"
                             />
                             {dashSearchQuery && (
                               <button
                                 onClick={() => setDashSearchQuery("")}
-                                className="text-slate-400 hover:text-slate-600 transition-colors"
+                                className="text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer"
                               >
                                 <X className="w-3.5 h-3.5" />
                               </button>
@@ -2352,7 +2460,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 showNotification("Type something in the search box to trigger Semantic AI matching!", "info");
                               }
                             }}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4.5 py-3 rounded-xl flex items-center justify-center gap-1.5 transition-colors shrink-0 shadow-sm shadow-indigo-150"
+                            className="bg-indigo-600 hover:bg-indigo-50 text-white text-xs font-bold px-4.5 py-3 rounded-xl flex items-center justify-center gap-1.5 transition-colors shrink-0 shadow-lg shadow-indigo-600/10 cursor-pointer"
                             title="Perform smart vector search on your note contexts"
                           >
                             <Brain className="w-4 h-4" />
@@ -2365,17 +2473,17 @@ document.addEventListener("DOMContentLoaded", () => {
                           const allTags = Array.from(new Set(memories.flatMap(m => m.tags))).filter(Boolean);
                           if (allTags.length === 0) return null;
                           return (
-                            <div className="flex flex-col gap-2 pt-1 border-t border-slate-100/60">
-                              <div className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">
+                            <div className="flex flex-col gap-2 pt-1 border-t border-zinc-900">
+                              <div className="text-[10px] uppercase font-bold text-zinc-500 font-mono tracking-wider">
                                 Filter by tag:
                               </div>
                               <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
                                 <button
                                   onClick={() => setSelectedTag(null)}
-                                  className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all border ${
+                                  className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all border cursor-pointer ${
                                     selectedTag === null
-                                      ? "bg-slate-900 text-white border-slate-900"
-                                      : "bg-white hover:bg-slate-100 text-slate-600 border-slate-200"
+                                      ? "bg-indigo-600 text-white border-indigo-600"
+                                      : "bg-zinc-900 hover:bg-zinc-850 text-zinc-400 border-zinc-800"
                                   }`}
                                 >
                                   All tags
@@ -2386,10 +2494,10 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <button
                                       key={tag}
                                       onClick={() => setSelectedTag(isSelected ? null : tag)}
-                                      className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all border flex items-center gap-1 ${
+                                      className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all border flex items-center gap-1 cursor-pointer ${
                                         isSelected
-                                          ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
-                                          : "bg-white hover:bg-slate-100 text-slate-600 border-slate-200"
+                                          ? "bg-indigo-600 text-white border-indigo-600"
+                                          : "bg-zinc-900 hover:bg-zinc-850 text-zinc-400 border-zinc-800"
                                       }`}
                                     >
                                       #{tag}
@@ -2430,11 +2538,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         if (filtered.length === 0) {
                           return (
-                            <div className="text-center py-16 border border-dashed border-slate-200 rounded-2xl bg-slate-50/50 space-y-4">
-                              <Brain className="w-10 h-10 text-slate-300 mx-auto" />
+                            <div className="text-center py-16 border border-dashed border-zinc-800 rounded-2xl bg-zinc-900/10 space-y-4">
+                              <Brain className="w-10 h-10 text-zinc-700 mx-auto" />
                               <div className="space-y-1">
-                                <h4 className="font-bold text-slate-700 text-sm">You haven't forgotten anything yet.</h4>
-                                <p className="text-xs text-slate-400 max-w-xs mx-auto">
+                                <h4 className="font-bold text-zinc-300 text-sm">You haven't forgotten anything yet.</h4>
+                                <p className="text-xs text-zinc-500 max-w-xs mx-auto">
                                   Your internet memory starts here. Go capture your first memory on any webpage via the Virtual Browser.
                                 </p>
                               </div>
@@ -2452,29 +2560,29 @@ document.addEventListener("DOMContentLoaded", () => {
                                 exit={{ opacity: 0, y: -12 }}
                                 transition={{ type: "spring", stiffness: 350, damping: 30 }}
                                 key={mem.id}
-                                className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-indigo-150 transition-all duration-300 flex flex-col justify-between gap-5 relative group"
+                                className="bg-zinc-950 rounded-3xl border border-zinc-900 p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 hover:border-zinc-800 transition-all duration-300 flex flex-col justify-between gap-5 relative group"
                               >
                                 <div className="space-y-4">
                                   {/* Favicon & domain info row */}
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                      <span className="text-2xl select-none w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shadow-inner">{mem.websiteIcon}</span>
-                                      <div>
-                                        <div className="flex items-center gap-1.5">
-                                          <span className="font-display font-extrabold text-sm text-slate-800">{mem.websiteName}</span>
-                                          <span className="text-[10px] text-slate-400 font-mono">({mem.domain})</span>
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div className="flex items-start gap-3 min-w-0">
+                                      <span className="text-2xl select-none w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shadow-inner shrink-0">{mem.websiteIcon}</span>
+                                      <div className="min-w-0">
+                                        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                                          <span className="font-display font-extrabold text-sm text-zinc-200 truncate">{mem.websiteName}</span>
+                                          <span className="text-[10px] text-zinc-500 font-mono truncate">({mem.domain})</span>
                                         </div>
                                       </div>
                                     </div>
                                     
                                     {/* Action items */}
-                                    <div className="flex items-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <div className="flex items-center gap-1.5 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300 shrink-0">
                                       <button
                                         onClick={() => handleTogglePin(mem.id)}
-                                        className={`p-2 rounded-xl border transition-all duration-200 ${
+                                        className={`p-2 rounded-xl border transition-all duration-200 cursor-pointer ${
                                           mem.pinned 
-                                            ? "bg-indigo-50 border-indigo-150 text-indigo-600 shadow-sm" 
-                                            : "bg-white border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-100"
+                                            ? "bg-indigo-950/40 border-indigo-500/20 text-indigo-300 shadow-sm" 
+                                            : "bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-indigo-450 hover:border-zinc-700"
                                         }`}
                                         title={mem.pinned ? "Unpin" : "Pin memory"}
                                       >
@@ -2482,14 +2590,14 @@ document.addEventListener("DOMContentLoaded", () => {
                                       </button>
                                       <button
                                         onClick={() => setEditingMemory(mem)}
-                                        className="p-2 rounded-xl border bg-white border-slate-200 text-slate-400 hover:text-slate-700 hover:border-slate-300 transition-all duration-200"
+                                        className="p-2 rounded-xl border bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-zinc-350 hover:border-zinc-750 transition-all duration-200 cursor-pointer"
                                         title="Edit note"
                                       >
                                         <Edit2 className="w-4 h-4" />
                                       </button>
                                       <button
                                         onClick={() => handleDeleteMemory(mem.id)}
-                                        className="p-2 rounded-xl border bg-white border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-100 transition-all duration-200"
+                                        className="p-2 rounded-xl border bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-rose-450 hover:border-zinc-750 transition-all duration-200 cursor-pointer"
                                         title="Delete memory"
                                       >
                                         <Trash2 className="w-4 h-4" />
@@ -2503,32 +2611,32 @@ document.addEventListener("DOMContentLoaded", () => {
                                       href={mem.url} 
                                       target="_blank" 
                                       rel="noreferrer"
-                                      className="text-xs font-bold text-slate-400 hover:text-indigo-600 transition-colors inline-flex items-center gap-1 hover:underline"
+                                      className="text-xs font-bold text-zinc-500 hover:text-indigo-400 transition-colors inline-flex items-center gap-1 hover:underline"
                                     >
                                       {mem.pageTitle}
                                       <ExternalLink className="w-3.5 h-3.5" />
                                     </a>
                                     
                                     {/* Original note with nice quoting */}
-                                    <p className="text-sm text-slate-700 font-medium leading-relaxed italic border-l-2 border-indigo-500 pl-4 bg-slate-50/50 py-3 pr-3 rounded-r-xl">
+                                    <p className="text-sm text-zinc-350 font-medium leading-relaxed italic border-l-2 border-indigo-500/60 pl-4 bg-zinc-900/30 py-3 pr-3 rounded-r-xl">
                                       &ldquo;{mem.originalNote.replace(/\[Selected Highlight: ".*"\]\n\n/, "")}&rdquo;
                                     </p>
                                     
                                     {/* Extracted Highlight if present */}
                                     {mem.originalNote.includes('[Selected Highlight: "') && (
-                                      <p className="text-[11px] text-slate-500 pl-4 leading-relaxed bg-amber-50/40 py-2.5 rounded-r-xl border-l-2 border-amber-400">
-                                        <span className="font-extrabold text-amber-600 uppercase tracking-wider text-[9px] block mb-1">Highlighted Selection:</span>
+                                      <p className="text-[11px] text-zinc-400 pl-4 leading-relaxed bg-amber-955/10 py-2.5 rounded-r-xl border-l-2 border-amber-500/30">
+                                        <span className="font-extrabold text-amber-400 uppercase tracking-wider text-[9px] block mb-1">Highlighted Selection:</span>
                                         {mem.originalNote.match(/\[Selected Highlight: "(.*)"\]/) ? mem.originalNote.match(/\[Selected Highlight: "(.*)"\]/)![1] : ""}
                                       </p>
                                     )}
                                   </div>
 
                                   {/* AI Summary Badge */}
-                                  <div className="bg-indigo-50/30 rounded-2xl p-3.5 border border-indigo-100/50 flex gap-3">
-                                    <Sparkles className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                                  <div className="bg-indigo-950/10 rounded-2xl p-3.5 border border-indigo-500/10 flex gap-3">
+                                    <Sparkles className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
                                     <div>
-                                      <span className="text-[9px] font-mono font-extrabold text-indigo-600 uppercase tracking-wider block mb-0.5">Gemini Synthesis Summary</span>
-                                      <p className="text-[11px] text-indigo-950 font-medium leading-relaxed">
+                                      <span className="text-[9px] font-mono font-extrabold text-indigo-450 uppercase tracking-wider block mb-0.5">Gemini Synthesis Summary</span>
+                                      <p className="text-[11px] text-zinc-300 font-medium leading-relaxed">
                                         {mem.aiSummary}
                                       </p>
                                     </div>
@@ -2536,22 +2644,22 @@ document.addEventListener("DOMContentLoaded", () => {
                                 </div>
 
                                 {/* Badges bottom row */}
-                                <div className="flex flex-wrap items-center justify-between pt-4 border-t border-slate-100 text-[10px] text-slate-400 font-bold gap-2">
+                                <div className="flex flex-wrap items-center justify-between pt-4 border-t border-zinc-900 text-[10px] text-zinc-500 font-bold gap-2">
                                   <div className="flex flex-wrap items-center gap-2">
                                     <span className={`px-2.5 py-1 rounded-lg uppercase tracking-wider font-extrabold ${
                                       mem.priority === 'high' 
-                                        ? 'bg-rose-50 text-rose-600 border border-rose-100' 
+                                        ? 'bg-rose-955/30 text-rose-400 border border-rose-900/30' 
                                         : mem.priority === 'medium'
-                                        ? 'bg-amber-50 text-amber-600 border border-amber-100'
-                                        : 'bg-slate-50 text-slate-500 border border-slate-150'
+                                        ? 'bg-amber-955/20 text-amber-400 border border-amber-900/20'
+                                        : 'bg-zinc-900 text-zinc-400 border border-zinc-800'
                                     }`}>
                                       {mem.priority} priority
                                     </span>
                                     {mem.tags.map(t => (
-                                      <span key={t} className="bg-slate-50 border border-slate-150 px-2.5 py-1 rounded-lg text-slate-500 font-semibold">#{t}</span>
+                                      <span key={t} className="bg-zinc-900 border border-zinc-800 px-2.5 py-1 rounded-lg text-zinc-450 font-semibold">#{t}</span>
                                     ))}
                                   </div>
-                                  <span className="font-mono text-slate-400">Added {new Date(mem.createdAt).toLocaleDateString()}</span>
+                                  <span className="font-mono text-zinc-500">Added {new Date(mem.createdAt).toLocaleDateString()}</span>
                                 </div>
                               </motion.div>
                             ))}
@@ -2564,7 +2672,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
 
                 {/* Micro footer inside dashboard */}
-                <div className="pt-8 border-t border-slate-100 text-center text-[10px] text-slate-400 font-mono">
+                <div className="pt-8 border-t border-zinc-900 text-center text-[10px] text-zinc-500 font-mono">
                   Memory uses server-side Gemini 3.5 models to synthesize tags, generate smart workspaces, and perform vector conceptual matches.
                 </div>
               </main>
@@ -2577,34 +2685,34 @@ document.addEventListener("DOMContentLoaded", () => {
       {/* EDIT MEMORY MODAL POPUP */}
       <AnimatePresence>
         {editingMemory && (
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4 text-left border border-slate-150"
+              className="bg-zinc-950 rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4 text-left border border-zinc-900 max-h-[calc(100vh-32px)] overflow-y-auto"
             >
-              <div className="flex items-center justify-between border-b border-slate-50 pb-2.5">
-                <h4 className="font-bold text-slate-900 text-base flex items-center gap-1.5">
-                  <Edit2 className="w-4 h-4 text-indigo-600" />
+              <div className="flex items-center justify-between border-b border-zinc-900 pb-2.5">
+                <h4 className="font-bold text-zinc-100 text-base flex items-center gap-1.5">
+                  <Edit2 className="w-4 h-4 text-indigo-400" />
                   Edit Saved Memory
                 </h4>
-                <button onClick={() => setEditingMemory(null)} className="text-slate-400 hover:text-slate-600">
+                <button onClick={() => setEditingMemory(null)} className="text-zinc-500 hover:text-zinc-300 cursor-pointer">
                   <X className="w-4.5 h-4.5" />
                 </button>
               </div>
 
               <div className="space-y-3.5">
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Website</label>
-                  <p className="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
+                  <label className="text-[10px] uppercase font-bold tracking-wider text-zinc-500">Website</label>
+                  <p className="text-xs font-semibold text-zinc-200 flex items-center gap-1.5">
                     <span>{editingMemory.websiteIcon}</span>
                     <span>{editingMemory.pageTitle}</span>
                   </p>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Your Note Context</label>
+                  <label className="text-[10px] uppercase font-bold tracking-wider text-zinc-500">Your Note Context</label>
                   <textarea
                     required
                     value={editingMemory.originalNote.replace(/\[Selected Highlight: ".*"\]\n\n/, "")}
@@ -2617,17 +2725,17 @@ document.addEventListener("DOMContentLoaded", () => {
                         originalNote: prefix + textValue
                       });
                     }}
-                    className="w-full text-xs p-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all h-24 resize-none font-medium text-slate-800"
+                    className="w-full text-xs p-3 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:border-indigo-500 focus:bg-zinc-900/80 transition-all h-24 resize-none font-medium text-zinc-200"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Priority Level</label>
+                    <label className="text-[10px] uppercase font-bold tracking-wider text-zinc-500">Priority Level</label>
                     <select
                       value={editingMemory.priority}
                       onChange={(e) => setEditingMemory({ ...editingMemory, priority: e.target.value as any })}
-                      className="w-full text-xs p-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white"
+                      className="w-full text-xs p-2 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:border-indigo-500 focus:bg-zinc-900/80 text-zinc-200"
                     >
                       <option value="low">Low</option>
                       <option value="medium">Medium</option>
@@ -2636,11 +2744,11 @@ document.addEventListener("DOMContentLoaded", () => {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Pin to Top</label>
+                    <label className="text-[10px] uppercase font-bold tracking-wider text-zinc-500">Pin to Top</label>
                     <select
                       value={editingMemory.pinned ? "yes" : "no"}
                       onChange={(e) => setEditingMemory({ ...editingMemory, pinned: e.target.value === "yes" })}
-                      className="w-full text-xs p-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white"
+                      className="w-full text-xs p-2 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:border-indigo-500 focus:bg-zinc-900/80 text-zinc-200"
                     >
                       <option value="no">No</option>
                       <option value="yes">Yes</option>
@@ -2649,26 +2757,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Gemini Summary</label>
+                  <label className="text-[10px] uppercase font-bold tracking-wider text-zinc-500">Gemini Summary</label>
                   <input
                     type="text"
                     value={editingMemory.aiSummary}
                     onChange={(e) => setEditingMemory({ ...editingMemory, aiSummary: e.target.value })}
-                    className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white font-medium"
+                    className="w-full text-xs p-2.5 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:border-indigo-500 focus:bg-zinc-900/80 font-medium text-zinc-200"
                   />
                 </div>
 
-                <div className="flex items-center gap-2 justify-end pt-2 border-t border-slate-50">
+                <div className="flex items-center gap-2 justify-end pt-2 border-t border-zinc-900">
                   <button
                     type="button"
                     onClick={() => setEditingMemory(null)}
-                    className="text-xs text-slate-500 hover:text-slate-800 px-3 py-1.5 font-bold transition-all"
+                    className="text-xs text-zinc-500 hover:text-zinc-350 px-3 py-1.5 font-bold transition-all cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={() => handleUpdateMemory(editingMemory)}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-lg shadow-md transition-all"
+                    className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-4 py-2 rounded-lg shadow-md transition-all cursor-pointer"
                   >
                     Save Changes
                   </button>
