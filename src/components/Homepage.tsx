@@ -241,6 +241,36 @@ export default function Homepage({ onStartApp, onLogin, initialMemories }: Homep
             Attach notes and key highlight targets directly onto any URL. Whenever you visit that webpage again, Memory Desk automatically brings back your context in real-time.
           </p>
 
+          {/* 3-Step Instant Explanation Grid for 5s comprehension */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl mx-auto pt-4 text-left">
+            <div className="bg-zinc-950/80 border border-white/[0.06] rounded-2xl p-5 space-y-2 relative overflow-hidden group hover:border-bento-orange/30 transition-all duration-300">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-bento-orange/5 rounded-full blur-xl"></div>
+              <div className="w-8 h-8 rounded-lg bg-bento-orange/10 flex items-center justify-center font-mono font-black text-xs text-bento-orange border border-bento-orange/20">1</div>
+              <h3 className="font-extrabold text-sm text-slate-200">1. Save on Any URL</h3>
+              <p className="text-[11px] text-slate-400 font-medium leading-relaxed">
+                Click the brain icon or highlight text on any website to pin an important comment directly to that webpage.
+              </p>
+            </div>
+            
+            <div className="bg-zinc-950/80 border border-white/[0.06] rounded-2xl p-5 space-y-2 relative overflow-hidden group hover:border-rose-500/30 transition-all duration-300">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-rose-500/5 rounded-full blur-xl"></div>
+              <div className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center font-mono font-black text-xs text-rose-500 border border-rose-500/20">2</div>
+              <h3 className="font-extrabold text-sm text-slate-200">2. Close the Tab</h3>
+              <p className="text-[11px] text-slate-400 font-medium leading-relaxed">
+                Go about your work. Your notes are securely index-matched and stored locally or synchronized in the cloud.
+              </p>
+            </div>
+
+            <div className="bg-zinc-950/80 border border-white/[0.06] rounded-2xl p-5 space-y-2 relative overflow-hidden group hover:border-indigo-400/30 transition-all duration-300">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-indigo-500/5 rounded-full blur-xl"></div>
+              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center font-mono font-black text-xs text-indigo-400 border border-indigo-400/20">3</div>
+              <h3 className="font-extrabold text-sm text-slate-200">3. Automatic Recall</h3>
+              <p className="text-[11px] text-slate-400 font-medium leading-relaxed">
+                Whenever you revisit that URL next week or next month, your saved notes instantly slide back into view!
+              </p>
+            </div>
+          </div>
+
           {/* Quick Launch Buttons */}
           <div className="flex flex-wrap items-center justify-center gap-4 pt-3">
             <button 
