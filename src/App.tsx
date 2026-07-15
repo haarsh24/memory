@@ -1300,28 +1300,28 @@ document.addEventListener("DOMContentLoaded", () => {
             )}
             Extension
           </button>
-          <button 
-            id="nav_dashboard_btn"
-            onClick={() => setCurrentView("dashboard")}
-            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${
-              currentView === 'dashboard' 
-                ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100' 
-                : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'text-zinc-400 hover:text-zinc-200'
-            }`}
-          >
-            {currentView === 'dashboard' && (
-              <motion.div 
-                layoutId="primaryNavCapsule"
-                className={`absolute inset-0 rounded-lg -z-10 border ${
-                  theme === 'light' 
-                    ? 'bg-white border-zinc-300/60 shadow-sm' 
-                    : 'bg-zinc-800/80 border-zinc-700/20'
-                }`}
-                transition={{ type: "spring", stiffness: 350, damping: 28 }}
-              />
-            )}
-            Vault
-          </button>
+          // <button 
+          //   id="nav_dashboard_btn"
+          //   onClick={() => setCurrentView("dashboard")}
+          //   className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${
+          //     currentView === 'dashboard' 
+          //       ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100' 
+          //       : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'text-zinc-400 hover:text-zinc-200'
+          //   }`}
+          // >
+          //   {currentView === 'dashboard' && (
+          //     <motion.div 
+          //       layoutId="primaryNavCapsule"
+          //       className={`absolute inset-0 rounded-lg -z-10 border ${
+          //         theme === 'light' 
+          //           ? 'bg-white border-zinc-300/60 shadow-sm' 
+          //           : 'bg-zinc-800/80 border-zinc-700/20'
+          //       }`}
+          //       transition={{ type: "spring", stiffness: 350, damping: 28 }}
+          //     />
+          //   )}
+          //   Vault
+          // </button>
         </div>
 
         <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">

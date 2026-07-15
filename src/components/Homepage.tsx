@@ -122,16 +122,16 @@ export default function Homepage({ onStartApp, onLogin, onLogout, user, theme }:
               <Download className="w-4 h-4 text-indigo-500" />
               Get Extension
             </button>
-            <button 
-              onClick={() => onStartApp("dashboard")}
-              className={`font-bold text-xs px-4 py-3 rounded-xl transition-all cursor-pointer border ${
-                theme === 'light'
-                  ? 'bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border-zinc-200/80'
-                  : 'bg-zinc-950/80 hover:bg-zinc-900 text-zinc-400 hover:text-zinc-200 border-zinc-900'
-              }`}
-            >
-              Vault Dashboard
-            </button>
+            // <button 
+            //   onClick={() => onStartApp("dashboard")}
+            //   className={`font-bold text-xs px-4 py-3 rounded-xl transition-all cursor-pointer border ${
+            //     theme === 'light'
+            //       ? 'bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border-zinc-200/80'
+            //       : 'bg-zinc-950/80 hover:bg-zinc-900 text-zinc-400 hover:text-zinc-200 border-zinc-900'
+            //   }`}
+            // >
+            //   Vault Dashboard
+            // </button>
           </div>
         </div>
 
