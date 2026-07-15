@@ -1300,28 +1300,28 @@ document.addEventListener("DOMContentLoaded", () => {
             )}
             Extension
           </button>
-          // <button 
-          //   id="nav_dashboard_btn"
-          //   onClick={() => setCurrentView("dashboard")}
-          //   className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${
-          //     currentView === 'dashboard' 
-          //       ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100' 
-          //       : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'text-zinc-400 hover:text-zinc-200'
-          //   }`}
-          // >
-          //   {currentView === 'dashboard' && (
-          //     <motion.div 
-          //       layoutId="primaryNavCapsule"
-          //       className={`absolute inset-0 rounded-lg -z-10 border ${
-          //         theme === 'light' 
-          //           ? 'bg-white border-zinc-300/60 shadow-sm' 
-          //           : 'bg-zinc-800/80 border-zinc-700/20'
-          //       }`}
-          //       transition={{ type: "spring", stiffness: 350, damping: 28 }}
-          //     />
-          //   )}
-          //   Vault
-          // </button>
+          <button 
+            id="nav_dashboard_btn"
+            onClick={() => setCurrentView("dashboard")}
+            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${
+              currentView === 'dashboard' 
+                ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100' 
+                : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            {currentView === 'dashboard' && (
+              <motion.div 
+                layoutId="primaryNavCapsule"
+                className={`absolute inset-0 rounded-lg -z-10 border ${
+                  theme === 'light' 
+                    ? 'bg-white border-zinc-300/60 shadow-sm' 
+                    : 'bg-zinc-800/80 border-zinc-700/20'
+                }`}
+                transition={{ type: "spring", stiffness: 350, damping: 28 }}
+              />
+            )}
+            Vault
+          </button>
         </div>
 
         <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
@@ -1434,9 +1434,9 @@ document.addEventListener("DOMContentLoaded", () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-6 sm:space-y-8"
+            className="w-full max-w-full mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-6 sm:space-y-8"
           >
-            <div className="space-y-4 max-w-3xl">
+            <div className="w-full max-w-full space-y-4 sm:max-w-3xl">
               <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider border transition-colors ${
                 theme === 'light'
                   ? 'bg-indigo-50 border-indigo-200 text-indigo-700'
@@ -1504,10 +1504,10 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
 
             {/* Simulated Chrome Browser */}
-            <div className="bg-zinc-950 rounded-2xl border border-zinc-800/80 shadow-2xl shadow-black/50 overflow-hidden min-h-[580px] flex flex-col relative">
+            <div className="w-full bg-zinc-950 rounded-2xl border border-zinc-800/80 shadow-2xl shadow-black/50 overflow-hidden min-h-[420px] sm:min-h-[580px] min-w-0 flex flex-col relative">
               
               {/* Browser bar */}
-              <div className="bg-zinc-900 px-4 py-3 flex items-center justify-between gap-4 border-b border-zinc-800">
+              <div className="bg-zinc-900 px-4 py-3 flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800">
                 <div className="flex items-center gap-1.5">
                   <span className="w-3.5 h-3.5 rounded-full bg-rose-500 inline-block"></span>
                   <span className="w-3.5 h-3.5 rounded-full bg-amber-500 inline-block"></span>
@@ -1515,14 +1515,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
 
                 {/* URL Navigation input */}
-                <form onSubmit={handleCustomUrlSubmit} className="flex-1 max-w-2xl flex items-center bg-zinc-950 border border-zinc-850 rounded-lg px-3 py-1 text-xs">
+                <form onSubmit={handleCustomUrlSubmit} className="w-full max-w-full flex-1 min-w-0 flex items-center bg-zinc-950 border border-zinc-850 rounded-lg px-3 py-1 text-xs">
                   <span className="text-zinc-500 select-none mr-1.5">https://</span>
                   <input 
                     type="text" 
                     placeholder="Type custom webpage address (e.g. google.com/about)..." 
                     value={customUrlInput}
                     onChange={(e) => setCustomUrlInput(e.target.value)}
-                    className="flex-1 focus:outline-none text-zinc-100 font-mono py-0.5 bg-transparent"
+                    className="flex-1 min-w-0 focus:outline-none text-zinc-100 font-mono py-0.5 bg-transparent"
                   />
                   <button type="submit" className="text-indigo-400 hover:text-indigo-300 font-bold px-1 cursor-pointer">Go</button>
                 </form>
@@ -1554,7 +1554,7 @@ document.addEventListener("DOMContentLoaded", () => {
                           initial={{ opacity: 0, y: 12, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          className="absolute -right-2 sm:right-0 top-12 w-[calc(100vw-48px)] sm:w-80 max-w-[340px] bg-zinc-900 rounded-xl shadow-2xl border border-zinc-800 p-4.5 z-40 space-y-4 text-left text-zinc-100 max-h-[480px] overflow-y-auto"
+                          className="absolute top-12 left-2 right-2 sm:right-0 sm:left-auto w-auto max-w-[calc(100vw-32px)] sm:w-80 sm:max-w-[340px] bg-zinc-900 rounded-xl shadow-2xl border border-zinc-800 p-4.5 z-40 space-y-4 text-left text-zinc-100 max-h-[480px] overflow-y-auto"
                         >
                           <div className="flex items-center justify-between border-b border-zinc-850 pb-2.5">
                             <span className="flex items-center gap-1.5 text-sm font-semibold text-indigo-400">
@@ -1660,10 +1660,10 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
 
               {/* Simulation Content Body */}
-              <div className="flex-1 p-8 bg-zinc-900/10 flex flex-col md:flex-row gap-8 relative overflow-hidden">
+              <div className="flex-1 min-w-0 p-8 bg-zinc-900/10 flex flex-col md:flex-row gap-8 relative overflow-hidden">
                 
                 {/* Main simulated page content */}
-                <div className="flex-1 space-y-6">
+                <div className="flex-1 min-w-0 space-y-6">
                   
                   {/* Webpage Header mockup */}
                   <div className="flex items-center gap-4 bg-zinc-900 p-4 rounded-xl border border-zinc-850 shadow-sm">
@@ -1919,13 +1919,13 @@ document.addEventListener("DOMContentLoaded", () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.4 }}
-            className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-12"
+            className="w-full max-w-full mx-auto px-4 sm:px-6 py-6 sm:py-12 min-w-0"
           >
             <div className={`shadow-2xl rounded-2xl flex flex-col md:flex-row transition-all duration-300 border ${
               theme === 'light' 
                 ? 'bg-white border-zinc-200/80' 
                 : 'bg-zinc-950/40 border-zinc-900'
-            } md:min-h-[680px] md:max-h-[850px] overflow-visible md:overflow-hidden`}>
+            } min-h-[calc(100vh-7rem)] md:min-h-[680px] md:max-h-[850px] overflow-hidden`}>
               
               {/* Mobile Sidebar Overlay Drawer */}
               <AnimatePresence>
@@ -2422,15 +2422,14 @@ document.addEventListener("DOMContentLoaded", () => {
               </aside>
 
               {/* Mobile Filter Row (only visible on mobile screens) */}
-              <div className={`md:hidden flex flex-col gap-3.5 border-b p-4 shrink-0 transition-colors duration-300 ${
+              <div className={`md:hidden flex flex-col gap-3.5 border-b p-4 shrink-0 min-w-0 transition-colors duration-300 ${
                 theme === 'light'
                   ? 'bg-zinc-50 border-zinc-200'
                   : 'bg-zinc-950/60 border-zinc-900'
               }`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between min-w-0">
+                  <div className="flex items-center gap-2 min-w-0">
                     <div className="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
-                      <Brain className="w-3.5 h-3.5 text-indigo-500" />
                     </div>
                     <span className={`text-xs font-extrabold ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>Vault Menu</span>
                   </div>
@@ -2443,7 +2442,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   </span>
                 </div>
                 
-                <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1 -mx-4 px-4">
+                <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1 mx-0 px-2 max-w-full">
                   <button
                     onClick={() => {
                       setDashboardTab("all");
@@ -2533,9 +2532,9 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
 
               {/* Main Content Pane */}
-              <main className="flex-1 p-4 sm:p-8 bg-transparent flex flex-col justify-between md:overflow-y-auto md:max-h-[850px]">
+              <main className="flex-1 min-w-0 min-h-0 p-4 sm:p-8 bg-transparent flex flex-col overflow-hidden">
                 
-                <div className="space-y-6">
+                <div className="flex-1 min-w-0 overflow-y-auto space-y-6">
                   {/* Dashboard Header Title */}
                   <div className="flex flex-col sm:flex-row sm:items-start sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
