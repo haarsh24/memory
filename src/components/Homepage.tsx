@@ -79,8 +79,12 @@ export default function Homepage({ onStartApp, onLogin, onLogout, user, theme }:
         
         {/* Minimal Hero Header */}
         <div className="text-center space-y-6 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-950/40 border border-indigo-500/20 rounded-full text-indigo-300 text-[10px] font-mono font-bold uppercase tracking-wider">
-            <Sparkles className="w-3 h-3 text-indigo-400 fill-indigo-400/20" />
+          <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider border transition-colors ${
+            theme === 'light'
+              ? 'bg-indigo-50 border-indigo-200 text-indigo-700'
+              : 'bg-indigo-950/40 border-indigo-500/20 text-indigo-300'
+          }`}>
+            <Sparkles className={`w-3 h-3 ${theme === 'light' ? 'text-indigo-600' : 'text-indigo-400 fill-indigo-400/20'}`} />
             Automatic URL Context Recall
           </div>
           

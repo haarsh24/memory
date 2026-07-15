@@ -104,6 +104,7 @@ export default function App() {
   const [dashSearchResults, setDashSearchResults] = useState<SearchResult[]>([]);
   const [isDashSearching, setIsDashSearching] = useState(false);
   const [editingMemory, setEditingMemory] = useState<Memory | null>(null);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   // Chrome Extension custom URL and file viewer state
   const [activeExtFile, setActiveExtFile] = useState<"manifest" | "background" | "content_js" | "content_css" | "popup_html" | "popup_js">("manifest");
@@ -1436,16 +1437,20 @@ document.addEventListener("DOMContentLoaded", () => {
             className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-6 sm:space-y-8"
           >
             <div className="space-y-4 max-w-3xl">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-950/40 border border-indigo-500/20 rounded-full text-indigo-300 text-[10px] font-mono font-bold uppercase tracking-wider">
-                <Chrome className="w-3.5 h-3.5" />
+              <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider border transition-colors ${
+                theme === 'light'
+                  ? 'bg-indigo-50 border-indigo-200 text-indigo-700'
+                  : 'bg-indigo-950/40 border-indigo-500/20 text-indigo-300'
+              }`}>
+                <Chrome className={`w-3.5 h-3.5 ${theme === 'light' ? 'text-indigo-650' : 'text-indigo-300'}`} />
                 Live Playground
               </div>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-1">
-                  <h2 className="text-3xl font-extrabold tracking-tight text-zinc-100">
+                  <h2 className={`text-3xl font-extrabold tracking-tight ${theme === 'light' ? 'text-zinc-900' : 'text-zinc-100'}`}>
                     Virtual Sandbox
                   </h2>
-                  <p className="text-xs text-zinc-400 leading-relaxed font-medium">
+                  <p className={`text-xs leading-relaxed font-medium ${theme === 'light' ? 'text-zinc-600' : 'text-zinc-400'}`}>
                     Test the Memory companion inside a mock browser. Highlight content, save notes, switch pages, and watch the contextual layer automatically retrieve on return.
                   </p>
                 </div>
@@ -1883,9 +1888,11 @@ document.addEventListener("DOMContentLoaded", () => {
                   </AnimatePresence>
 
                   {/* Instructions Block */}
-                  <div className="bg-zinc-950/40 rounded-xl border border-zinc-900 p-5 space-y-3 shadow-sm text-xs text-zinc-400 leading-relaxed">
-                    <h3 className="font-bold text-zinc-200 flex items-center gap-1.5">
-                      <Info className="w-4 h-4 text-indigo-400" />
+                  <div className={`rounded-xl border p-5 space-y-3 shadow-sm text-xs leading-relaxed transition-colors duration-300 ${
+                    theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-650' : 'bg-zinc-950/40 border-zinc-900 text-zinc-400'
+                  }`}>
+                    <h3 className={`font-bold flex items-center gap-1.5 ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>
+                      <Info className="w-4 h-4 text-indigo-500" />
                       Testing Checklist
                     </h3>
                     <ol className="list-decimal pl-4 space-y-1.5 font-medium">
@@ -1920,6 +1927,265 @@ document.addEventListener("DOMContentLoaded", () => {
                 : 'bg-zinc-950/40 border-zinc-900'
             } md:min-h-[680px] md:max-h-[850px] overflow-visible md:overflow-hidden`}>
               
+              {/* Mobile Sidebar Overlay Drawer */}
+              <AnimatePresence>
+                {isMobileSidebarOpen && (
+                  <>
+                    {/* Backdrop */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 0.5 }}
+                      exit={{ opacity: 0 }}
+                      onClick={() => setIsMobileSidebarOpen(false)}
+                      className="fixed inset-0 bg-black z-[100] md:hidden"
+                    />
+                    
+                    {/* Sliding Drawer */}
+                    <motion.div
+                      initial={{ x: "-100%" }}
+                      animate={{ x: 0 }}
+                      exit={{ x: "-100%" }}
+                      transition={{ type: "spring", damping: 25, stiffness: 220 }}
+                      className={`fixed top-0 left-0 bottom-0 w-72 max-w-[80vw] h-full z-[101] flex flex-col justify-between p-6 shadow-2xl overflow-y-auto md:hidden border-r transition-colors duration-300 ${
+                        theme === 'light'
+                          ? 'bg-white border-zinc-200 text-zinc-800'
+                          : 'bg-[#07070a] border-zinc-900 text-zinc-100'
+                      }`}
+                    >
+                      <div className="space-y-7">
+                        {/* Brand Logo and Close Button */}
+                        <div className={`flex items-center justify-between pb-4 border-b ${
+                          theme === 'light' ? 'border-zinc-100' : 'border-zinc-900'
+                        }`}>
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shadow-md">
+                              <Brain className="w-4.5 h-4.5 text-indigo-500" />
+                            </div>
+                            <div>
+                              <span className={`font-extrabold tracking-tight text-sm block ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-100'}`}>Memory</span>
+                              <span className="text-[8px] font-mono font-bold tracking-widest text-indigo-500 uppercase block">SECOND BRAIN</span>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => setIsMobileSidebarOpen(false)}
+                            className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
+                              theme === 'light' 
+                                ? 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-zinc-950' 
+                                : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-100'
+                            }`}
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        {/* Core Filters */}
+                        <nav className="space-y-1.5 text-xs font-bold text-zinc-400 relative">
+                          <button
+                            onClick={() => {
+                              setDashboardTab("all");
+                              setSelectedProjectId(null);
+                              setIsMobileSidebarOpen(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
+                              dashboardTab === "all" && !selectedProjectId 
+                                ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100 font-extrabold' 
+                                : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'hover:text-zinc-200'
+                            }`}
+                          >
+                            {dashboardTab === "all" && !selectedProjectId && (
+                              <div className={`absolute inset-0 rounded-xl -z-10 border shadow-sm ${
+                                theme === 'light'
+                                  ? 'bg-zinc-100 border-zinc-250/80'
+                                  : 'bg-zinc-900 border-zinc-850'
+                              }`} />
+                            )}
+                            <span className="flex items-center gap-2.5 relative z-10">
+                              <Layers className="w-4 h-4 text-indigo-500" />
+                              All Memories
+                            </span>
+                            <span className={`px-2 py-0.5 rounded-lg text-[9px] relative z-10 border transition-colors ${
+                              theme === 'light'
+                                ? 'bg-zinc-150 text-zinc-600 border-zinc-200'
+                                : 'bg-zinc-900 text-zinc-400 border-zinc-850'
+                            }`}>{memories.length}</span>
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setDashboardTab("pinned");
+                              setSelectedProjectId(null);
+                              setIsMobileSidebarOpen(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
+                              dashboardTab === "pinned" 
+                                ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100 font-extrabold' 
+                                : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'hover:text-zinc-200'
+                            }`}
+                          >
+                            {dashboardTab === "pinned" && (
+                              <div className={`absolute inset-0 rounded-xl -z-10 border shadow-sm ${
+                                theme === 'light'
+                                  ? 'bg-zinc-100 border-zinc-250/80'
+                                  : 'bg-zinc-900 border-zinc-850'
+                              }`} />
+                            )}
+                            <span className="flex items-center gap-2.5 relative z-10">
+                              <Pin className="w-4 h-4 text-indigo-500" />
+                              Pinned memories
+                            </span>
+                            <span className={`px-2 py-0.5 rounded-lg text-[9px] relative z-10 border transition-colors ${
+                              theme === 'light'
+                                ? 'bg-zinc-150 text-zinc-600 border-zinc-200'
+                                : 'bg-zinc-900 text-zinc-400 border-zinc-850'
+                            }`}>
+                              {memories.filter(m => m.pinned).length}
+                            </span>
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setDashboardTab("search");
+                              setSelectedProjectId(null);
+                              setIsMobileSidebarOpen(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
+                              dashboardTab === "search" 
+                                ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100 font-extrabold' 
+                                : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'hover:text-zinc-200'
+                            }`}
+                          >
+                            {dashboardTab === "search" && (
+                              <div className={`absolute inset-0 rounded-xl -z-10 border shadow-sm ${
+                                theme === 'light'
+                                  ? 'bg-zinc-100 border-zinc-250/80'
+                                  : 'bg-zinc-900 border-zinc-850'
+                              }`} />
+                            )}
+                            <span className="flex items-center gap-2.5 relative z-10">
+                              <Search className="w-4 h-4 text-indigo-500" />
+                              AI Concept Search
+                            </span>
+                            <span className={`border px-1.5 py-0.5 rounded text-[8px] uppercase font-mono tracking-wider font-extrabold relative z-10 transition-colors ${
+                              theme === 'light'
+                                ? 'bg-indigo-50 border-indigo-200 text-indigo-700'
+                                : 'bg-indigo-950 border-indigo-500/10 text-indigo-300'
+                            }`}>Gemini</span>
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setDashboardTab("extension");
+                              setSelectedProjectId(null);
+                              setIsMobileSidebarOpen(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
+                              dashboardTab === "extension" 
+                                ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100 font-extrabold' 
+                                : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'hover:text-zinc-200'
+                            }`}
+                          >
+                            {dashboardTab === "extension" && (
+                              <div className={`absolute inset-0 rounded-xl -z-10 border shadow-sm ${
+                                theme === 'light'
+                                  ? 'bg-zinc-100 border-zinc-250/80'
+                                  : 'bg-zinc-900 border-zinc-850'
+                              }`} />
+                            )}
+                            <span className="flex items-center gap-2 relative z-10">
+                              <Chrome className="w-4 h-4 text-indigo-500" />
+                              Companion Setup
+                            </span>
+                            <span className={`border px-1.5 py-0.5 rounded text-[9px] uppercase font-mono tracking-wider font-bold transition-colors ${
+                              theme === 'light'
+                                ? 'bg-indigo-50 border-indigo-200 text-indigo-700'
+                                : 'bg-indigo-950 border-indigo-500/25 text-indigo-300'
+                            }`}>SETUP</span>
+                          </button>
+                        </nav>
+
+                        {/* Projects List */}
+                        <div className="space-y-2">
+                          <div className={`text-[10px] uppercase tracking-wider font-bold font-mono px-3 ${
+                            theme === 'light' ? 'text-zinc-400' : 'text-zinc-500'
+                          }`}>
+                            Projects & Spaces
+                          </div>
+                          <div className="space-y-1">
+                            {projects.map((proj) => {
+                              const count = memories.filter(m => m.projectId === proj.id).length;
+                              const isSelected = selectedProjectId === proj.id;
+                              return (
+                                <button
+                                  key={proj.id}
+                                  onClick={() => {
+                                    setSelectedProjectId(proj.id);
+                                    setDashboardTab("projects");
+                                    setIsMobileSidebarOpen(false);
+                                  }}
+                                  className={`w-full text-xs font-bold flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
+                                    isSelected 
+                                      ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100 font-extrabold' 
+                                      : theme === 'light' ? 'hover:text-zinc-800 text-zinc-500' : 'hover:text-zinc-200 text-zinc-400'
+                                  }`}
+                                >
+                                  {isSelected && (
+                                    <div className={`absolute inset-0 rounded-xl -z-10 border shadow-sm ${
+                                      theme === 'light'
+                                        ? 'bg-zinc-100 border-zinc-250/80'
+                                        : 'bg-zinc-900 border-zinc-850'
+                                    }`} />
+                                  )}
+                                  <span className="flex items-center gap-2.5 truncate relative z-10">
+                                    <Folder className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                                    <span className="truncate">{proj.name}</span>
+                                  </span>
+                                  <span className={`px-2 py-0.5 rounded-lg text-[9px] shrink-0 relative z-10 border transition-colors ${
+                                    theme === 'light'
+                                      ? 'bg-zinc-150 text-zinc-600 border-zinc-200'
+                                      : 'bg-zinc-900 text-zinc-400 border-zinc-850'
+                                  }`}>{count}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Minimalist Profile Details */}
+                      <div className={`pt-4 border-t flex items-center justify-between ${
+                        theme === 'light' ? 'border-zinc-200' : 'border-zinc-900'
+                      }`}>
+                        <div className="flex items-center gap-2.5 overflow-hidden">
+                          <img 
+                            src={user?.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80"} 
+                            alt="avatar" 
+                            className={`w-8 h-8 rounded-full border shadow-sm shrink-0 ${
+                              theme === 'light' ? 'border-zinc-200' : 'border-zinc-800'
+                            }`}
+                          />
+                          <div className="truncate">
+                            <div className={`text-xs font-bold truncate ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>{user?.name || "Demo User"}</div>
+                            <div className={`text-[10px] truncate ${theme === 'light' ? 'text-zinc-400' : 'text-zinc-500'}`}>{user?.email || "demo@example.com"}</div>
+                          </div>
+                        </div>
+                        <button 
+                          onClick={() => {
+                            handleLogout();
+                            setIsMobileSidebarOpen(false);
+                          }}
+                          className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                            theme === 'light' ? 'hover:bg-zinc-100 text-zinc-400 hover:text-zinc-700' : 'hover:bg-zinc-900 text-zinc-500 hover:text-zinc-200'
+                          }`}
+                          title="Sign Out"
+                        >
+                          <LogOut className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+
               {/* Sidebar Navigation */}
               <aside className={`hidden md:flex w-full md:w-64 border-r p-6 flex-col justify-between shrink-0 space-y-8 transition-colors duration-300 ${
                 theme === 'light'
@@ -2271,28 +2537,41 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 <div className="space-y-6">
                   {/* Dashboard Header Title */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                      <h3 className={`text-xl font-extrabold tracking-tight ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-100'}`}>
-                        {selectedProjectId 
-                          ? projects.find(p => p.id === selectedProjectId)?.name 
-                          : dashboardTab === "all" 
-                          ? "All Saved Memories" 
-                          : dashboardTab === "pinned"
-                          ? "Pinned Memories"
-                          : dashboardTab === "search"
-                          ? "Semantic AI Search"
-                          : dashboardTab === "extension"
-                          ? "Chrome Extension Integration"
-                          : "Settings"}
-                      </h3>
-                      <p className={`text-xs leading-relaxed font-medium ${theme === 'light' ? 'text-zinc-505' : 'text-zinc-400'}`}>
-                        {selectedProjectId 
-                          ? projects.find(p => p.id === selectedProjectId)?.description 
-                          : dashboardTab === "extension"
-                          ? "Integrate Memory Desk directly with your live Google Chrome browser."
-                          : "Remember why pages mattered with non-disruptive context indicators."}
-                      </p>
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => setIsMobileSidebarOpen(true)}
+                        className={`md:hidden p-2.5 rounded-xl border transition-colors flex items-center justify-center cursor-pointer shrink-0 ${
+                          theme === 'light' 
+                            ? 'bg-zinc-100 hover:bg-zinc-200 border-zinc-200 text-zinc-700' 
+                            : 'bg-zinc-900 hover:bg-zinc-850 border-zinc-800 text-zinc-350'
+                        }`}
+                        title="Open Menu"
+                      >
+                        <Filter className="w-4.5 h-4.5 text-indigo-500" />
+                      </button>
+                      <div>
+                        <h3 className={`text-xl font-extrabold tracking-tight ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-100'}`}>
+                          {selectedProjectId 
+                            ? projects.find(p => p.id === selectedProjectId)?.name 
+                            : dashboardTab === "all" 
+                            ? "All Saved Memories" 
+                            : dashboardTab === "pinned"
+                            ? "Pinned Memories"
+                            : dashboardTab === "search"
+                            ? "Semantic AI Search"
+                            : dashboardTab === "extension"
+                            ? "Chrome Extension Integration"
+                            : "Settings"}
+                        </h3>
+                        <p className={`text-xs leading-relaxed font-medium ${theme === 'light' ? 'text-zinc-500' : 'text-zinc-400'}`}>
+                          {selectedProjectId 
+                            ? projects.find(p => p.id === selectedProjectId)?.description 
+                            : dashboardTab === "extension"
+                            ? "Integrate Memory Desk directly with your live Google Chrome browser."
+                            : "Remember why pages mattered with non-disruptive context indicators."}
+                        </p>
+                      </div>
                     </div>
 
                     <button
@@ -2346,8 +2625,12 @@ document.addEventListener("DOMContentLoaded", () => {
                       <div className="space-y-4">
                         {isDashSearching ? (
                           <div className="space-y-3">
-                            <div className="h-12 bg-zinc-900/40 border border-zinc-850 rounded-xl animate-pulse"></div>
-                            <div className="h-12 bg-zinc-900/40 border border-zinc-850 rounded-xl animate-pulse"></div>
+                            <div className={`h-12 rounded-xl animate-pulse border ${
+                              theme === 'light' ? 'bg-zinc-100 border-zinc-200' : 'bg-zinc-900/40 border border-zinc-850'
+                            }`}></div>
+                            <div className={`h-12 rounded-xl animate-pulse border ${
+                              theme === 'light' ? 'bg-zinc-100 border-zinc-200' : 'bg-zinc-900/40 border border-zinc-850'
+                            }`}></div>
                           </div>
                         ) : dashSearchResults.length > 0 ? (
                           <div className="space-y-3.5">
@@ -2396,10 +2679,12 @@ document.addEventListener("DOMContentLoaded", () => {
                             <p className="text-xs text-zinc-500 max-w-sm mx-auto">Try typing conceptually, such as "laptop specs", "recruiters", "YouTube notes", or similar keywords.</p>
                           </div>
                         ) : (
-                          <div className="bg-zinc-950/40 border border-zinc-900 p-6 rounded-xl space-y-2 text-center">
-                            <Brain className="w-8 h-8 text-indigo-400 mx-auto animate-pulse" />
-                            <h4 className="font-bold text-indigo-300 text-xs">Vector Match Playground</h4>
-                            <p className="text-xs text-zinc-400 max-w-md mx-auto">
+                          <div className={`border p-6 rounded-xl space-y-2 text-center transition-colors duration-300 ${
+                            theme === 'light' ? 'bg-zinc-50 border-zinc-200' : 'bg-zinc-950/40 border border-zinc-900'
+                          }`}>
+                            <Brain className={`w-8 h-8 mx-auto animate-pulse ${theme === 'light' ? 'text-indigo-650' : 'text-indigo-400'}`} />
+                            <h4 className={`font-bold text-xs ${theme === 'light' ? 'text-indigo-650' : 'text-indigo-300'}`}>Vector Match Playground</h4>
+                            <p className={`text-xs max-w-md mx-auto font-medium ${theme === 'light' ? 'text-zinc-500' : 'text-zinc-400'}`}>
                               Our search query utilizes server-side embeddings projection logic. This means it queries concepts like "laptop" and successfully links to "MacBook Pro" without exact keyword constraints.
                             </p>
                           </div>
@@ -2797,7 +3082,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
 
                         return (
-                          <div className="grid gap-6">
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {filtered.map((mem) => (
                               <motion.div 
                                 layout
@@ -2950,7 +3235,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
 
                 {/* Micro footer inside dashboard */}
-                <div className="pt-8 border-t border-zinc-900 text-center text-[10px] text-zinc-500 font-mono">
+                <div className={`pt-8 border-t text-center text-[10px] text-zinc-500 font-mono transition-colors duration-300 ${
+                  theme === 'light' ? 'border-zinc-200' : 'border-zinc-900'
+                }`}>
                   Memory uses server-side Gemini 3.5 models to synthesize tags, generate smart workspaces, and perform vector conceptual matches.
                 </div>
               </main>
@@ -2968,14 +3255,20 @@ document.addEventListener("DOMContentLoaded", () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-zinc-950 rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4 text-left border border-zinc-900 max-h-[calc(100vh-32px)] overflow-y-auto"
+              className={`rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4 text-left border max-h-[calc(100vh-32px)] overflow-y-auto transition-colors duration-300 ${
+                theme === 'light' ? 'bg-white border-zinc-200 text-zinc-800 shadow-indigo-600/5' : 'bg-zinc-950 border-zinc-900 text-zinc-100 shadow-black/50'
+              }`}
             >
-              <div className="flex items-center justify-between border-b border-zinc-900 pb-2.5">
-                <h4 className="font-bold text-zinc-100 text-base flex items-center gap-1.5">
-                  <Edit2 className="w-4 h-4 text-indigo-400" />
+              <div className={`flex items-center justify-between border-b pb-2.5 ${
+                theme === 'light' ? 'border-zinc-150' : 'border-zinc-900'
+              }`}>
+                <h4 className={`font-bold text-base flex items-center gap-1.5 ${
+                  theme === 'light' ? 'text-zinc-850' : 'text-zinc-100'
+                }`}>
+                  <Edit2 className="w-4 h-4 text-indigo-500" />
                   Edit Saved Memory
                 </h4>
-                <button onClick={() => setEditingMemory(null)} className="text-zinc-500 hover:text-zinc-300 cursor-pointer">
+                <button onClick={() => setEditingMemory(null)} className="text-zinc-500 hover:text-zinc-350 cursor-pointer">
                   <X className="w-4.5 h-4.5" />
                 </button>
               </div>
@@ -2983,7 +3276,9 @@ document.addEventListener("DOMContentLoaded", () => {
               <div className="space-y-3.5">
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase font-bold tracking-wider text-zinc-500">Website</label>
-                  <p className="text-xs font-semibold text-zinc-200 flex items-center gap-1.5">
+                  <p className={`text-xs font-semibold flex items-center gap-1.5 ${
+                    theme === 'light' ? 'text-zinc-700' : 'text-zinc-200'
+                  }`}>
                     <span>{editingMemory.websiteIcon}</span>
                     <span>{editingMemory.pageTitle}</span>
                   </p>
@@ -3003,7 +3298,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         originalNote: prefix + textValue
                       });
                     }}
-                    className="w-full text-xs p-3 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:border-indigo-500 focus:bg-zinc-900/80 transition-all h-24 resize-none font-medium text-zinc-200"
+                    className={`w-full text-xs p-3 rounded-lg focus:outline-none focus:border-indigo-500 transition-all h-24 resize-none font-medium ${
+                      theme === 'light'
+                        ? 'bg-zinc-50 border border-zinc-200 focus:bg-white text-zinc-850'
+                        : 'bg-zinc-900 border border-zinc-800 focus:bg-zinc-900/80 text-zinc-200'
+                    }`}
                   />
                 </div>
 
@@ -3013,7 +3312,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     <select
                       value={editingMemory.priority}
                       onChange={(e) => setEditingMemory({ ...editingMemory, priority: e.target.value as any })}
-                      className="w-full text-xs p-2 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:border-indigo-500 focus:bg-zinc-900/80 text-zinc-200"
+                      className={`w-full text-xs p-2 rounded-lg focus:outline-none focus:border-indigo-500 transition-all font-semibold ${
+                        theme === 'light'
+                          ? 'bg-zinc-50 border border-zinc-200 text-zinc-750'
+                          : 'bg-zinc-900 border border-zinc-800 text-zinc-200'
+                      }`}
                     >
                       <option value="low">Low</option>
                       <option value="medium">Medium</option>
@@ -3026,7 +3329,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     <select
                       value={editingMemory.pinned ? "yes" : "no"}
                       onChange={(e) => setEditingMemory({ ...editingMemory, pinned: e.target.value === "yes" })}
-                      className="w-full text-xs p-2 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:border-indigo-500 focus:bg-zinc-900/80 text-zinc-200"
+                      className={`w-full text-xs p-2 rounded-lg focus:outline-none focus:border-indigo-500 transition-all font-semibold ${
+                        theme === 'light'
+                          ? 'bg-zinc-50 border border-zinc-200 text-zinc-750'
+                          : 'bg-zinc-900 border border-zinc-800 text-zinc-200'
+                      }`}
                     >
                       <option value="no">No</option>
                       <option value="yes">Yes</option>
@@ -3040,11 +3347,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     type="text"
                     value={editingMemory.aiSummary}
                     onChange={(e) => setEditingMemory({ ...editingMemory, aiSummary: e.target.value })}
-                    className="w-full text-xs p-2.5 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:border-indigo-500 focus:bg-zinc-900/80 font-medium text-zinc-200"
+                    className={`w-full text-xs p-2.5 rounded-lg focus:outline-none focus:border-indigo-500 transition-all font-medium ${
+                      theme === 'light'
+                        ? 'bg-zinc-50 border border-zinc-200 focus:bg-white text-zinc-850'
+                        : 'bg-zinc-900 border border-zinc-800 focus:bg-zinc-900/80 text-zinc-200'
+                    }`}
                   />
                 </div>
 
-                <div className="flex items-center gap-2 justify-end pt-2 border-t border-zinc-900">
+                <div className={`flex items-center gap-2 justify-end pt-2 border-t ${
+                  theme === 'light' ? 'border-zinc-150' : 'border-zinc-900'
+                }`}>
                   <button
                     type="button"
                     onClick={() => setEditingMemory(null)}
@@ -3066,7 +3379,9 @@ document.addEventListener("DOMContentLoaded", () => {
       </AnimatePresence>
 
       {/* Global Footer */}
-      <footer className="w-full max-w-7xl mx-auto px-6 py-8 mt-auto border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500 font-medium">
+      <footer className={`w-full max-w-7xl mx-auto px-6 py-8 mt-auto border-t flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500 font-medium transition-colors duration-300 ${
+        theme === 'light' ? 'border-zinc-200' : 'border-zinc-900'
+      }`}>
         <div>
           &copy; {new Date().getFullYear()} Memory Desk. All rights reserved.
         </div>
