@@ -17,6 +17,21 @@ import JSZip from "jszip";
 export default function App() {
   // Navigation & General App State
   const [currentView, setCurrentView] = useState<"homepage" | "browser" | "dashboard" | "install-extension">("homepage");
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    const saved = localStorage.getItem("mem_theme");
+    return (saved as "dark" | "light") || "dark";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("mem_theme", theme);
+    if (theme === "light") {
+      document.documentElement.classList.add("light");
+      document.documentElement.classList.remove("dark");
+    } else {
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+    }
+  }, [theme]);
   const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem("mem_user");
     return saved ? JSON.parse(saved) : {
@@ -1170,7 +1185,9 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   return (
-    <div className="bg-[#07070a] text-zinc-100 min-h-screen relative font-sans flex flex-col justify-between">
+    <div className={`min-h-screen w-full overflow-x-hidden relative font-sans flex flex-col justify-between transition-colors duration-300 ${
+      theme === 'light' ? 'bg-[#fcfcfc] text-zinc-900' : 'bg-[#07070a] text-zinc-100'
+    }`}>
       
       {/* Dynamic Status Notification */}
       <AnimatePresence>
@@ -1196,27 +1213,43 @@ document.addEventListener("DOMContentLoaded", () => {
       </AnimatePresence>
 
       {/* Primary Navigation tabs across App mode */}
-      <div className="bg-[#07070a]/80 backdrop-blur-md text-zinc-400 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between border-b border-zinc-900/60 sticky top-0 z-50 gap-2 sm:gap-4">
+      <div className={`px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between border-b sticky top-0 z-50 gap-2 sm:gap-4 transition-colors duration-300 ${
+        theme === 'light' 
+          ? 'bg-white/95 backdrop-blur-md border-zinc-200 text-zinc-600 shadow-sm' 
+          : 'bg-[#07070a]/80 backdrop-blur-md border-zinc-900/60 text-zinc-400'
+      }`}>
         <div className="flex items-center gap-2 cursor-pointer shrink-0" onClick={() => setCurrentView("homepage")}>
           <div className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shadow-md">
-            <Brain className="w-4.5 h-4.5 text-indigo-400" />
+            <Brain className="w-4.5 h-4.5 text-indigo-500" />
           </div>
           <div className="hidden min-[400px]:block">
-            <span className="font-extrabold tracking-tight text-xs sm:text-sm text-zinc-100 block">Memory</span>
-            <span className="text-[7px] sm:text-[8px] font-mono font-bold tracking-widest text-indigo-400 uppercase block">SECOND BRAIN</span>
+            <span className={`font-extrabold tracking-tight text-xs sm:text-sm block ${theme === 'light' ? 'text-zinc-900' : 'text-zinc-100'}`}>Memory</span>
+            <span className="text-[7px] sm:text-[8px] font-mono font-bold tracking-widest text-indigo-500 uppercase block">SECOND BRAIN</span>
           </div>
         </div>
 
-        <div className="flex items-center bg-zinc-900/60 p-0.5 sm:p-1 rounded-xl border border-zinc-900 relative overflow-x-auto scrollbar-none max-w-[55%] sm:max-w-none">
+        <div className={`flex items-center p-0.5 sm:p-1 rounded-xl border relative overflow-x-auto scrollbar-none flex-1 min-w-0 sm:flex-initial sm:max-w-none transition-colors duration-300 ${
+          theme === 'light' 
+            ? 'bg-zinc-100 border-zinc-200' 
+            : 'bg-zinc-900/60 border-zinc-900'
+        }`}>
           <button 
             id="nav_landing_btn"
             onClick={() => setCurrentView("homepage")}
-            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${currentView === 'homepage' ? 'text-zinc-100' : 'text-zinc-400 hover:text-zinc-200'}`}
+            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${
+              currentView === 'homepage' 
+                ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100' 
+                : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'text-zinc-400 hover:text-zinc-200'
+            }`}
           >
             {currentView === 'homepage' && (
               <motion.div 
                 layoutId="primaryNavCapsule"
-                className="absolute inset-0 bg-zinc-800/80 rounded-lg -z-10 border border-zinc-700/20"
+                className={`absolute inset-0 rounded-lg -z-10 border ${
+                  theme === 'light' 
+                    ? 'bg-white border-zinc-300/60 shadow-sm' 
+                    : 'bg-zinc-800/80 border-zinc-700/20'
+                }`}
                 transition={{ type: "spring", stiffness: 350, damping: 28 }}
               />
             )}
@@ -1225,12 +1258,20 @@ document.addEventListener("DOMContentLoaded", () => {
           <button 
             id="nav_browser_btn"
             onClick={() => setCurrentView("browser")}
-            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${currentView === 'browser' ? 'text-zinc-100' : 'text-zinc-400 hover:text-zinc-200'}`}
+            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${
+              currentView === 'browser' 
+                ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100' 
+                : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'text-zinc-400 hover:text-zinc-200'
+            }`}
           >
             {currentView === 'browser' && (
               <motion.div 
                 layoutId="primaryNavCapsule"
-                className="absolute inset-0 bg-zinc-800/80 rounded-lg -z-10 border border-zinc-700/20"
+                className={`absolute inset-0 rounded-lg -z-10 border ${
+                  theme === 'light' 
+                    ? 'bg-white border-zinc-300/60 shadow-sm' 
+                    : 'bg-zinc-800/80 border-zinc-700/20'
+                }`}
                 transition={{ type: "spring", stiffness: 350, damping: 28 }}
               />
             )}
@@ -1239,12 +1280,20 @@ document.addEventListener("DOMContentLoaded", () => {
           <button 
             id="nav_install_btn"
             onClick={() => setCurrentView("install-extension")}
-            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${currentView === 'install-extension' ? 'text-zinc-100' : 'text-zinc-400 hover:text-zinc-200'}`}
+            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${
+              currentView === 'install-extension' 
+                ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100' 
+                : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'text-zinc-400 hover:text-zinc-200'
+            }`}
           >
             {currentView === 'install-extension' && (
               <motion.div 
                 layoutId="primaryNavCapsule"
-                className="absolute inset-0 bg-zinc-800/80 rounded-lg -z-10 border border-zinc-700/20"
+                className={`absolute inset-0 rounded-lg -z-10 border ${
+                  theme === 'light' 
+                    ? 'bg-white border-zinc-300/60 shadow-sm' 
+                    : 'bg-zinc-800/80 border-zinc-700/20'
+                }`}
                 transition={{ type: "spring", stiffness: 350, damping: 28 }}
               />
             )}
@@ -1253,12 +1302,20 @@ document.addEventListener("DOMContentLoaded", () => {
           <button 
             id="nav_dashboard_btn"
             onClick={() => setCurrentView("dashboard")}
-            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${currentView === 'dashboard' ? 'text-zinc-100' : 'text-zinc-400 hover:text-zinc-200'}`}
+            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors relative z-10 text-[10px] sm:text-xs font-bold shrink-0 ${
+              currentView === 'dashboard' 
+                ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100' 
+                : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'text-zinc-400 hover:text-zinc-200'
+            }`}
           >
             {currentView === 'dashboard' && (
               <motion.div 
                 layoutId="primaryNavCapsule"
-                className="absolute inset-0 bg-zinc-800/80 rounded-lg -z-10 border border-zinc-700/20"
+                className={`absolute inset-0 rounded-lg -z-10 border ${
+                  theme === 'light' 
+                    ? 'bg-white border-zinc-300/60 shadow-sm' 
+                    : 'bg-zinc-800/80 border-zinc-700/20'
+                }`}
                 transition={{ type: "spring", stiffness: 350, damping: 28 }}
               />
             )}
@@ -1267,13 +1324,38 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
 
         <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+          <button
+            id="theme_toggle_btn"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className={`p-2 rounded-xl border transition-all duration-300 cursor-pointer flex items-center justify-center ${
+              theme === "light"
+                ? "bg-zinc-100 hover:bg-zinc-200 border-zinc-250 text-zinc-800 shadow-sm"
+                : "bg-zinc-900 hover:bg-zinc-850 border-zinc-800 text-zinc-400 hover:text-zinc-100"
+            }`}
+            title={theme === "light" ? "Switch to Cyber Dark" : "Switch to Clean Light"}
+          >
+            {theme === "light" ? (
+              <Moon className="w-4 h-4 text-indigo-600" />
+            ) : (
+              <Sun className="w-4 h-4 text-amber-400" />
+            )}
+          </button>
+
           {user ? (
             <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="hidden md:inline text-zinc-500 text-[10px] bg-zinc-950 px-2.5 py-1 rounded-lg border border-zinc-900 font-mono max-w-[120px] truncate">{user.email}</span>
+              <span className={`hidden md:inline text-[10px] px-2.5 py-1 rounded-lg border font-mono max-w-[120px] truncate transition-colors duration-300 ${
+                theme === 'light'
+                  ? 'bg-zinc-100 border-zinc-200 text-zinc-600'
+                  : 'bg-zinc-950 border-zinc-900 text-zinc-500'
+              }`}>{user.email}</span>
               <button 
                 id="header_logout_btn"
                 onClick={handleLogout}
-                className="text-zinc-400 hover:text-rose-450 text-[10px] font-bold transition-all px-2.5 py-1.5 bg-zinc-950/25 hover:bg-rose-950/10 rounded-lg border border-zinc-900 hover:border-rose-900/10 cursor-pointer flex items-center gap-1"
+                className={`text-[10px] font-bold transition-all px-2.5 py-1.5 rounded-lg border cursor-pointer flex items-center gap-1 ${
+                  theme === 'light'
+                    ? 'bg-zinc-100 hover:bg-rose-50 text-zinc-700 hover:text-rose-600 border-zinc-200 hover:border-rose-200'
+                    : 'bg-zinc-950/25 hover:bg-rose-950/10 text-zinc-400 hover:text-rose-450 border-zinc-900 hover:border-rose-900/10'
+                }`}
                 title="Sign Out"
               >
                 <span className="hidden min-[480px]:inline">Sign Out</span>
@@ -1284,7 +1366,11 @@ document.addEventListener("DOMContentLoaded", () => {
             <button 
               id="header_login_btn"
               onClick={handleLogin}
-              className="bg-zinc-100 hover:bg-white text-zinc-950 px-2.5 sm:px-3.5 py-1.5 rounded-lg sm:rounded-xl font-bold text-[10px] sm:text-xs transition-colors shadow-sm cursor-pointer"
+              className={`px-2.5 sm:px-3.5 py-1.5 rounded-lg sm:rounded-xl font-bold text-[10px] sm:text-xs transition-all shadow-sm cursor-pointer ${
+                theme === 'light'
+                  ? 'bg-zinc-900 hover:bg-zinc-800 text-white'
+                  : 'bg-zinc-100 hover:bg-white text-zinc-950'
+              }`}
             >
               Sign In
             </button>
@@ -1312,6 +1398,7 @@ document.addEventListener("DOMContentLoaded", () => {
               onLogout={handleLogout}
               initialMemories={memories}
               user={user}
+              theme={theme}
             />
           </motion.div>
         )}
@@ -1334,6 +1421,7 @@ document.addEventListener("DOMContentLoaded", () => {
               onDownloadFile={handleDownloadFile}
               memories={memories}
               showNotification={showNotification}
+              theme={theme}
             />
           </motion.div>
         )}
@@ -1826,19 +1914,27 @@ document.addEventListener("DOMContentLoaded", () => {
             transition={{ duration: 0.4 }}
             className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-12"
           >
-            <div className="bg-zinc-950/40 border border-zinc-900 shadow-2xl rounded-2xl overflow-hidden min-h-[620px] flex flex-col md:flex-row">
+            <div className={`shadow-2xl rounded-2xl flex flex-col md:flex-row transition-all duration-300 border ${
+              theme === 'light' 
+                ? 'bg-white border-zinc-200/80' 
+                : 'bg-zinc-950/40 border-zinc-900'
+            } md:min-h-[680px] md:max-h-[850px] overflow-visible md:overflow-hidden`}>
               
               {/* Sidebar Navigation */}
-              <aside className="hidden md:flex w-full md:w-64 bg-zinc-950/80 border-r border-zinc-900 p-6 flex-col justify-between shrink-0 space-y-8">
+              <aside className={`hidden md:flex w-full md:w-64 border-r p-6 flex-col justify-between shrink-0 space-y-8 transition-colors duration-300 ${
+                theme === 'light'
+                  ? 'bg-zinc-50/50 border-zinc-200'
+                  : 'bg-zinc-950/80 border-zinc-900'
+              }`}>
                 <div className="space-y-7">
                   {/* Brand logo */}
                   <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => setCurrentView("homepage")}>
                     <div className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shadow-md">
-                      <Brain className="w-4.5 h-4.5 text-indigo-400" />
+                      <Brain className="w-4.5 h-4.5 text-indigo-500" />
                     </div>
                     <div>
-                      <span className="font-extrabold tracking-tight text-sm text-zinc-100 block">Memory</span>
-                      <span className="text-[8px] font-mono font-bold tracking-widest text-indigo-400 uppercase block">SECOND BRAIN</span>
+                      <span className={`font-extrabold tracking-tight text-sm block ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-100'}`}>Memory</span>
+                      <span className="text-[8px] font-mono font-bold tracking-widest text-indigo-500 uppercase block">SECOND BRAIN</span>
                     </div>
                   </div>
 
@@ -1851,22 +1947,30 @@ document.addEventListener("DOMContentLoaded", () => {
                       }}
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
                         dashboardTab === "all" && !selectedProjectId 
-                          ? "text-zinc-100 font-extrabold" 
-                          : "hover:text-zinc-200"
+                          ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100 font-extrabold' 
+                          : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'hover:text-zinc-200'
                       }`}
                     >
                       {dashboardTab === "all" && !selectedProjectId && (
                         <motion.div 
                           layoutId="activeSidebarTab"
-                          className="absolute inset-0 bg-zinc-900 border border-zinc-850 rounded-xl -z-10 shadow-sm"
+                          className={`absolute inset-0 rounded-xl -z-10 border shadow-sm ${
+                            theme === 'light'
+                              ? 'bg-white border-zinc-250/80'
+                              : 'bg-zinc-900 border-zinc-850'
+                          }`}
                           transition={{ type: "spring", stiffness: 350, damping: 28 }}
                         />
                       )}
                       <span className="flex items-center gap-2.5 relative z-10">
-                        <Layers className="w-4 h-4 text-indigo-400" />
+                        <Layers className="w-4 h-4 text-indigo-500" />
                         All Memories
                       </span>
-                      <span className="bg-zinc-900 text-zinc-400 border border-zinc-850 px-2 py-0.5 rounded-lg text-[9px] relative z-10">{memories.length}</span>
+                      <span className={`px-2 py-0.5 rounded-lg text-[9px] relative z-10 border transition-colors ${
+                        theme === 'light'
+                          ? 'bg-zinc-100 text-zinc-600 border-zinc-200'
+                          : 'bg-zinc-900 text-zinc-400 border-zinc-850'
+                      }`}>{memories.length}</span>
                     </button>
 
                     <button
@@ -1876,22 +1980,30 @@ document.addEventListener("DOMContentLoaded", () => {
                       }}
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
                         dashboardTab === "pinned" 
-                          ? "text-zinc-100 font-extrabold" 
-                          : "hover:text-zinc-200"
+                          ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100 font-extrabold' 
+                          : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'hover:text-zinc-200'
                       }`}
                     >
                       {dashboardTab === "pinned" && (
                         <motion.div 
                           layoutId="activeSidebarTab"
-                          className="absolute inset-0 bg-zinc-900 border border-zinc-850 rounded-xl -z-10 shadow-sm"
+                          className={`absolute inset-0 rounded-xl -z-10 border shadow-sm ${
+                            theme === 'light'
+                              ? 'bg-white border-zinc-250/80'
+                              : 'bg-zinc-900 border-zinc-850'
+                          }`}
                           transition={{ type: "spring", stiffness: 350, damping: 28 }}
                         />
                       )}
                       <span className="flex items-center gap-2.5 relative z-10">
-                        <Pin className="w-4 h-4 text-indigo-400" />
+                        <Pin className="w-4 h-4 text-indigo-500" />
                         Pinned memories
                       </span>
-                      <span className="bg-zinc-900 text-zinc-400 border border-zinc-850 px-2 py-0.5 rounded-lg text-[9px] relative z-10">
+                      <span className={`px-2 py-0.5 rounded-lg text-[9px] relative z-10 border transition-colors ${
+                        theme === 'light'
+                          ? 'bg-zinc-100 text-zinc-600 border-zinc-200'
+                          : 'bg-zinc-900 text-zinc-400 border-zinc-850'
+                      }`}>
                         {memories.filter(m => m.pinned).length}
                       </span>
                     </button>
@@ -1903,22 +2015,30 @@ document.addEventListener("DOMContentLoaded", () => {
                       }}
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
                         dashboardTab === "search" 
-                          ? "text-zinc-100 font-extrabold" 
-                          : "hover:text-zinc-200"
+                          ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100 font-extrabold' 
+                          : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'hover:text-zinc-200'
                       }`}
                     >
                       {dashboardTab === "search" && (
                         <motion.div 
                           layoutId="activeSidebarTab"
-                          className="absolute inset-0 bg-zinc-900 border border-zinc-850 rounded-xl -z-10 shadow-sm"
+                          className={`absolute inset-0 rounded-xl -z-10 border shadow-sm ${
+                            theme === 'light'
+                              ? 'bg-white border-zinc-250/80'
+                              : 'bg-zinc-900 border-zinc-850'
+                          }`}
                           transition={{ type: "spring", stiffness: 350, damping: 28 }}
                         />
                       )}
                       <span className="flex items-center gap-2.5 relative z-10">
-                        <Search className="w-4 h-4 text-indigo-400" />
+                        <Search className="w-4 h-4 text-indigo-500" />
                         AI Concept Search
                       </span>
-                      <span className="bg-indigo-950 text-indigo-300 border border-indigo-500/10 px-1.5 py-0.5 rounded text-[8px] uppercase font-mono tracking-wider font-extrabold relative z-10">Gemini</span>
+                      <span className={`border px-1.5 py-0.5 rounded text-[8px] uppercase font-mono tracking-wider font-extrabold relative z-10 transition-colors ${
+                        theme === 'light'
+                          ? 'bg-indigo-50 border-indigo-200 text-indigo-700'
+                          : 'bg-indigo-950 border-indigo-500/10 text-indigo-300'
+                      }`}>Gemini</span>
                     </button>
 
                     <button
@@ -1928,28 +2048,38 @@ document.addEventListener("DOMContentLoaded", () => {
                       }}
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
                         dashboardTab === "extension" 
-                          ? "text-zinc-100 font-extrabold" 
-                          : "hover:text-zinc-200"
+                          ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100 font-extrabold' 
+                          : theme === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'hover:text-zinc-200'
                       }`}
                     >
                       {dashboardTab === "extension" && (
                         <motion.div 
                           layoutId="activeSidebarTab"
-                          className="absolute inset-0 bg-zinc-900 border border-zinc-850 rounded-xl -z-10 shadow-sm"
+                          className={`absolute inset-0 rounded-xl -z-10 border shadow-sm ${
+                            theme === 'light'
+                              ? 'bg-white border-zinc-250/80'
+                              : 'bg-zinc-900 border-zinc-850'
+                          }`}
                           transition={{ type: "spring", stiffness: 350, damping: 28 }}
                         />
                       )}
-                      <span className="flex items-center gap-2">
-                        <Chrome className="w-4 h-4 text-indigo-400" />
+                      <span className="flex items-center gap-2 relative z-10">
+                        <Chrome className="w-4 h-4 text-indigo-500" />
                         Companion Setup
                       </span>
-                      <span className="bg-indigo-950 text-indigo-300 border border-indigo-500/25 px-1.5 py-0.5 rounded text-[9px] uppercase font-mono tracking-wider font-bold">SETUP</span>
+                      <span className={`border px-1.5 py-0.5 rounded text-[9px] uppercase font-mono tracking-wider font-bold transition-colors ${
+                        theme === 'light'
+                          ? 'bg-indigo-50 border-indigo-200 text-indigo-700'
+                          : 'bg-indigo-950 border-indigo-500/25 text-indigo-300'
+                      }`}>SETUP</span>
                     </button>
                   </nav>
 
                   {/* Projects List */}
                   <div className="space-y-2">
-                    <div className="text-[10px] uppercase tracking-wider font-bold text-zinc-500 font-mono px-3">
+                    <div className={`text-[10px] uppercase tracking-wider font-bold font-mono px-3 ${
+                      theme === 'light' ? 'text-zinc-400' : 'text-zinc-500'
+                    }`}>
                       Projects & Spaces
                     </div>
                     <div className="space-y-1">
@@ -1965,22 +2095,30 @@ document.addEventListener("DOMContentLoaded", () => {
                             }}
                             className={`w-full text-xs font-bold flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-300 relative ${
                               isSelected 
-                                ? "text-zinc-100 font-extrabold" 
-                                : "hover:text-zinc-200 text-zinc-400"
+                                ? theme === 'light' ? 'text-zinc-950 font-extrabold' : 'text-zinc-100 font-extrabold' 
+                                : theme === 'light' ? 'hover:text-zinc-800 text-zinc-500' : 'hover:text-zinc-200 text-zinc-400'
                             }`}
                           >
                             {isSelected && (
                               <motion.div 
                                 layoutId="activeSidebarTab"
-                                className="absolute inset-0 bg-zinc-900 border border-zinc-850 rounded-xl -z-10 shadow-sm"
+                                className={`absolute inset-0 rounded-xl -z-10 border shadow-sm ${
+                                  theme === 'light'
+                                    ? 'bg-white border-zinc-250/80'
+                                    : 'bg-zinc-900 border-zinc-850'
+                                }`}
                                 transition={{ type: "spring", stiffness: 350, damping: 28 }}
                               />
                             )}
                             <span className="flex items-center gap-2.5 truncate relative z-10">
-                              <Folder className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                              <Folder className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
                               <span className="truncate">{proj.name}</span>
                             </span>
-                            <span className="bg-zinc-900 text-zinc-400 border border-zinc-850 px-2 py-0.5 rounded-lg text-[9px] shrink-0 relative z-10">{count}</span>
+                            <span className={`px-2 py-0.5 rounded-lg text-[9px] shrink-0 relative z-10 border transition-colors ${
+                              theme === 'light'
+                                ? 'bg-zinc-100 text-zinc-600 border-zinc-200'
+                                : 'bg-zinc-900 text-zinc-400 border-zinc-850'
+                            }`}>{count}</span>
                           </button>
                         );
                       })}
@@ -1989,21 +2127,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
 
                 {/* Minimalist Profile Details */}
-                <div className="pt-4 border-t border-zinc-900 flex items-center justify-between">
+                <div className={`pt-4 border-t flex items-center justify-between ${
+                  theme === 'light' ? 'border-zinc-200' : 'border-zinc-900'
+                }`}>
                   <div className="flex items-center gap-2.5 overflow-hidden">
                     <img 
                       src={user?.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80"} 
                       alt="avatar" 
-                      className="w-8 h-8 rounded-full border border-zinc-800 shadow-sm shrink-0"
+                      className={`w-8 h-8 rounded-full border shadow-sm shrink-0 ${
+                        theme === 'light' ? 'border-zinc-200' : 'border-zinc-800'
+                      }`}
                     />
                     <div className="truncate">
-                      <div className="text-xs font-bold text-zinc-200 truncate">{user?.name || "Demo User"}</div>
-                      <div className="text-[10px] text-zinc-500 truncate">{user?.email || "demo@example.com"}</div>
+                      <div className={`text-xs font-bold truncate ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>{user?.name || "Demo User"}</div>
+                      <div className={`text-[10px] truncate ${theme === 'light' ? 'text-zinc-400' : 'text-zinc-500'}`}>{user?.email || "demo@example.com"}</div>
                     </div>
                   </div>
                   <button 
                     onClick={handleLogout}
-                    className="p-1.5 hover:bg-zinc-900 text-zinc-500 hover:text-zinc-200 rounded-lg transition-colors cursor-pointer"
+                    className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                      theme === 'light' ? 'hover:bg-zinc-100 text-zinc-400 hover:text-zinc-700' : 'hover:bg-zinc-900 text-zinc-500 hover:text-zinc-200'
+                    }`}
                     title="Sign Out"
                   >
                     <LogOut className="w-4 h-4" />
@@ -2012,15 +2156,23 @@ document.addEventListener("DOMContentLoaded", () => {
               </aside>
 
               {/* Mobile Filter Row (only visible on mobile screens) */}
-              <div className="md:hidden flex flex-col gap-3.5 bg-zinc-950/60 border-b border-zinc-900 p-4 shrink-0">
+              <div className={`md:hidden flex flex-col gap-3.5 border-b p-4 shrink-0 transition-colors duration-300 ${
+                theme === 'light'
+                  ? 'bg-zinc-50 border-zinc-200'
+                  : 'bg-zinc-950/60 border-zinc-900'
+              }`}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
-                      <Brain className="w-3.5 h-3.5 text-indigo-400" />
+                      <Brain className="w-3.5 h-3.5 text-indigo-500" />
                     </div>
-                    <span className="text-xs font-extrabold text-zinc-200">Vault Menu</span>
+                    <span className={`text-xs font-extrabold ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>Vault Menu</span>
                   </div>
-                  <span className="text-[10px] bg-zinc-900 border border-zinc-850 text-zinc-400 px-2.5 py-0.5 rounded-lg font-mono font-bold">
+                  <span className={`text-[10px] border px-2.5 py-0.5 rounded-lg font-mono font-bold transition-colors ${
+                    theme === 'light'
+                      ? 'bg-zinc-100 border-zinc-200 text-zinc-650'
+                      : 'bg-zinc-900 border border-zinc-850 text-zinc-400'
+                  }`}>
                     {memories.length} Memories
                   </span>
                 </div>
@@ -2031,9 +2183,11 @@ document.addEventListener("DOMContentLoaded", () => {
                       setDashboardTab("all");
                       setSelectedProjectId(null);
                     }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-colors cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer ${
                       dashboardTab === "all" && !selectedProjectId
                         ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
+                        : theme === 'light'
+                        ? "bg-zinc-150 border border-zinc-250 text-zinc-600 hover:text-zinc-800"
                         : "bg-zinc-900 border border-zinc-850 text-zinc-400 hover:text-zinc-200"
                     }`}
                   >
@@ -2044,9 +2198,11 @@ document.addEventListener("DOMContentLoaded", () => {
                       setDashboardTab("pinned");
                       setSelectedProjectId(null);
                     }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-colors cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer ${
                       dashboardTab === "pinned"
                         ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
+                        : theme === 'light'
+                        ? "bg-zinc-150 border border-zinc-250 text-zinc-600 hover:text-zinc-800"
                         : "bg-zinc-900 border border-zinc-850 text-zinc-400 hover:text-zinc-200"
                     }`}
                   >
@@ -2057,9 +2213,11 @@ document.addEventListener("DOMContentLoaded", () => {
                       setDashboardTab("search");
                       setSelectedProjectId(null);
                     }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-colors cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer ${
                       dashboardTab === "search"
                         ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
+                        : theme === 'light'
+                        ? "bg-zinc-150 border border-zinc-250 text-zinc-600 hover:text-zinc-800"
                         : "bg-zinc-900 border border-zinc-850 text-zinc-400 hover:text-zinc-200"
                     }`}
                   >
@@ -2070,16 +2228,18 @@ document.addEventListener("DOMContentLoaded", () => {
                       setDashboardTab("extension");
                       setSelectedProjectId(null);
                     }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-colors cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer ${
                       dashboardTab === "extension"
                         ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
+                        : theme === 'light'
+                        ? "bg-zinc-150 border border-zinc-250 text-zinc-600 hover:text-zinc-800"
                         : "bg-zinc-900 border border-zinc-850 text-zinc-400 hover:text-zinc-200"
                     }`}
                   >
                     Setup
                   </button>
                   
-                  <div className="w-[1px] bg-zinc-900 shrink-0 mx-1 self-stretch" />
+                  <div className={`w-[1px] shrink-0 mx-1 self-stretch ${theme === 'light' ? 'bg-zinc-200' : 'bg-zinc-900'}`} />
                   
                   {projects.map((proj) => {
                     const count = memories.filter(m => m.projectId === proj.id).length;
@@ -2091,9 +2251,11 @@ document.addEventListener("DOMContentLoaded", () => {
                           setSelectedProjectId(proj.id);
                           setDashboardTab("projects");
                         }}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-colors cursor-pointer ${
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer ${
                           isSelected
                             ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
+                            : theme === 'light'
+                            ? "bg-zinc-150 border border-zinc-250 text-zinc-600 hover:text-zinc-800"
                             : "bg-zinc-900 border border-zinc-850 text-zinc-400 hover:text-zinc-200"
                         }`}
                       >
@@ -2105,13 +2267,13 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
 
               {/* Main Content Pane */}
-              <main className="flex-1 p-4 sm:p-8 bg-transparent flex flex-col justify-between overflow-y-auto md:max-h-[700px]">
+              <main className="flex-1 p-4 sm:p-8 bg-transparent flex flex-col justify-between md:overflow-y-auto md:max-h-[850px]">
                 
                 <div className="space-y-6">
                   {/* Dashboard Header Title */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                      <h3 className="text-xl font-extrabold text-zinc-100 tracking-tight">
+                      <h3 className={`text-xl font-extrabold tracking-tight ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-100'}`}>
                         {selectedProjectId 
                           ? projects.find(p => p.id === selectedProjectId)?.name 
                           : dashboardTab === "all" 
@@ -2124,7 +2286,7 @@ document.addEventListener("DOMContentLoaded", () => {
                           ? "Chrome Extension Integration"
                           : "Settings"}
                       </h3>
-                      <p className="text-xs text-zinc-400 leading-relaxed font-medium">
+                      <p className={`text-xs leading-relaxed font-medium ${theme === 'light' ? 'text-zinc-505' : 'text-zinc-400'}`}>
                         {selectedProjectId 
                           ? projects.find(p => p.id === selectedProjectId)?.description 
                           : dashboardTab === "extension"
@@ -2145,8 +2307,10 @@ document.addEventListener("DOMContentLoaded", () => {
                   {/* MAIN VIEW: SEMANTIC SEARCH */}
                   {dashboardTab === "search" && (
                     <div className="space-y-6">
-                      <form onSubmit={handleDashboardSearch} className="flex flex-col sm:flex-row gap-3 bg-zinc-950 border border-zinc-900 p-2 rounded-xl">
-                        <div className="relative flex-1">
+                      <form onSubmit={handleDashboardSearch} className={`flex flex-col sm:flex-row gap-3 p-2 rounded-xl border ${
+                        theme === 'light' ? 'bg-zinc-50 border-zinc-200' : 'bg-zinc-950 border-zinc-900'
+                      }`}>
+                        <div className="relative flex-1 min-w-0">
                           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-zinc-500" />
                           <input
                             type="text"
@@ -2154,7 +2318,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             placeholder="Type a query conceptually (e.g. microsoft contact, pricing details, Shadow DOM query fixes)..."
                             value={dashSearchQuery}
                             onChange={(e) => setDashSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 bg-transparent focus:outline-none text-xs sm:text-sm font-medium text-zinc-100 placeholder-zinc-500"
+                            className={`w-full pl-10 pr-4 py-2.5 bg-transparent focus:outline-none text-xs sm:text-sm font-medium placeholder-zinc-500 ${
+                              theme === 'light' ? 'text-zinc-800' : 'text-zinc-100'
+                            }`}
                           />
                         </div>
                         <button
@@ -2187,22 +2353,36 @@ document.addEventListener("DOMContentLoaded", () => {
                           <div className="space-y-3.5">
                             <div className="text-xs font-semibold text-zinc-500 font-mono uppercase tracking-wider">AI Sorted relevance matches:</div>
                             {dashSearchResults.map((res) => (
-                              <div key={res.id} className="bg-zinc-950/60 border border-zinc-900 rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                                <div className="space-y-1.5">
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-sm">{res.websiteIcon}</span>
-                                    <span className="text-xs font-bold text-zinc-200">{res.websiteName}</span>
-                                    <span className="text-[10px] bg-indigo-950/30 text-indigo-300 border border-indigo-500/10 font-bold px-2 py-0.5 rounded-full">
+                              <div key={res.id} className={`border rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-colors ${
+                                theme === 'light' 
+                                  ? 'bg-zinc-50 border-zinc-200' 
+                                  : 'bg-zinc-950/60 border-zinc-900'
+                              }`}>
+                                <div className="space-y-1.5 min-w-0 flex-1 w-full">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <span className="text-sm select-none">{res.websiteIcon}</span>
+                                    <span className={`text-xs font-bold ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>{res.websiteName}</span>
+                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                                      theme === 'light' 
+                                        ? 'bg-indigo-50 border-indigo-200 text-indigo-600' 
+                                        : 'bg-indigo-950/30 border-indigo-500/10 text-indigo-300'
+                                    }`}>
                                       {res.relevanceScore ? Math.round(res.relevanceScore * 100) : 0}% Match
                                     </span>
                                   </div>
-                                  <p className="text-xs font-bold text-zinc-500 truncate max-w-lg">{res.pageTitle}</p>
-                                  <p className="text-xs text-zinc-350 font-medium italic pl-3 border-l-2 border-indigo-500/40">
+                                  <p className={`text-xs font-bold break-words ${theme === 'light' ? 'text-zinc-500' : 'text-zinc-400'}`}>{res.pageTitle}</p>
+                                  <p className={`text-xs font-medium italic pl-3 border-l-2 border-indigo-500/40 break-words ${
+                                    theme === 'light' ? 'text-zinc-600' : 'text-zinc-300'
+                                  }`}>
                                     &ldquo;{res.originalNote}&rdquo;
                                   </p>
                                 </div>
                                 {res.matchExplanation && (
-                                  <div className="bg-zinc-900 border border-zinc-850 rounded-lg px-3 py-1.5 text-[10px] font-mono text-indigo-400 font-semibold max-w-[180px] text-center">
+                                  <div className={`rounded-lg px-3 py-1.5 text-[10px] font-mono font-semibold max-w-[180px] text-center border w-full sm:w-auto ${
+                                    theme === 'light' 
+                                      ? 'bg-white border-zinc-200 text-indigo-600 shadow-sm' 
+                                      : 'bg-zinc-900 border-zinc-850 text-indigo-400'
+                                  }`}>
                                     {res.matchExplanation}
                                   </div>
                                 )}
@@ -2230,19 +2410,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
                   {dashboardTab === "extension" && (
                     <div className="space-y-6">
-                      <div className="bg-amber-950/10 border border-amber-500/10 p-4 rounded-xl flex items-start gap-3">
-                        <Shield className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                      <div className={`border p-4 rounded-xl flex items-start gap-3 transition-colors ${
+                        theme === 'light' ? 'bg-amber-50/60 border-amber-200 text-amber-800' : 'bg-amber-955/10 border border-amber-500/10'
+                      }`}>
+                        <Shield className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                         <div className="space-y-1">
-                          <h4 className="font-bold text-amber-400 text-xs uppercase tracking-wider">How Local vs Deployed Domain works</h4>
-                          <p className="text-xs text-amber-300/80 leading-relaxed font-medium">
+                          <h4 className={`font-bold text-xs uppercase tracking-wider ${theme === 'light' ? 'text-amber-700' : 'text-amber-400'}`}>How Local vs Deployed Domain works</h4>
+                          <p className={`text-xs leading-relaxed font-medium ${theme === 'light' ? 'text-amber-800' : 'text-amber-300/80'}`}>
                             Your Chrome Extension needs to communicate with your deployed backend server. By default, we pre-configure the files with the URL we detected: <strong className="font-bold underline">{customBackendUrl}</strong>. If you deploy this applet to Google Cloud Run, Vercel, or your custom server, simply update the URL input below and click <strong>Download All Files</strong> to instantly generate configured extension workers!
                           </p>
                         </div>
                       </div>
 
                       {/* Backend URL configuration input */}
-                      <div className="bg-zinc-950/40 border border-zinc-900 p-4 rounded-xl space-y-3">
-                        <label className="text-[10px] uppercase font-bold text-zinc-500 font-mono tracking-wider block">
+                      <div className={`border p-4 rounded-xl space-y-3 transition-colors ${
+                        theme === 'light' ? 'bg-zinc-50 border-zinc-200' : 'bg-zinc-950/40 border border-zinc-900'
+                      }`}>
+                        <label className={`text-[10px] uppercase font-bold font-mono tracking-wider block ${
+                          theme === 'light' ? 'text-zinc-400' : 'text-zinc-500'
+                        }`}>
                           Configure Extension Backend Target Server
                         </label>
                         <div className="flex flex-col sm:flex-row gap-3">
@@ -2254,7 +2440,11 @@ document.addEventListener("DOMContentLoaded", () => {
                               placeholder="https://your-deployed-server-url.run.app"
                               value={customBackendUrl}
                               onChange={(e) => setCustomBackendUrl(e.target.value)}
-                              className="w-full pl-10 pr-4 py-2 bg-zinc-900/60 border border-zinc-850 focus:outline-none rounded-lg text-xs font-bold text-zinc-200 focus:border-indigo-500 transition-colors"
+                              className={`w-full pl-10 pr-4 py-2 border focus:outline-none rounded-lg text-xs font-bold transition-all ${
+                                theme === 'light' 
+                                  ? 'bg-white border-zinc-200 text-zinc-800 focus:border-indigo-500' 
+                                  : 'bg-zinc-900/60 border border-zinc-850 text-zinc-200 focus:border-indigo-500'
+                              }`}
                             />
                           </div>
                           <button
@@ -2271,49 +2461,63 @@ document.addEventListener("DOMContentLoaded", () => {
                       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                         {/* LEFT COLUMN: 3 Step Guide (5 cols) */}
                         <div className="lg:col-span-5 space-y-4">
-                          <h4 className="font-extrabold text-zinc-200 text-sm tracking-tight border-b border-zinc-900 pb-2">
+                          <h4 className={`font-extrabold text-sm tracking-tight border-b pb-2 ${
+                            theme === 'light' ? 'text-zinc-800 border-zinc-200' : 'text-zinc-200 border-zinc-900'
+                          }`}>
                             🚀 Chrome Installation Guide
                           </h4>
 
                           <div className="space-y-4 font-sans text-xs">
                             <div className="flex gap-3">
-                              <span className="bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono font-bold w-5.5 h-5.5 rounded-full flex items-center justify-center shrink-0 text-[11px]">1</span>
+                              <span className={`border font-mono font-bold w-5.5 h-5.5 rounded-full flex items-center justify-center shrink-0 text-[11px] ${
+                                theme === 'light' ? 'bg-white border-zinc-200 text-zinc-650' : 'bg-zinc-900 border-zinc-800 text-zinc-300'
+                              }`}>1</span>
                               <div className="space-y-0.5">
-                                <h5 className="font-bold text-zinc-200">Download ZIP Package</h5>
-                                <p className="text-zinc-400 leading-relaxed font-medium">
-                                  Click the <strong className="font-bold text-indigo-400">Download Extension Package (ZIP)</strong> button above to download all pre-configured assets bundled as a single package.
+                                <h5 className={`font-bold ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>Download ZIP Package</h5>
+                                <p className={`leading-relaxed font-medium ${theme === 'light' ? 'text-zinc-500' : 'text-zinc-400'}`}>
+                                  Click the <strong className="font-bold text-indigo-500">Download Extension Package (ZIP)</strong> button above to download all pre-configured assets bundled as a single package.
                                 </p>
                               </div>
                             </div>
 
                             <div className="flex gap-3">
-                              <span className="bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono font-bold w-5.5 h-5.5 rounded-full flex items-center justify-center shrink-0 text-[11px]">2</span>
+                              <span className={`border font-mono font-bold w-5.5 h-5.5 rounded-full flex items-center justify-center shrink-0 text-[11px] ${
+                                theme === 'light' ? 'bg-white border-zinc-200 text-zinc-650' : 'bg-zinc-900 border-zinc-800 text-zinc-300'
+                              }`}>2</span>
                               <div className="space-y-0.5">
-                                <h5 className="font-bold text-zinc-200">Extract the ZIP Folder</h5>
-                                <p className="text-zinc-400 leading-relaxed font-medium">
-                                  Extract/unzip the downloaded <code className="font-mono bg-zinc-900 px-1 py-0.5 rounded text-indigo-400 text-[10px] font-semibold">MemoryDeskExtension.zip</code> file into a standard folder anywhere on your computer.
+                                <h5 className={`font-bold ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>Extract the ZIP Folder</h5>
+                                <p className={`leading-relaxed font-medium ${theme === 'light' ? 'text-zinc-500' : 'text-zinc-400'}`}>
+                                  Extract/unzip the downloaded <code className={`font-mono px-1 py-0.5 rounded text-[10px] font-semibold ${
+                                    theme === 'light' ? 'bg-zinc-150 text-indigo-600' : 'bg-zinc-900 text-indigo-400'
+                                  }`}>MemoryDeskExtension.zip</code> file into a standard folder anywhere on your computer.
                                 </p>
                               </div>
                             </div>
 
                             <div className="flex gap-3">
-                              <span className="bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono font-bold w-5.5 h-5.5 rounded-full flex items-center justify-center shrink-0 text-[11px]">3</span>
+                              <span className={`border font-mono font-bold w-5.5 h-5.5 rounded-full flex items-center justify-center shrink-0 text-[11px] ${
+                                theme === 'light' ? 'bg-white border-zinc-200 text-zinc-650' : 'bg-zinc-900 border-zinc-800 text-zinc-300'
+                              }`}>3</span>
                               <div className="space-y-0.5">
-                                <h5 className="font-bold text-zinc-200">Load Unpacked in Chrome</h5>
-                                <p className="text-zinc-400 leading-relaxed font-medium">
-                                  Open Chrome and go to <span className="font-mono bg-zinc-900 px-1.5 py-0.5 rounded text-zinc-350 font-bold text-[10px]">chrome://extensions/</span>. Enable the **Developer mode** toggle in the top-right, click **Load unpacked** in the top-left, and select your extracted folder! Done! 🚀
+                                <h5 className={`font-bold ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>Load Unpacked in Chrome</h5>
+                                <p className={`leading-relaxed font-medium ${theme === 'light' ? 'text-zinc-500' : 'text-zinc-400'}`}>
+                                  Open Chrome and go to <span className={`font-mono px-1.5 py-0.5 rounded font-bold text-[10px] ${
+                                    theme === 'light' ? 'bg-zinc-150 text-zinc-700' : 'bg-zinc-900 text-zinc-350'
+                                  }`}>chrome://extensions/</span>. Enable the **Developer mode** toggle in the top-right, click **Load unpacked** in the top-left, and select your extracted folder! Done! 🚀
                                 </p>
                               </div>
                             </div>
                           </div>
 
                           {/* Dynamic Seed synchronization panel */}
-                          <div className="bg-zinc-950/40 border border-zinc-900 p-4 rounded-xl space-y-3.5 mt-4">
+                          <div className={`border p-4 rounded-xl space-y-3.5 mt-4 ${
+                            theme === 'light' ? 'bg-zinc-50 border-zinc-200' : 'bg-zinc-950/40 border border-zinc-900'
+                          }`}>
                             <div className="flex items-center gap-1.5">
-                              <Sparkles className="w-4 h-4 text-indigo-400" />
-                              <h5 className="font-bold text-zinc-200 text-xs">Instantly Sync App Data</h5>
+                              <Sparkles className="w-4 h-4 text-indigo-500" />
+                              <h5 className={`font-bold text-xs ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>Instantly Sync App Data</h5>
                             </div>
-                            <p className="text-[11px] text-zinc-400 leading-relaxed font-medium">
+                            <p className={`text-[11px] leading-relaxed font-medium ${theme === 'light' ? 'text-zinc-500' : 'text-zinc-400'}`}>
                               Seed your fresh browser extension immediately with your current app memories so you do not start empty!
                             </p>
                             <div className="space-y-2">
@@ -2323,9 +2527,13 @@ document.addEventListener("DOMContentLoaded", () => {
                                   navigator.clipboard.writeText(text);
                                   showNotification("Extension seeds copied! Paste them in Chrome Extension LocalStorage Console or Import menu.", "success");
                                 }}
-                                className="w-full bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-zinc-300 text-[11px] font-bold py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
+                                className={`w-full text-[11px] font-bold py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 shadow-sm border cursor-pointer ${
+                                  theme === 'light' 
+                                    ? 'bg-white border-zinc-200 text-zinc-650 hover:bg-zinc-100' 
+                                    : 'bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-zinc-300'
+                                }`}
                               >
-                                <Copy className="w-3 h-3 text-zinc-400" />
+                                <Copy className="w-3 h-3 text-zinc-500" />
                                 Copy Memories JSON Seed Block
                               </button>
                             </div>
@@ -2333,22 +2541,30 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
 
                         {/* RIGHT COLUMN: File Previewer Tab structure (7 cols) */}
-                        <div className="lg:col-span-7 flex flex-col space-y-4">
-                          <div className="bg-zinc-950/40 border border-zinc-900 rounded-2xl p-5 flex flex-col space-y-3.5 shadow-sm">
+                        <div className="lg:col-span-7 flex flex-col space-y-4 min-w-0">
+                          <div className={`border rounded-2xl p-5 flex flex-col space-y-3.5 shadow-sm ${
+                            theme === 'light' ? 'bg-zinc-50 border-zinc-200' : 'bg-zinc-950/40 border border-zinc-900'
+                          }`}>
                             <div className="flex items-center justify-between">
-                              <h5 className="font-extrabold text-zinc-200 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                                <Settings className="w-4 h-4 text-indigo-400" />
+                              <h5 className={`font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 ${
+                                theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'
+                              }`}>
+                                <Settings className="w-4 h-4 text-indigo-500" />
                                 Extension Source Sandbox
                               </h5>
                               <button
                                 onClick={() => setShowTechnicalFiles(!showTechnicalFiles)}
-                                className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 px-3.5 py-1.5 rounded-xl text-[10px] font-bold text-indigo-400 transition-all flex items-center gap-1 shadow-sm cursor-pointer"
+                                className={`border px-3.5 py-1.5 rounded-xl text-[10px] font-bold transition-all flex items-center gap-1 shadow-sm cursor-pointer ${
+                                  theme === 'light' 
+                                    ? 'bg-white border-zinc-200 text-indigo-600 hover:bg-zinc-100' 
+                                    : 'bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-indigo-400'
+                                }`}
                               >
                                 {showTechnicalFiles ? "Hide Code View" : "Expand Code View"}
                                 <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showTechnicalFiles ? "rotate-180" : ""}`} />
                               </button>
                             </div>
-                            <p className="text-[11px] text-zinc-400 leading-relaxed font-semibold">
+                            <p className={`text-[11px] leading-relaxed font-semibold ${theme === 'light' ? 'text-zinc-500' : 'text-zinc-400'}`}>
                               Inspect, review, or copy the pre-configured browser extension scripts that establish communication hooks back to your server.
                             </p>
                           </div>
@@ -2368,7 +2584,11 @@ document.addEventListener("DOMContentLoaded", () => {
                                   <div className="flex gap-2">
                                     <button
                                       onClick={() => handleCopyFile(activeExtFile)}
-                                      className="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 font-bold text-[10px] px-2.5 py-1.5 rounded flex items-center gap-1 transition-colors cursor-pointer"
+                                      className={`border font-bold text-[10px] px-2.5 py-1.5 rounded flex items-center gap-1 transition-colors cursor-pointer ${
+                                        theme === 'light' 
+                                          ? 'bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-100' 
+                                          : 'bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300'
+                                      }`}
                                     >
                                       <Copy className="w-3 h-3" />
                                       Copy Code
@@ -2384,7 +2604,9 @@ document.addEventListener("DOMContentLoaded", () => {
                                 </div>
 
                                 {/* File Selection Tabs */}
-                                <div className="flex flex-wrap gap-1.5 bg-zinc-950 p-1.5 rounded-lg border border-zinc-900">
+                                <div className={`flex flex-wrap gap-1.5 p-1.5 rounded-lg border ${
+                                  theme === 'light' ? 'bg-zinc-100 border-zinc-200' : 'bg-zinc-950 border-zinc-900'
+                                }`}>
                                   {[
                                     { id: "manifest", name: "manifest.json" },
                                     { id: "background", name: "background.js" },
@@ -2399,6 +2621,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                       className={`text-[11px] px-2.5 py-1 font-bold rounded-md transition-all cursor-pointer ${
                                         activeExtFile === f.id
                                           ? "bg-indigo-600 text-white"
+                                          : theme === 'light'
+                                          ? "text-zinc-500 hover:text-zinc-800"
                                           : "text-zinc-500 hover:text-zinc-300"
                                       }`}
                                     >
@@ -2408,11 +2632,17 @@ document.addEventListener("DOMContentLoaded", () => {
                                 </div>
 
                                 {/* Monospace Code Code block panel */}
-                                <div className="relative border border-zinc-900 rounded-xl overflow-hidden bg-zinc-950 shadow-inner flex-1 min-h-[300px] flex flex-col">
-                                  <div className="absolute right-3.5 top-3.5 z-10 text-[9px] uppercase tracking-wider font-extrabold text-indigo-400 font-mono bg-zinc-900 px-2 py-0.5 rounded border border-zinc-850">
+                                <div className={`relative border rounded-xl overflow-hidden shadow-inner flex-1 min-h-[300px] flex flex-col ${
+                                  theme === 'light' ? 'border-zinc-200 bg-zinc-50' : 'border-zinc-900 bg-zinc-950'
+                                }`}>
+                                  <div className={`absolute right-3.5 top-3.5 z-10 text-[9px] uppercase tracking-wider font-extrabold font-mono px-2 py-0.5 rounded border ${
+                                    theme === 'light' ? 'bg-white border-zinc-200 text-indigo-650' : 'bg-zinc-900 border-zinc-850 text-indigo-400'
+                                  }`}>
                                     {getFilename(activeExtFile)}
                                   </div>
-                                  <pre className="p-5 font-mono text-[10px] text-zinc-400 overflow-x-auto overflow-y-auto max-h-[360px] leading-relaxed whitespace-pre font-medium">
+                                  <pre className={`p-5 font-mono text-[10px] overflow-x-auto overflow-y-auto max-h-[360px] leading-relaxed whitespace-pre font-medium w-full max-w-full ${
+                                    theme === 'light' ? 'text-zinc-700' : 'text-zinc-400'
+                                  }`}>
                                     {getExtensionFile(activeExtFile)}
                                   </pre>
                                 </div>
@@ -2428,22 +2658,28 @@ document.addEventListener("DOMContentLoaded", () => {
                   {dashboardTab !== "search" && dashboardTab !== "settings" && dashboardTab !== "extension" && (
                     <div className="space-y-5">
                       {/* Integrated Instant Search & Tag Pills */}
-                      <div className="bg-zinc-950/40 border border-zinc-900 p-4.5 rounded-2xl space-y-4 shadow-sm">
+                      <div className={`border p-4.5 rounded-2xl space-y-4 shadow-sm transition-colors ${
+                        theme === 'light' ? 'bg-zinc-50/50 border-zinc-200' : 'bg-zinc-950/40 border border-zinc-900'
+                      }`}>
                         <div className="flex flex-col sm:flex-row gap-3">
                           {/* Live search input */}
-                          <div className="relative flex-1 bg-zinc-900/60 border border-zinc-850 rounded-xl px-3.5 py-2.5 flex items-center shadow-inner">
+                          <div className={`relative flex-1 min-w-0 border rounded-xl px-3.5 py-2.5 flex items-center shadow-inner ${
+                            theme === 'light' ? 'bg-white border-zinc-250/80' : 'bg-zinc-900/60 border border-zinc-850'
+                          }`}>
                             <Search className="w-4 h-4 text-zinc-500 mr-2 shrink-0" />
                             <input
                               type="text"
                               placeholder="Fuzzy-filter page title, note content, domain, or tag..."
                               value={dashSearchQuery}
                               onChange={(e) => setDashSearchQuery(e.target.value)}
-                              className="w-full bg-transparent text-xs focus:outline-none font-medium text-zinc-200 placeholder-zinc-500"
+                              className={`w-full bg-transparent text-xs focus:outline-none font-medium ${
+                                theme === 'light' ? 'text-zinc-800 placeholder-zinc-400' : 'text-zinc-200 placeholder-zinc-500'
+                              }`}
                             />
                             {dashSearchQuery && (
                               <button
                                 onClick={() => setDashSearchQuery("")}
-                                className="text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer"
+                                className="text-zinc-500 hover:text-zinc-350 transition-colors cursor-pointer"
                               >
                                 <X className="w-3.5 h-3.5" />
                               </button>
@@ -2473,8 +2709,12 @@ document.addEventListener("DOMContentLoaded", () => {
                           const allTags = Array.from(new Set(memories.flatMap(m => m.tags))).filter(Boolean);
                           if (allTags.length === 0) return null;
                           return (
-                            <div className="flex flex-col gap-2 pt-1 border-t border-zinc-900">
-                              <div className="text-[10px] uppercase font-bold text-zinc-500 font-mono tracking-wider">
+                            <div className={`flex flex-col gap-2 pt-1 border-t ${
+                              theme === 'light' ? 'border-zinc-200' : 'border-zinc-900'
+                            }`}>
+                              <div className={`text-[10px] uppercase font-bold font-mono tracking-wider ${
+                                theme === 'light' ? 'text-zinc-400' : 'text-zinc-500'
+                              }`}>
                                 Filter by tag:
                               </div>
                               <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
@@ -2483,6 +2723,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                   className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all border cursor-pointer ${
                                     selectedTag === null
                                       ? "bg-indigo-600 text-white border-indigo-600"
+                                      : theme === 'light'
+                                      ? "bg-zinc-100 hover:bg-zinc-200 text-zinc-500 border-zinc-200/80"
                                       : "bg-zinc-900 hover:bg-zinc-850 text-zinc-400 border-zinc-800"
                                   }`}
                                 >
@@ -2497,6 +2739,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                       className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all border flex items-center gap-1 cursor-pointer ${
                                         isSelected
                                           ? "bg-indigo-600 text-white border-indigo-600"
+                                          : theme === 'light'
+                                          ? "bg-zinc-100 hover:bg-zinc-200 text-zinc-500 border-zinc-200/80"
                                           : "bg-zinc-900 hover:bg-zinc-850 text-zinc-400 border-zinc-800"
                                       }`}
                                     >
@@ -2538,10 +2782,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         if (filtered.length === 0) {
                           return (
-                            <div className="text-center py-16 border border-dashed border-zinc-800 rounded-2xl bg-zinc-900/10 space-y-4">
-                              <Brain className="w-10 h-10 text-zinc-700 mx-auto" />
+                            <div className={`text-center py-16 border border-dashed rounded-2xl space-y-4 ${
+                              theme === 'light' ? 'border-zinc-200 bg-zinc-50/50' : 'border-zinc-800 bg-zinc-900/10'
+                            }`}>
+                              <Brain className={`w-10 h-10 mx-auto ${theme === 'light' ? 'text-zinc-350' : 'text-zinc-700'}`} />
                               <div className="space-y-1">
-                                <h4 className="font-bold text-zinc-300 text-sm">You haven't forgotten anything yet.</h4>
+                                <h4 className={`font-bold text-sm ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-300'}`}>You haven't forgotten anything yet.</h4>
                                 <p className="text-xs text-zinc-500 max-w-xs mx-auto">
                                   Your internet memory starts here. Go capture your first memory on any webpage via the Virtual Browser.
                                 </p>
@@ -2560,28 +2806,38 @@ document.addEventListener("DOMContentLoaded", () => {
                                 exit={{ opacity: 0, y: -12 }}
                                 transition={{ type: "spring", stiffness: 350, damping: 30 }}
                                 key={mem.id}
-                                className="bg-zinc-950 rounded-3xl border border-zinc-900 p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 hover:border-zinc-800 transition-all duration-300 flex flex-col justify-between gap-5 relative group"
+                                className={`rounded-3xl border p-6 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between gap-5 relative group ${
+                                  theme === 'light' 
+                                    ? 'bg-zinc-50/45 border-zinc-200 hover:border-zinc-350 hover:bg-zinc-50' 
+                                    : 'bg-zinc-950 border-zinc-900 hover:border-zinc-800'
+                                }`}
                               >
                                 <div className="space-y-4">
                                   {/* Favicon & domain info row */}
-                                  <div className="flex items-start justify-between gap-3">
-                                    <div className="flex items-start gap-3 min-w-0">
-                                      <span className="text-2xl select-none w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shadow-inner shrink-0">{mem.websiteIcon}</span>
+                                  <div className="flex flex-col min-[480px]:flex-row min-[480px]:items-center justify-between gap-3">
+                                    <div className="flex items-center gap-3 min-w-0">
+                                      <span className={`text-2xl select-none w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border shadow-inner ${
+                                        theme === 'light' ? 'bg-white border-zinc-200 text-zinc-800' : 'bg-zinc-900 border-zinc-800'
+                                      }`}>{mem.websiteIcon}</span>
                                       <div className="min-w-0">
-                                        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                                          <span className="font-display font-extrabold text-sm text-zinc-200 truncate">{mem.websiteName}</span>
-                                          <span className="text-[10px] text-zinc-500 font-mono truncate">({mem.domain})</span>
+                                        <div className="flex flex-col">
+                                          <span className={`font-display font-extrabold text-sm truncate ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>{mem.websiteName}</span>
+                                          <span className={`text-[10px] font-mono truncate ${theme === 'light' ? 'text-zinc-400' : 'text-zinc-500'}`}>({mem.domain})</span>
                                         </div>
                                       </div>
                                     </div>
                                     
                                     {/* Action items */}
-                                    <div className="flex items-center gap-1.5 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300 shrink-0">
+                                    <div className="flex items-center gap-1.5 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300 shrink-0 self-end min-[480px]:self-auto">
                                       <button
                                         onClick={() => handleTogglePin(mem.id)}
                                         className={`p-2 rounded-xl border transition-all duration-200 cursor-pointer ${
                                           mem.pinned 
-                                            ? "bg-indigo-950/40 border-indigo-500/20 text-indigo-300 shadow-sm" 
+                                            ? theme === 'light'
+                                              ? "bg-indigo-50 border-indigo-200 text-indigo-600 shadow-sm"
+                                              : "bg-indigo-950/40 border-indigo-500/20 text-indigo-300 shadow-sm" 
+                                            : theme === 'light'
+                                            ? "bg-white border-zinc-200 text-zinc-400 hover:text-indigo-600 hover:border-indigo-100"
                                             : "bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-indigo-450 hover:border-zinc-700"
                                         }`}
                                         title={mem.pinned ? "Unpin" : "Pin memory"}
@@ -2590,14 +2846,22 @@ document.addEventListener("DOMContentLoaded", () => {
                                       </button>
                                       <button
                                         onClick={() => setEditingMemory(mem)}
-                                        className="p-2 rounded-xl border bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-zinc-350 hover:border-zinc-750 transition-all duration-200 cursor-pointer"
+                                        className={`p-2 rounded-xl border transition-all duration-200 cursor-pointer ${
+                                          theme === 'light'
+                                            ? "bg-white border-zinc-200 text-zinc-400 hover:text-zinc-700 hover:border-zinc-300"
+                                            : "bg-zinc-900 border-zinc-880 text-zinc-500 hover:text-zinc-350 hover:border-zinc-750"
+                                        }`}
                                         title="Edit note"
                                       >
                                         <Edit2 className="w-4 h-4" />
                                       </button>
                                       <button
                                         onClick={() => handleDeleteMemory(mem.id)}
-                                        className="p-2 rounded-xl border bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-rose-450 hover:border-zinc-750 transition-all duration-200 cursor-pointer"
+                                        className={`p-2 rounded-xl border transition-all duration-200 cursor-pointer ${
+                                          theme === 'light'
+                                            ? "bg-white border-zinc-200 text-zinc-400 hover:text-rose-600 hover:border-rose-250"
+                                            : "bg-zinc-900 border-zinc-880 text-zinc-500 hover:text-rose-450 hover:border-zinc-750"
+                                        }`}
                                         title="Delete memory"
                                       >
                                         <Trash2 className="w-4 h-4" />
@@ -2606,60 +2870,74 @@ document.addEventListener("DOMContentLoaded", () => {
                                   </div>
 
                                   {/* Content Title */}
-                                  <div className="space-y-2">
+                                  <div className="space-y-2 min-w-0 w-full">
                                     <a 
                                       href={mem.url} 
                                       target="_blank" 
                                       rel="noreferrer"
-                                      className="text-xs font-bold text-zinc-500 hover:text-indigo-400 transition-colors inline-flex items-center gap-1 hover:underline"
+                                      className={`text-xs font-bold transition-colors flex items-center flex-wrap gap-1 hover:underline break-words ${
+                                        theme === 'light' ? 'text-zinc-400 hover:text-indigo-600' : 'text-zinc-500 hover:text-indigo-450'
+                                      }`}
                                     >
-                                      {mem.pageTitle}
-                                      <ExternalLink className="w-3.5 h-3.5" />
+                                      <span className="break-all sm:break-words">{mem.pageTitle}</span>
+                                      <ExternalLink className="w-3.5 h-3.5 shrink-0" />
                                     </a>
                                     
                                     {/* Original note with nice quoting */}
-                                    <p className="text-sm text-zinc-350 font-medium leading-relaxed italic border-l-2 border-indigo-500/60 pl-4 bg-zinc-900/30 py-3 pr-3 rounded-r-xl">
+                                    <p className={`text-sm font-medium leading-relaxed italic border-l-2 border-indigo-500/60 pl-4 py-3 pr-3 rounded-r-xl break-words ${
+                                      theme === 'light' ? 'text-zinc-700 bg-zinc-100/55' : 'text-zinc-350 bg-zinc-900/30'
+                                    }`}>
                                       &ldquo;{mem.originalNote.replace(/\[Selected Highlight: ".*"\]\n\n/, "")}&rdquo;
                                     </p>
                                     
                                     {/* Extracted Highlight if present */}
                                     {mem.originalNote.includes('[Selected Highlight: "') && (
-                                      <p className="text-[11px] text-zinc-400 pl-4 leading-relaxed bg-amber-955/10 py-2.5 rounded-r-xl border-l-2 border-amber-500/30">
-                                        <span className="font-extrabold text-amber-400 uppercase tracking-wider text-[9px] block mb-1">Highlighted Selection:</span>
+                                      <p className={`text-[11px] pl-4 leading-relaxed py-2.5 rounded-r-xl border-l-2 border-amber-500/30 break-words ${
+                                        theme === 'light' ? 'text-zinc-650 bg-amber-50/40' : 'text-zinc-400 bg-amber-955/10'
+                                      }`}>
+                                        <span className="font-extrabold text-amber-500 uppercase tracking-wider text-[9px] block mb-1">Highlighted Selection:</span>
                                         {mem.originalNote.match(/\[Selected Highlight: "(.*)"\]/) ? mem.originalNote.match(/\[Selected Highlight: "(.*)"\]/)![1] : ""}
                                       </p>
                                     )}
                                   </div>
 
                                   {/* AI Summary Badge */}
-                                  <div className="bg-indigo-950/10 rounded-2xl p-3.5 border border-indigo-500/10 flex gap-3">
-                                    <Sparkles className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
-                                    <div>
-                                      <span className="text-[9px] font-mono font-extrabold text-indigo-450 uppercase tracking-wider block mb-0.5">Gemini Synthesis Summary</span>
-                                      <p className="text-[11px] text-zinc-300 font-medium leading-relaxed">
+                                  <div className={`rounded-2xl p-3.5 border flex gap-3 transition-colors ${
+                                    theme === 'light' ? 'bg-indigo-50/35 border-indigo-100/70' : 'bg-indigo-950/10 border-indigo-500/10'
+                                  }`}>
+                                    <Sparkles className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
+                                    <div className="min-w-0 flex-1">
+                                      <span className="text-[9px] font-mono font-extrabold text-indigo-600 uppercase tracking-wider block mb-0.5">Gemini Synthesis Summary</span>
+                                      <p className={`text-[11px] font-medium leading-relaxed break-words ${theme === 'light' ? 'text-zinc-650' : 'text-zinc-300'}`}>
                                         {mem.aiSummary}
                                       </p>
                                     </div>
                                   </div>
-                                </div>
+                                  </div>
 
                                 {/* Badges bottom row */}
-                                <div className="flex flex-wrap items-center justify-between pt-4 border-t border-zinc-900 text-[10px] text-zinc-500 font-bold gap-2">
+                                <div className={`flex flex-wrap items-center justify-between pt-4 border-t text-[10px] font-bold gap-2 ${
+                                  theme === 'light' ? 'border-zinc-200 text-zinc-400' : 'border-zinc-900 text-zinc-500'
+                                }`}>
                                   <div className="flex flex-wrap items-center gap-2">
                                     <span className={`px-2.5 py-1 rounded-lg uppercase tracking-wider font-extrabold ${
                                       mem.priority === 'high' 
-                                        ? 'bg-rose-955/30 text-rose-400 border border-rose-900/30' 
+                                        ? 'bg-rose-955/30 text-rose-500 border border-rose-900/30' 
                                         : mem.priority === 'medium'
-                                        ? 'bg-amber-955/20 text-amber-400 border border-amber-900/20'
+                                        ? 'bg-amber-955/20 text-amber-500 border border-amber-900/20'
+                                        : theme === 'light'
+                                        ? 'bg-zinc-100 text-zinc-500 border border-zinc-200'
                                         : 'bg-zinc-900 text-zinc-400 border border-zinc-800'
                                     }`}>
                                       {mem.priority} priority
                                     </span>
                                     {mem.tags.map(t => (
-                                      <span key={t} className="bg-zinc-900 border border-zinc-800 px-2.5 py-1 rounded-lg text-zinc-450 font-semibold">#{t}</span>
+                                      <span key={t} className={`border px-2.5 py-1 rounded-lg font-semibold transition-colors ${
+                                        theme === 'light' ? 'bg-zinc-100/80 border-zinc-200 text-zinc-500' : 'bg-zinc-900 border-zinc-800 text-zinc-450'
+                                      }`}>#{t}</span>
                                     ))}
                                   </div>
-                                  <span className="font-mono text-zinc-500">Added {new Date(mem.createdAt).toLocaleDateString()}</span>
+                                  <span className="font-mono text-zinc-400">Added {new Date(mem.createdAt).toLocaleDateString()}</span>
                                 </div>
                               </motion.div>
                             ))}

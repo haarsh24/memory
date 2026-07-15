@@ -17,6 +17,7 @@ interface ExtensionInstallerProps {
   onDownloadFile: (type: "manifest" | "background" | "content_js" | "content_css" | "popup_html" | "popup_js") => void;
   memories: Memory[];
   showNotification: (msg: string, type?: "success" | "info") => void;
+  theme: "dark" | "light";
 }
 
 export default function ExtensionInstaller({
@@ -28,7 +29,8 @@ export default function ExtensionInstaller({
   onCopyFile,
   onDownloadFile,
   memories,
-  showNotification
+  showNotification,
+  theme
 }: ExtensionInstallerProps) {
   // Local state
   const [activeTab, setActiveTab] = useState<"manifest" | "background" | "content_js" | "content_css" | "popup_html" | "popup_js">("manifest");
@@ -61,7 +63,9 @@ export default function ExtensionInstaller({
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-12 animate-fadeIn text-zinc-100">
+    <div className={`max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-12 animate-fadeIn transition-colors duration-300 ${
+      theme === 'light' ? 'text-zinc-800' : 'text-zinc-100'
+    }`}>
       
       {/* Refined Elegant Header */}
       <div className="space-y-4 max-w-3xl">
@@ -69,10 +73,10 @@ export default function ExtensionInstaller({
           <Chrome className="w-3.5 h-3.5" />
           Native Browser Companion
         </div>
-        <h2 className="text-3xl font-extrabold tracking-tight font-sans text-zinc-100">
+        <h2 className={`text-3xl font-extrabold tracking-tight font-sans ${theme === 'light' ? 'text-zinc-900' : 'text-zinc-100'}`}>
           Install the Chrome Extension
         </h2>
-        <p className="text-sm text-zinc-400 leading-relaxed font-medium">
+        <p className={`text-sm leading-relaxed font-medium ${theme === 'light' ? 'text-zinc-600' : 'text-zinc-400'}`}>
           Integrate Memory directly into your browser workflow. Save notes, highlights, and bookmarks on any website, and view contextual prompts whenever you return.
         </p>
       </div>
@@ -81,15 +85,23 @@ export default function ExtensionInstaller({
         
         {/* LEFT COLUMN: Clean Interactive Console (7 columns) */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="bg-zinc-950/40 border border-zinc-900 rounded-2xl p-6 space-y-6">
+          <div className={`border rounded-2xl p-6 space-y-6 transition-colors duration-300 ${
+            theme === 'light' 
+              ? 'bg-white border-zinc-200/80 shadow-sm' 
+              : 'bg-zinc-950/40 border-zinc-900 shadow-2xl'
+          }`}>
             
-            <div className="flex items-center justify-between border-b border-zinc-900 pb-4">
-              <h3 className="font-bold text-zinc-200 text-sm tracking-tight flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-indigo-400" />
+            <div className={`flex items-center justify-between border-b pb-4 ${theme === 'light' ? 'border-zinc-150' : 'border-zinc-900'}`}>
+              <h3 className={`font-bold text-sm tracking-tight flex items-center gap-2 ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>
+                <CheckCircle2 className="w-4 h-4 text-indigo-500" />
                 Setup Timeline
               </h3>
               <span className={`text-[9px] font-mono font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider border ${
-                isCompletedAll 
+                theme === 'light'
+                  ? isCompletedAll
+                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                    : "bg-indigo-50 text-indigo-700 border-indigo-200"
+                  : isCompletedAll 
                   ? "bg-emerald-950/20 text-emerald-400 border-emerald-500/10" 
                   : "bg-indigo-950/20 text-indigo-300 border-indigo-500/10"
               }`}>
@@ -101,7 +113,11 @@ export default function ExtensionInstaller({
             <div className="space-y-4">
               <div className="flex items-start gap-4">
                 <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold font-mono transition-all duration-300 border ${
-                  step1Done 
+                  theme === 'light'
+                    ? step1Done
+                      ? "bg-zinc-100 border-zinc-300 text-zinc-500"
+                      : "bg-indigo-50 border-indigo-200 text-indigo-600"
+                    : step1Done 
                     ? "bg-zinc-900 border-zinc-800 text-zinc-400" 
                     : "bg-indigo-950 border-indigo-500/30 text-indigo-300"
                 }`}>
@@ -109,32 +125,42 @@ export default function ExtensionInstaller({
                 </div>
                 <div className="flex-1 space-y-3">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-zinc-200 text-sm">Download your pre-configured package</h4>
+                    <h4 className={`font-bold text-sm ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>Download your pre-configured package</h4>
                     <input 
                       type="checkbox" 
                       checked={step1Done}
                       onChange={(e) => setStep1Done(e.target.checked)}
-                      className="w-4 h-4 text-indigo-600 border-zinc-800 bg-zinc-900 rounded focus:ring-indigo-500 cursor-pointer"
+                      className="w-4 h-4 text-indigo-600 border-zinc-300 bg-white dark:border-zinc-800 dark:bg-zinc-900 rounded focus:ring-indigo-500 cursor-pointer"
                     />
                   </div>
-                  <p className="text-xs text-zinc-400 leading-relaxed font-medium">
-                    Your package contains all the extension files (<code className="font-mono text-indigo-400">manifest.json</code>, backgrounds, overlays) configured to connect back to this specific sandbox server.
+                  <p className={`text-xs leading-relaxed font-medium ${theme === 'light' ? 'text-zinc-500' : 'text-zinc-400'}`}>
+                    Your package contains all the extension files (<code className="font-mono text-indigo-600 dark:text-indigo-400">manifest.json</code>, backgrounds, overlays) configured to connect back to this specific sandbox server.
                   </p>
                   
                   {/* Slim Host Origin Selector */}
-                  <div className="bg-zinc-950 border border-zinc-900 p-3 rounded-xl space-y-2">
+                  <div className={`border p-3 rounded-xl space-y-2 transition-colors duration-300 ${
+                    theme === 'light' ? 'bg-zinc-50 border-zinc-150' : 'bg-zinc-950 border-zinc-900'
+                  }`}>
                     <div className="flex items-center justify-between">
-                      <label className="text-[9px] uppercase font-bold text-zinc-500 font-mono tracking-wider flex items-center gap-1">
+                      <label className={`text-[9px] uppercase font-bold font-mono tracking-wider flex items-center gap-1 ${
+                        theme === 'light' ? 'text-zinc-400' : 'text-zinc-500'
+                      }`}>
                         <Globe className="w-3 h-3" />
                         Target origin
                       </label>
-                      <span className="text-[8px] bg-zinc-900 text-zinc-500 font-mono font-semibold px-1.5 py-0.5 rounded">CONNECTED</span>
+                      <span className={`text-[8px] font-mono font-semibold px-1.5 py-0.5 rounded ${
+                        theme === 'light' ? 'bg-zinc-200/60 text-zinc-600' : 'bg-zinc-900 text-zinc-500'
+                      }`}>CONNECTED</span>
                     </div>
                     <input 
                       type="text"
                       value={customBackendUrl}
                       onChange={(e) => setCustomBackendUrl(e.target.value)}
-                      className="w-full px-3 py-1.5 bg-zinc-900 border border-zinc-850/80 focus:outline-none rounded-lg text-xs font-medium text-zinc-200 font-mono focus:border-indigo-500 transition-colors"
+                      className={`w-full px-3 py-1.5 focus:outline-none rounded-lg text-xs font-medium font-mono focus:border-indigo-500 transition-all border ${
+                        theme === 'light' 
+                          ? 'bg-white border-zinc-250 text-zinc-800' 
+                          : 'bg-zinc-900 border-zinc-850/80 text-zinc-250'
+                      }`}
                       placeholder="https://your-server.run.app"
                     />
                   </div>
@@ -151,10 +177,14 @@ export default function ExtensionInstaller({
             </div>
 
             {/* Step 2 */}
-            <div className={`pt-6 border-t border-zinc-900 ${!step1Done ? "opacity-50" : ""}`}>
+            <div className={`pt-6 border-t ${theme === 'light' ? 'border-zinc-150' : 'border-zinc-900'} ${!step1Done ? "opacity-50" : ""}`}>
               <div className="flex items-start gap-4">
                 <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold font-mono transition-all border ${
-                  step2Done 
+                  theme === 'light'
+                    ? step2Done
+                      ? "bg-zinc-100 border-zinc-300 text-zinc-500"
+                      : "bg-indigo-50 border-indigo-200 text-indigo-600"
+                    : step2Done 
                     ? "bg-zinc-900 border-zinc-800 text-zinc-400" 
                     : "bg-indigo-950 border-indigo-500/30 text-indigo-300"
                 }`}>
@@ -162,37 +192,39 @@ export default function ExtensionInstaller({
                 </div>
                 <div className="flex-1 space-y-3">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-zinc-200 text-sm">Extract the archive</h4>
+                    <h4 className={`font-bold text-sm ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>Extract the archive</h4>
                     <input 
                       type="checkbox" 
                       checked={step2Done}
                       onChange={(e) => setStep2Done(e.target.checked)}
                       disabled={!step1Done}
-                      className="w-4 h-4 text-indigo-600 border-zinc-800 bg-zinc-900 rounded focus:ring-indigo-500 cursor-pointer disabled:opacity-50"
+                      className="w-4 h-4 text-indigo-600 border-zinc-300 bg-white dark:border-zinc-800 dark:bg-zinc-900 rounded focus:ring-indigo-500 cursor-pointer disabled:opacity-50"
                     />
                   </div>
-                  <p className="text-xs text-zinc-400 leading-relaxed font-medium">
-                    Unzip the downloaded <code className="font-mono text-indigo-400">MemoryDeskExtension.zip</code> onto your local filesystem.
+                  <p className={`text-xs leading-relaxed font-medium ${theme === 'light' ? 'text-zinc-500' : 'text-zinc-400'}`}>
+                    Unzip the downloaded <code className="font-mono text-indigo-600 dark:text-indigo-400">MemoryDeskExtension.zip</code> onto your local filesystem.
                   </p>
 
                   {/* Clean OS Switcher */}
                   <div className="space-y-2 pt-1">
-                    <div className="flex gap-2 border-b border-zinc-900 pb-1.5">
+                    <div className={`flex gap-2 border-b pb-1.5 ${theme === 'light' ? 'border-zinc-150' : 'border-zinc-900'}`}>
                       {(["windows", "mac", "linux"] as const).map((os) => (
                         <button
                           key={os}
                           onClick={() => setActiveOS(os)}
                           className={`px-2 py-1 text-[10px] uppercase tracking-wider font-mono font-bold border-b transition-all -mb-1.5 cursor-pointer ${
                             activeOS === os 
-                              ? "border-indigo-500 text-indigo-400" 
-                              : "border-transparent text-zinc-500 hover:text-zinc-300"
+                              ? "border-indigo-500 text-indigo-500" 
+                              : theme === 'light'
+                              ? "border-transparent text-zinc-400 hover:text-zinc-600"
+                              : "border-transparent text-zinc-500 hover:text-zinc-350"
                           }`}
                         >
                           {os}
                         </button>
                       ))}
                     </div>
-                    <div className="text-zinc-400 text-[11px] leading-relaxed py-1">
+                    <div className={`text-[11px] leading-relaxed py-1 ${theme === 'light' ? 'text-zinc-600' : 'text-zinc-400'}`}>
                       {activeOS === "windows" && (
                         <span>
                           Right-click the ZIP file and select <strong>Extract All...</strong>, then choose a destination folder.
@@ -206,14 +238,18 @@ export default function ExtensionInstaller({
                       {activeOS === "linux" && (
                         <div className="space-y-1.5">
                           <p>Extract using terminal command:</p>
-                          <div className="bg-zinc-950 text-indigo-400 px-3 py-1.5 rounded-lg font-mono text-[10px] flex justify-between items-center border border-zinc-900">
+                          <div className={`px-3 py-1.5 rounded-lg font-mono text-[10px] flex justify-between items-center border ${
+                            theme === 'light'
+                              ? 'bg-zinc-50 text-indigo-600 border-zinc-200'
+                              : 'bg-zinc-950 text-indigo-400 border-zinc-900'
+                          }`}>
                             <code>unzip MemoryDeskExtension.zip -d ./MemoryDeskExtension</code>
                             <button 
                               onClick={() => {
                                 navigator.clipboard.writeText("unzip MemoryDeskExtension.zip -d ./MemoryDeskExtension");
                                 showNotification("Copied extraction command!", "success");
                               }}
-                              className="text-zinc-500 hover:text-zinc-300 cursor-pointer"
+                              className="text-zinc-400 hover:text-indigo-500 transition-colors cursor-pointer"
                             >
                               <Copy className="w-3.5 h-3.5" />
                             </button>
@@ -226,7 +262,11 @@ export default function ExtensionInstaller({
                   {step1Done && !step2Done && (
                     <button
                       onClick={() => setStep2Done(true)}
-                      className="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 font-bold text-[10px] px-3.5 py-1.5 rounded-lg transition-colors inline-flex items-center gap-1 cursor-pointer"
+                      className={`font-bold text-[10px] px-3.5 py-1.5 rounded-lg transition-colors border inline-flex items-center gap-1 cursor-pointer ${
+                        theme === 'light'
+                          ? 'bg-zinc-100 hover:bg-zinc-200 border-zinc-250 text-zinc-700'
+                          : 'bg-zinc-900 hover:bg-zinc-800 border-zinc-800 text-zinc-300'
+                      }`}
                     >
                       I have extracted the folder
                       <ArrowRight className="w-3 h-3" />
@@ -237,10 +277,14 @@ export default function ExtensionInstaller({
             </div>
 
             {/* Step 3 */}
-            <div className={`pt-6 border-t border-zinc-900 ${!step2Done ? "opacity-50" : ""}`}>
+            <div className={`pt-6 border-t ${theme === 'light' ? 'border-zinc-150' : 'border-zinc-900'} ${!step2Done ? "opacity-50" : ""}`}>
               <div className="flex items-start gap-4">
                 <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold font-mono transition-all border ${
-                  step3Done 
+                  theme === 'light'
+                    ? step3Done
+                      ? "bg-zinc-100 border-zinc-300 text-zinc-500"
+                      : "bg-indigo-50 border-indigo-200 text-indigo-600"
+                    : step3Done 
                     ? "bg-zinc-900 border-zinc-800 text-zinc-400" 
                     : "bg-indigo-950 border-indigo-500/30 text-indigo-300"
                 }`}>
@@ -248,34 +292,36 @@ export default function ExtensionInstaller({
                 </div>
                 <div className="flex-1 space-y-3">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-zinc-200 text-sm">Load unpacked into Chrome</h4>
+                    <h4 className={`font-bold text-sm ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>Load unpacked into Chrome</h4>
                     <input 
                       type="checkbox" 
                       checked={step3Done}
                       onChange={(e) => setStep3Done(e.target.checked)}
                       disabled={!step2Done}
-                      className="w-4 h-4 text-indigo-600 border-zinc-800 bg-zinc-900 rounded focus:ring-indigo-500 cursor-pointer disabled:opacity-50"
+                      className="w-4 h-4 text-indigo-600 border-zinc-300 bg-white dark:border-zinc-800 dark:bg-zinc-900 rounded focus:ring-indigo-500 cursor-pointer disabled:opacity-50"
                     />
                   </div>
-                  <p className="text-xs text-zinc-400 leading-relaxed font-medium">
+                  <p className={`text-xs leading-relaxed font-medium ${theme === 'light' ? 'text-zinc-500' : 'text-zinc-400'}`}>
                     Load the extracted directory into Chrome to activate the browser companion background scripts.
                   </p>
 
-                  <div className="space-y-2 font-medium text-[11px] text-zinc-400 leading-relaxed bg-zinc-950 border border-zinc-900 p-4 rounded-xl">
+                  <div className={`space-y-2 font-medium text-[11px] leading-relaxed border p-4 rounded-xl transition-colors duration-300 ${
+                    theme === 'light' ? 'bg-zinc-50 border-zinc-150 text-zinc-600' : 'bg-zinc-950 border-zinc-900 text-zinc-400'
+                  }`}>
                     <div className="flex gap-2">
-                      <span className="text-zinc-500 font-mono select-none">1.</span>
+                      <span className="text-zinc-400 font-mono select-none">1.</span>
                       <span>
-                        Navigate to <span className="font-mono text-indigo-400 font-semibold">chrome://extensions/</span> in your address bar.
+                        Navigate to <span className="font-mono text-indigo-500 font-semibold">chrome://extensions/</span> in your address bar.
                       </span>
                     </div>
                     <div className="flex gap-2">
-                      <span className="text-zinc-500 font-mono select-none">2.</span>
+                      <span className="text-zinc-400 font-mono select-none">2.</span>
                       <span>
                         Enable the <strong>Developer mode</strong> toggle switch in the top-right.
                       </span>
                     </div>
                     <div className="flex gap-2">
-                      <span className="text-zinc-500 font-mono select-none">3.</span>
+                      <span className="text-zinc-400 font-mono select-none">3.</span>
                       <span>
                         Click the <strong>Load unpacked</strong> button that appears and select your extracted folder.
                       </span>
@@ -301,14 +347,22 @@ export default function ExtensionInstaller({
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="bg-emerald-950/20 border border-emerald-500/10 p-5 rounded-xl flex items-start gap-4"
+                  className={`border p-5 rounded-xl flex items-start gap-4 transition-colors duration-300 ${
+                    theme === 'light'
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
+                      : 'bg-emerald-950/20 border-emerald-500/10 text-emerald-100'
+                  }`}
                 >
-                  <div className="w-9 h-9 rounded-lg bg-emerald-900/30 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/10">
+                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 border ${
+                    theme === 'light'
+                      ? 'bg-emerald-100 border-emerald-300 text-emerald-600'
+                      : 'bg-emerald-900/30 border-emerald-500/10 text-emerald-400'
+                  }`}>
                     <Check className="w-5 h-5" />
                   </div>
                   <div className="flex-1 space-y-2">
-                    <h5 className="font-bold text-emerald-400 text-sm">Companion Activated</h5>
-                    <p className="text-xs text-emerald-300/80 leading-relaxed font-medium">
+                    <h5 className={`font-bold text-sm ${theme === 'light' ? 'text-emerald-800' : 'text-emerald-400'}`}>Companion Activated</h5>
+                    <p className={`text-xs leading-relaxed font-medium ${theme === 'light' ? 'text-emerald-700/90' : 'text-emerald-300/80'}`}>
                       Your Chrome companion is officially armed. Right-click text selections on any page, save thoughts via the toolbar, and watch recall cues link up seamlessly.
                     </p>
                     <div className="pt-1">
@@ -318,9 +372,13 @@ export default function ExtensionInstaller({
                           navigator.clipboard.writeText(text);
                           showNotification("Copied database seeds!", "success");
                         }}
-                        className="bg-zinc-900 hover:bg-zinc-800 text-emerald-400 border border-emerald-500/10 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all shadow-sm flex items-center gap-1 cursor-pointer"
+                        className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all shadow-sm flex items-center gap-1 cursor-pointer border ${
+                          theme === 'light'
+                            ? 'bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border-zinc-200'
+                            : 'bg-zinc-900 hover:bg-zinc-800 text-emerald-400 border-emerald-500/10'
+                        }`}
                       >
-                        <Copy className="w-3 h-3 text-emerald-400" />
+                        <Copy className={`w-3 h-3 ${theme === 'light' ? 'text-zinc-600' : 'text-emerald-400'}`} />
                         Copy Memories JSON Seed
                       </button>
                     </div>
@@ -333,12 +391,16 @@ export default function ExtensionInstaller({
         </div>
 
         {/* RIGHT COLUMN: Troubleshooting & Code Viewer (5 columns) */}
-        <div className="lg:col-span-5 space-y-6">
+        <div className="lg:col-span-5 space-y-6 min-w-0">
           
           {/* FAQ Troubleshooter */}
-          <div className="bg-zinc-950/40 border border-zinc-900 rounded-2xl p-6 space-y-4">
-            <h4 className="font-bold text-zinc-200 text-sm tracking-tight flex items-center gap-2">
-              <HelpCircle className="w-4 h-4 text-indigo-400" />
+          <div className={`border rounded-2xl p-6 space-y-4 transition-colors duration-300 ${
+            theme === 'light' 
+              ? 'bg-white border-zinc-200/80 shadow-sm' 
+              : 'bg-zinc-950/40 border-zinc-900 shadow-2xl'
+          }`}>
+            <h4 className={`font-bold text-sm tracking-tight flex items-center gap-2 ${theme === 'light' ? 'text-zinc-800' : 'text-zinc-200'}`}>
+              <HelpCircle className="w-4 h-4 text-indigo-500" />
               Frequently Asked
             </h4>
 
@@ -355,15 +417,19 @@ export default function ExtensionInstaller({
               ].map((faq, idx) => {
                 const isOpen = faqOpen[idx];
                 return (
-                  <div key={idx} className="border-b border-zinc-900 pb-3 last:border-0 last:pb-0">
+                  <div key={idx} className={`border-b pb-3 last:border-0 last:pb-0 ${theme === 'light' ? 'border-zinc-100' : 'border-zinc-900'}`}>
                     <button
                       onClick={() => toggleFaq(idx)}
                       className="w-full flex justify-between items-start text-left gap-3 group focus:outline-none cursor-pointer"
                     >
-                      <span className="font-bold text-[11px] text-zinc-300 group-hover:text-indigo-400 transition-colors">
+                      <span className={`font-bold text-[11px] transition-colors ${
+                        theme === 'light'
+                          ? 'text-zinc-700 group-hover:text-indigo-600'
+                          : 'text-zinc-350 group-hover:text-indigo-400'
+                      }`}>
                         {faq.q}
                       </span>
-                      <ChevronDown className={`w-3.5 h-3.5 text-zinc-500 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180 text-indigo-400" : ""}`} />
+                      <ChevronDown className={`w-3.5 h-3.5 text-zinc-500 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180 text-indigo-500" : ""}`} />
                     </button>
                     <AnimatePresence initial={false}>
                       {isOpen && (
@@ -373,7 +439,7 @@ export default function ExtensionInstaller({
                           exit={{ height: 0, opacity: 0 }}
                           className="overflow-hidden"
                         >
-                          <p className="text-[10px] text-zinc-400 leading-relaxed pt-2 font-medium">
+                          <p className={`text-[10px] leading-relaxed pt-2 font-medium ${theme === 'light' ? 'text-zinc-500' : 'text-zinc-400'}`}>
                             {faq.a}
                           </p>
                         </motion.div>
@@ -386,15 +452,23 @@ export default function ExtensionInstaller({
           </div>
 
           {/* Minimalist Code Viewer Sandbox */}
-          <div className="bg-zinc-950/40 border border-zinc-900 rounded-2xl p-6 space-y-4 text-zinc-200">
-            <div className="flex items-center justify-between border-b border-zinc-900 pb-3.5">
-              <h5 className="font-bold text-xs tracking-wider flex items-center gap-1.5 font-sans text-indigo-400">
-                <Terminal className="w-4 h-4 text-indigo-400" />
+          <div className={`border rounded-2xl p-6 space-y-4 transition-colors duration-300 ${
+            theme === 'light' 
+              ? 'bg-white border-zinc-200/80 shadow-sm text-zinc-700' 
+              : 'bg-zinc-950/40 border-zinc-900 shadow-2xl text-zinc-200'
+          }`}>
+            <div className={`flex items-center justify-between border-b pb-3.5 ${theme === 'light' ? 'border-zinc-150' : 'border-zinc-900'}`}>
+              <h5 className="font-bold text-xs tracking-wider flex items-center gap-1.5 font-sans text-indigo-500">
+                <Terminal className="w-4 h-4 text-indigo-500" />
                 Raw Source Code
               </h5>
               <button
                 onClick={() => setShowTechnicalFiles(!showTechnicalFiles)}
-                className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 px-2.5 py-1 text-[9px] font-bold text-zinc-300 rounded-lg transition-all cursor-pointer"
+                className={`border px-2.5 py-1 text-[9px] font-bold rounded-lg transition-all cursor-pointer ${
+                  theme === 'light'
+                    ? 'bg-zinc-50 border-zinc-200 hover:bg-zinc-100 text-zinc-600'
+                    : 'bg-zinc-900 border-zinc-800 hover:bg-zinc-800 text-zinc-300'
+                }`}
               >
                 {showTechnicalFiles ? "Hide Source" : "View Source"}
               </button>
@@ -406,9 +480,11 @@ export default function ExtensionInstaller({
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="space-y-3 flex flex-col overflow-hidden"
+                  className="space-y-3 flex flex-col overflow-hidden animate-fadeIn"
                 >
-                  <div className="flex flex-wrap gap-1 bg-zinc-950 p-1 rounded-lg border border-zinc-900">
+                  <div className={`flex flex-wrap gap-1 p-1 rounded-lg border ${
+                    theme === 'light' ? 'bg-zinc-50 border-zinc-200' : 'bg-zinc-950 border-zinc-900'
+                  }`}>
                     {[
                       { id: "manifest", name: "manifest.json" },
                       { id: "background", name: "background.js" },
@@ -423,6 +499,8 @@ export default function ExtensionInstaller({
                         className={`text-[9px] px-2 py-1 font-bold rounded font-mono transition-all cursor-pointer ${
                           activeTab === f.id
                             ? "bg-indigo-600 text-white"
+                            : theme === 'light'
+                            ? "text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100"
                             : "text-zinc-500 hover:text-zinc-300"
                         }`}
                       >
@@ -431,8 +509,12 @@ export default function ExtensionInstaller({
                     ))}
                   </div>
 
-                  <div className="relative border border-zinc-900 rounded-xl overflow-hidden bg-zinc-950/90 shadow-inner flex flex-col h-40">
-                    <pre className="p-3.5 font-mono text-[9px] text-zinc-400 overflow-x-auto overflow-y-auto max-h-[140px] leading-relaxed whitespace-pre font-medium">
+                  <div className={`relative border rounded-xl overflow-hidden shadow-inner flex flex-col h-40 ${
+                    theme === 'light' ? 'bg-zinc-50/50 border-zinc-200' : 'bg-zinc-950/90 border-zinc-900'
+                  }`}>
+                    <pre className={`p-3.5 font-mono text-[9px] overflow-x-auto overflow-y-auto max-h-[140px] leading-relaxed whitespace-pre font-medium w-full max-w-full ${
+                      theme === 'light' ? 'text-zinc-600' : 'text-zinc-400'
+                    }`}>
                       {getExtensionFile(activeTab)}
                     </pre>
                   </div>
@@ -440,7 +522,11 @@ export default function ExtensionInstaller({
                   <div className="flex gap-2 justify-end">
                     <button
                       onClick={() => onCopyFile(activeTab)}
-                      className="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 text-[9px] font-bold px-2.5 py-1.5 rounded flex items-center gap-1 transition-colors border border-zinc-800 cursor-pointer"
+                      className={`text-[9px] font-bold px-2.5 py-1.5 rounded flex items-center gap-1 transition-colors border cursor-pointer ${
+                        theme === 'light'
+                          ? 'bg-zinc-50 hover:bg-zinc-100 border-zinc-200 text-zinc-600'
+                          : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border-zinc-800'
+                      }`}
                     >
                       Copy File
                     </button>
